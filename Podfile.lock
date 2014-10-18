@@ -1,0 +1,115 @@
+PODS:
+  - CocoaLumberjack (1.9.2):
+    - CocoaLumberjack/Extensions
+  - CocoaLumberjack/Core (1.9.2)
+  - CocoaLumberjack/Extensions (1.9.2):
+    - CocoaLumberjack/Core
+  - libextobjc (0.4):
+    - libextobjc/EXTADT
+    - libextobjc/EXTConcreteProtocol
+    - libextobjc/EXTKeyPathCoding
+    - libextobjc/EXTNil
+    - libextobjc/EXTSafeCategory
+    - libextobjc/EXTScope
+    - libextobjc/EXTSelectorChecking
+    - libextobjc/EXTSynthesize
+    - libextobjc/NSInvocation+EXT
+    - libextobjc/NSMethodSignature+EXT
+    - libextobjc/RuntimeExtensions
+    - libextobjc/UmbrellaHeader
+  - libextobjc/EXTADT (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTConcreteProtocol (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTKeyPathCoding (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTNil (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSafeCategory (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTScope (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSelectorChecking (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/EXTSynthesize (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSInvocation+EXT (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/NSMethodSignature+EXT (0.4):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/RuntimeExtensions (0.4)
+  - libextobjc/UmbrellaHeader (0.4)
+  - Mantle (1.5.1):
+    - Mantle/extobjc
+  - Mantle/extobjc (1.5.1)
+  - OHHTTPStubs (3.1.6):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/Core (3.1.6)
+  - OMGHTTPURLRQ (2.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/RQ
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/FormURLEncode (2.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/RQ (2.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (2.1):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - PromiseKit (1.0):
+    - PromiseKit/NSNotificationCenter
+    - PromiseKit/NSURLConnection
+    - PromiseKit/Pause
+    - PromiseKit/UIActionSheet
+    - PromiseKit/UIAlertView
+    - PromiseKit/UIView
+    - PromiseKit/UIViewController
+    - PromiseKit/Until
+    - PromiseKit/When
+  - PromiseKit/NSNotificationCenter (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/NSURLConnection (1.0):
+    - OMGHTTPURLRQ
+    - PromiseKit/Promise
+  - PromiseKit/Pause (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/Promise (1.0)
+  - PromiseKit/UIActionSheet (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/UIAlertView (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/UIView (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/UIViewController (1.0):
+    - PromiseKit/Promise
+  - PromiseKit/Until (1.0):
+    - PromiseKit/Promise
+    - PromiseKit/When
+  - PromiseKit/When (1.0):
+    - PromiseKit/Promise
+  - YapDatabase (2.5.2):
+    - YapDatabase/standard
+  - YapDatabase/common (2.5.2):
+    - CocoaLumberjack (~> 1)
+  - YapDatabase/standard (2.5.2):
+    - YapDatabase/common
+
+DEPENDENCIES:
+  - libextobjc
+  - Mantle
+  - OHHTTPStubs
+  - PromiseKit
+  - YapDatabase
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 205769c032b5fef85b92472046bcc8b7e7c8a817
+  libextobjc: ba42e4111f433273a886cd54f0ddaddb7f62f82f
+  Mantle: d7c5ac734579ec751c58fecbf56189853056c58c
+  OHHTTPStubs: 6781373b69e0a67b27239799f11764d0fbefac55
+  OMGHTTPURLRQ: 16564bcee86d8dfa298b65cdf60015c3065f67df
+  PromiseKit: 3a8eb40bb66c8f74ebd629f03ad8b0d5581a744c
+  YapDatabase: 50f763e49374c38025e8255b4c468d26d81b1048
+
+COCOAPODS: 0.34.2
