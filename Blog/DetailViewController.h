@@ -6,12 +6,13 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
+@class Post;
 
 @interface DetailViewController : UIViewController
 
-@property (strong, nonatomic) id detailItem;
-@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@property (strong, nonatomic) Post *post;
 
 @end
 

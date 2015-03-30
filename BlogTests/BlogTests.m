@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 #import <XCTest/XCTest.h>
 
 @interface BlogTests : XCTestCase

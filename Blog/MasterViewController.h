@@ -6,14 +6,9 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-@class DetailViewController;
+@import UIKit;
 
 @interface MasterViewController : UITableViewController
-
-@property (strong, nonatomic) DetailViewController *detailViewController;
-
 
 @end
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="H1p-Uh-vWS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="H1p-Uh-vWS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Master-->
@@ -113,9 +113,28 @@
                             <outlet property="delegate" destination="7bK-jq-Zjz" id="RA6-mI-bju"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Master" id="Zdf-7t-Un8"/>
+                    <navigationItem key="navigationItem" title="Master" id="Zdf-7t-Un8">
+                        <connections>
+                            <outlet property="leftBarButtonItem" destination="8HS-W8-a6l" id="CwH-zD-2Qm"/>
+                            <outlet property="rightBarButtonItem" destination="u2a-vi-nHQ" id="zsl-st-de9"/>
+                        </connections>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="addButton" destination="u2a-vi-nHQ" id="BNL-ge-ZGw"/>
+                        <outlet property="publishButton" destination="8HS-W8-a6l" id="amK-fb-yQq"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
+                <barButtonItem systemItem="action" id="8HS-W8-a6l">
+                    <connections>
+                        <action selector="publish:" destination="7bK-jq-Zjz" id="zFt-xZ-Pf9"/>
+                    </connections>
+                </barButtonItem>
+                <barButtonItem systemItem="add" id="u2a-vi-nHQ">
+                    <connections>
+                        <action selector="insertNewObject:" destination="7bK-jq-Zjz" id="ycC-vI-2WT"/>
+                    </connections>
+                </barButtonItem>
             </objects>
             <point key="canvasLocation" x="709" y="-630"/>
         </scene>

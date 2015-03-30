@@ -16,6 +16,14 @@
 		7B5C4BED19F2606900667D48 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5C4BEC19F2606900667D48 /* Images.xcassets */; };
 		7B5C4BF019F2606900667D48 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B5C4BEE19F2606900667D48 /* LaunchScreen.xib */; };
 		7B5C4BFC19F2606900667D48 /* BlogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BFB19F2606900667D48 /* BlogTests.m */; };
+		7B9E64281A227BFE0072FF42 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64271A227BFE0072FF42 /* Post.m */; };
+		7B9E642D1A227FA20072FF42 /* NSDate+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642A1A227FA20072FF42 /* NSDate+marshmallows.m */; };
+		7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642C1A227FA20072FF42 /* NSString+marshmallows.m */; };
+		7B9E64421A22F3840072FF42 /* BlogService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64411A22F3840072FF42 /* BlogService.m */; };
+		7B9E644C1A230B940072FF42 /* JSONHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */; };
+		7B9E644F1A23129B0072FF42 /* BlogStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644E1A23129B0072FF42 /* BlogStatus.m */; };
+		7BF029331A27117200E42EDE /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
+		7BF029381A280CB200E42EDE /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
 		B8B8958B2AA40812EFE04FEF /* libPods-BlogTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +54,22 @@
 		7B5C4BF519F2606900667D48 /* BlogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5C4BFA19F2606900667D48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7B5C4BFB19F2606900667D48 /* BlogTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlogTests.m; sourceTree = "<group>"; };
+		7B9E64261A227BFE0072FF42 /* Post.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
+		7B9E64271A227BFE0072FF42 /* Post.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
+		7B9E64291A227FA20072FF42 /* NSDate+marshmallows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+marshmallows.h"; sourceTree = "<group>"; };
+		7B9E642A1A227FA20072FF42 /* NSDate+marshmallows.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+marshmallows.m"; sourceTree = "<group>"; };
+		7B9E642B1A227FA20072FF42 /* NSString+marshmallows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+marshmallows.h"; sourceTree = "<group>"; };
+		7B9E642C1A227FA20072FF42 /* NSString+marshmallows.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+marshmallows.m"; sourceTree = "<group>"; };
+		7B9E64401A22F3840072FF42 /* BlogService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogService.h; sourceTree = "<group>"; };
+		7B9E64411A22F3840072FF42 /* BlogService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogService.m; sourceTree = "<group>"; };
+		7B9E644A1A230B940072FF42 /* JSONHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONHTTPClient.h; sourceTree = "<group>"; };
+		7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONHTTPClient.m; sourceTree = "<group>"; };
+		7B9E644D1A23129B0072FF42 /* BlogStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogStatus.h; sourceTree = "<group>"; };
+		7B9E644E1A23129B0072FF42 /* BlogStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogStatus.m; sourceTree = "<group>"; };
+		7BF029311A27117200E42EDE /* ModelStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelStore.h; sourceTree = "<group>"; };
+		7BF029321A27117200E42EDE /* ModelStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelStore.m; sourceTree = "<group>"; };
+		7BF029361A280CB200E42EDE /* BlogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogController.h; sourceTree = "<group>"; };
+		7BF029371A280CB200E42EDE /* BlogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogController.m; sourceTree = "<group>"; };
 		9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlogTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2EB178BEF4356711B2710AE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		AB1234AC662F1A1B7BD87AB0 /* Pods-BlogTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlogTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BlogTests/Pods-BlogTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,6 +131,9 @@
 		7B5C4BDB19F2606900667D48 /* Blog */ = {
 			isa = PBXGroup;
 			children = (
+				7B9E64331A2281FC0072FF42 /* Categories */,
+				7BF029341A27118300E42EDE /* Models */,
+				7BF029351A27119B00E42EDE /* Service */,
 				7B5C4BE019F2606900667D48 /* AppDelegate.h */,
 				7B5C4BE119F2606900667D48 /* AppDelegate.m */,
 				7B5C4BE319F2606900667D48 /* MasterViewController.h */,
@@ -145,6 +172,43 @@
 				7B5C4BFA19F2606900667D48 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7B9E64331A2281FC0072FF42 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				7B9E64291A227FA20072FF42 /* NSDate+marshmallows.h */,
+				7B9E642A1A227FA20072FF42 /* NSDate+marshmallows.m */,
+				7B9E642B1A227FA20072FF42 /* NSString+marshmallows.h */,
+				7B9E642C1A227FA20072FF42 /* NSString+marshmallows.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		7BF029341A27118300E42EDE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7B9E644D1A23129B0072FF42 /* BlogStatus.h */,
+				7B9E644E1A23129B0072FF42 /* BlogStatus.m */,
+				7B9E64261A227BFE0072FF42 /* Post.h */,
+				7B9E64271A227BFE0072FF42 /* Post.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		7BF029351A27119B00E42EDE /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				7B9E64401A22F3840072FF42 /* BlogService.h */,
+				7B9E64411A22F3840072FF42 /* BlogService.m */,
+				7B9E644A1A230B940072FF42 /* JSONHTTPClient.h */,
+				7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */,
+				7BF029311A27117200E42EDE /* ModelStore.h */,
+				7BF029321A27117200E42EDE /* ModelStore.m */,
+				7BF029361A280CB200E42EDE /* BlogController.h */,
+				7BF029371A280CB200E42EDE /* BlogController.m */,
+			);
+			name = Service;
 			sourceTree = "<group>";
 		};
 		F9CC479BA9A49F1EDD27B0AB /* Frameworks */ = {
@@ -209,7 +273,6 @@
 				TargetAttributes = {
 					7B5C4BD819F2606900667D48 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = B2W6993X5Z;
 					};
 					7B5C4BF419F2606900667D48 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -324,10 +387,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B9E64281A227BFE0072FF42 /* Post.m in Sources */,
 				7B5C4BE219F2606900667D48 /* AppDelegate.m in Sources */,
+				7B9E644C1A230B940072FF42 /* JSONHTTPClient.m in Sources */,
+				7B9E642D1A227FA20072FF42 /* NSDate+marshmallows.m in Sources */,
 				7B5C4BE519F2606900667D48 /* MasterViewController.m in Sources */,
+				7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */,
+				7B9E64421A22F3840072FF42 /* BlogService.m in Sources */,
 				7B5C4BDF19F2606900667D48 /* main.m in Sources */,
+				7BF029331A27117200E42EDE /* ModelStore.m in Sources */,
+				7BF029381A280CB200E42EDE /* BlogController.m in Sources */,
 				7B5C4BE819F2606900667D48 /* DetailViewController.m in Sources */,
+				7B9E644F1A23129B0072FF42 /* BlogStatus.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +524,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = Blog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
