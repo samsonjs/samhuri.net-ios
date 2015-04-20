@@ -16,6 +16,7 @@
 @property (nonatomic, readonly) NSInteger mm_day;
 
 + (NSDate *)mm_dateWithYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day;
++ (NSDate *)mm_dateWithYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day hour:(NSInteger)hour minute:(NSInteger)minute second:(NSInteger)second;
 - (NSString *)mm_relativeToNow;
 
 @end

@@ -7,27 +7,77 @@
 //
 
 #import "AppDelegate.h"
+#import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "BlogService.h"
+#import "YapDatabase.h"
+#import "ModelStore.h"
+#import "JSONHTTPClient.h"
+#import "BlogController.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
-
-@property (nonatomic, readonly, strong) BlogService *blogService;
 
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    _blogService = [BlogService new];
-
-    // Override point for customization after application launch.
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
+    [self setupBlogController];
     return YES;
 }
+
+- (MasterViewController *)masterViewController {
+    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
+    MasterViewController *masterViewController = (MasterViewController *)navigationController.viewControllers.firstObject;
+    return masterViewController;
+}
+
+- (void)setupBlogController {
+    NSString *cachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
+    NSString *dbPath = [cachesPath stringByAppendingPathComponent:@"blog.sqlite"];
+    ModelStore *store = [self newModelStoreWithPath:dbPath];
+    BlogController *blogController = [self newBlogControllerWithModelStore:store rootURL:@"http://ocean.samhuri.net:6706/"];
+
+    [self masterViewController].blogController = blogController;
+}
+
+- (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {
+    YapDatabase *database = [[YapDatabase alloc] initWithPath:dbPath];
+    YapDatabaseConnection *connection = [database newConnection];
+    ModelStore *store = [[ModelStore alloc] initWithConnection:connection];
+    return store;
+}
+
+- (BlogController *)newBlogControllerWithModelStore:(ModelStore *)store rootURL:(NSString *)rootURL {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    JSONHTTPClient *client = [[JSONHTTPClient alloc] initWithSession:session];
+    client.defaultHeaders = [self defaultBlogHeaders];
+    BlogService *service = [[BlogService alloc] initWithRootURL:rootURL client:client];
+    BlogController *blogController = [[BlogController alloc] initWithService:service store:store];
+    return blogController;
+}
+
+- (NSDictionary *)defaultBlogHeaders {
+    NSString *authPath = [[NSBundle mainBundle] pathForResource:@"auth.json" ofType:nil];
+    if (authPath.length) {
+        NSData *data = [NSData dataWithContentsOfFile:authPath];
+        NSError *error = nil;
+        NSDictionary *auth = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if (auth) {
+            return @{@"Auth" : [NSString stringWithFormat:@"%@|%@", auth[@"username"], auth[@"password"]]};
+        }
+        NSLog(@"auth.json: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        NSLog(@"[ERROR] Failed to parse auth.json: %@ %@", error.localizedDescription, error.userInfo);
+    }
+    NSLog(@"[WARNING] No auth.json found. Blog will be read-only.");
+    return nil;
+};
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

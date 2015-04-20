@@ -8,10 +8,12 @@
 
 @import UIKit;
 
+@class BlogController;
 @class Post;
 
 @interface DetailViewController : UIViewController
 
+@property (strong, nonatomic) BlogController *blogController;
 @property (strong, nonatomic) Post *post;
 
 @end

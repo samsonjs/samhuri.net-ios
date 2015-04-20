@@ -33,10 +33,6 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return self;
 }
 
-- (NSURL *)previewURLForPostWithPath:(NSString *)path {
-    return [self urlFor:@"%@/preview", path];
-}
-
 - (NSURL *)urlFor:(NSString *)path, ... {
     va_list args;
     va_start(args, path);
@@ -82,7 +78,7 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 }
 
 - (PMKPromise *)requestDrafts {
-    return [self.client get:[self urlFor:@"/drafts"] headers:nil].then([self decodePostsBlock]);
+    return [self.client get:[self urlFor:@"/posts/drafts"] headers:nil].then([self decodePostsBlock]);
 }
 
 - (PMKPromise *)requestPublishedPosts {
@@ -97,9 +93,9 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     NSDictionary *fields = @{@"id": draftID,
                              @"title": title,
                              @"body": body,
-                             @"link": link,
+                             @"link": link ?: [NSNull null],
                              };
-    return [self.client postJSON:[self urlFor:@"/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
+    return [self.client postJSON:[self urlFor:@"/posts/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
 }
 
 - (PMKPromise *)requestPublishDraftWithPath:(NSString *)path {
@@ -113,7 +109,7 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 - (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
     NSDictionary *fields = @{@"title": title,
                              @"body": body,
-                             @"link": link,
+                             @"link": link ?: [NSNull null],
                              };
     return [self.client putJSON:[self urlFor:path] headers:nil fields:fields];
 }

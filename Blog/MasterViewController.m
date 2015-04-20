@@ -6,15 +6,12 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
+#import <PromiseKit/Promise.h>
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "Post.h"
 #import "BlogController.h"
-#import "ModelStore.h"
-#import "BlogService.h"
-#import "YapDatabaseConnection.h"
-#import "YapDatabase.h"
-#import "JSONHTTPClient.h"
+#import "PostCell.h"
 
 @interface MasterViewController ()
 
@@ -22,7 +19,6 @@
 @property (strong, nonatomic) DetailViewController *detailViewController;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *publishButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
-@property (strong, nonatomic) BlogController *blogController;
 
 @end
 
@@ -34,16 +30,6 @@
         self.clearsSelectionOnViewWillAppear = NO;
         self.preferredContentSize = CGSizeMake(320.0, 600.0);
     }
-    NSString *cachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
-    NSString *path = [cachesPath stringByAppendingPathComponent:@"blog.sqlite"];
-    YapDatabase *database = [[YapDatabase alloc] initWithPath:path];
-    YapDatabaseConnection *connection = [database newConnection];
-    ModelStore *store = [[ModelStore alloc] initWithConnection:connection];
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    JSONHTTPClient *client = [[JSONHTTPClient alloc] initWithSession:session];
-    BlogService *service = [[BlogService alloc] initWithRootURL:@"http://ocean.samhuri.net:6706/" client:client];
-    self.blogController = [[BlogController alloc] initWithService:service store:store];
 }
 
 - (void)viewDidLoad {
@@ -65,10 +51,10 @@
     // TODO: show a spinner
     [self.blogController requestDrafts].then(^(NSArray *drafts) {
         return [self.blogController requestPublishedPosts].then(^(NSArray *posts) {
-            NSLog(@"drafts = %@", drafts);
-            NSLog(@"posts = %@", posts);
             self.posts = [drafts mutableCopy];
-            [self.posts addObjectsFromArray:posts];
+            for (Post *post in [posts reverseObjectEnumerator]) {
+                [self.posts addObject:post];
+            }
             [self.tableView reloadData];
         });
     });
@@ -93,10 +79,11 @@
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+    if ([segue.identifier isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         Post *post = self.posts[indexPath.row];
         DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
+        controller.blogController = self.blogController;
         [controller setPost:post];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
@@ -114,12 +101,13 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
     Post *post = self.posts[indexPath.row];
     // FIXME: unique title
-    cell.textLabel.text = post.title ?: @"Untitled";
-    cell.detailTextLabel.text = post.draft ? @"Draft" : post.formattedDate;
+    NSString *title = post.title ?: @"Untitled";
+    NSString *date = post.draft ? @"Draft" : post.formattedDate;
+    [cell configureWithTitle:title date:date];
     return cell;
 }
 

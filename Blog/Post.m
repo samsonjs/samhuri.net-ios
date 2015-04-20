@@ -81,7 +81,12 @@
 }
 
 - (BOOL)isEqualToPost:(Post *)other {
-    return [self.objectID isEqual:other.objectID];
+    return [self.objectID isEqualToString:other.objectID]
+            && [self.path isEqualToString:other.path]
+            && [self.title isEqualToString:other.title]
+            && [self.body isEqualToString:other.body]
+            && self.draft == other.draft
+            && ((!self.url && !other.url) || [self.url isEqual:other.url]);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -139,11 +144,12 @@
 }
 
 - (NSString *)path {
-    if (!_path && self.slug) {
+    if (!_path) {
         if (self.draft) {
-            _path = [NSString stringWithFormat:@"/drafts/%@", self.slug];
+            _path = [NSString stringWithFormat:@"/posts/drafts/%@", self.objectID];
         }
-        else if (self.date) {
+        else {
+            NSAssert(self.slug && self.date, @"slug and date are required");
             NSString *paddedMonth = [self paddedMonthForDate:self.date];
             _path = [NSString stringWithFormat:@"/posts/%ld/%@/%@", (long)self.time.mm_year, paddedMonth, self.slug];
         }

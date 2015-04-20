@@ -8,15 +8,15 @@
 
 @import Foundation;
 
-NSString *BlogStatusChangedNotification;
-NSString *BlogDraftsChangedNotification;
-NSString *BlogDraftAddedNotification;
-NSString *BlogDraftRemovedNotification;
-NSString *BlogPublishedPostsChangedNotification;
-NSString *BlogPublishedPostAddedNotification;
-NSString *BlogPublishedPostRemovedNotification;
-NSString *BlogPostChangedNotification;
-NSString *BlogPostDeletedNotification;
+extern NSString *BlogStatusChangedNotification;
+extern NSString *BlogDraftsChangedNotification;
+extern NSString *BlogDraftAddedNotification;
+extern NSString *BlogDraftRemovedNotification;
+extern NSString *BlogPublishedPostsChangedNotification;
+extern NSString *BlogPublishedPostAddedNotification;
+extern NSString *BlogPublishedPostRemovedNotification;
+extern NSString *BlogPostChangedNotification;
+extern NSString *BlogPostDeletedNotification;
 
 @class PMKPromise;
 @class ModelStore;
@@ -26,7 +26,7 @@ NSString *BlogPostDeletedNotification;
 
 - (instancetype)initWithService:(BlogService *)service store:(ModelStore *)store;
 
-- (NSURL *)previewURLForPostWithPath:(NSString *)path;
+- (NSMutableURLRequest *)previewRequestWithPath:(NSString *)path;
 
 - (PMKPromise *)requestBlogStatus;
 

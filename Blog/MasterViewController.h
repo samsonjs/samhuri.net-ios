@@ -8,7 +8,11 @@
 
 @import UIKit;
 
+@class BlogController;
+
 @interface MasterViewController : UITableViewController
+
+@property (strong, nonatomic) BlogController *blogController;
 
 @end
 

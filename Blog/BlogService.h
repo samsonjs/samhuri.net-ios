@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, BlogServiceErrorCode) {
 
 - (instancetype)initWithRootURL:(NSString *)rootURL client:(JSONHTTPClient *)client;
 
-- (NSURL *)previewURLForPostWithPath:(NSString *)path;
+- (NSURL *)urlFor:(NSString *)path, ...;
 
 - (PMKPromise *)requestBlogStatus;
 - (PMKPromise *)requestPublishEnvironment:(NSString *)environment;

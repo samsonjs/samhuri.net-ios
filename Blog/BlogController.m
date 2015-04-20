@@ -35,8 +35,11 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     return self;
 }
 
-- (NSURL *)previewURLForPostWithPath:(NSString *)path {
-    return [_service previewURLForPostWithPath:path];
+- (NSMutableURLRequest *)previewRequestWithPath:(NSString *)path;
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[_service urlFor:path]];
+    [request addValue:@"text/html" forHTTPHeaderField:@"Accept"];
+    return request;
 }
 
 - (PMKPromise *)requestBlogStatus {
@@ -55,9 +58,11 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
 - (PMKPromise *)requestDrafts {
     NSArray *posts = [_store drafts];
     if (posts) {
+        NSLog(@"returning %@ cached drafts", @(posts.count));
         return [PMKPromise promiseWithValue:posts];
     }
     else {
+        NSLog(@"requesting drafts from server");
         return [_service requestDrafts].then(^(NSArray *posts) {
             [_store saveDrafts:posts];
             return posts;

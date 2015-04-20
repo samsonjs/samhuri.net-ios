@@ -36,7 +36,12 @@
         NSArray *postPaths = [transaction objectForKey:@"drafts" inCollection:@"PostCollection"];
         if (postPaths) {
             [transaction enumerateObjectsForKeys:postPaths inCollection:@"Post" unorderedUsingBlock:^(NSUInteger keyIndex, id object, BOOL *stop) {
-                [posts addObject:object];
+                if (object) {
+                    if (!posts) {
+                        posts = [NSMutableArray new];
+                    }
+                    [posts addObject:object];
+                }
             }];
         }
     }];
@@ -49,7 +54,12 @@
         NSArray *postPaths = [transaction objectForKey:@"published" inCollection:@"PostCollection"];
         if (postPaths) {
             [transaction enumerateObjectsForKeys:postPaths inCollection:@"Post" unorderedUsingBlock:^(NSUInteger keyIndex, id object, BOOL *stop) {
-                [posts addObject:object];
+                if (object) {
+                    if (!posts) {
+                        posts = [NSMutableArray new];
+                    }
+                    [posts addObject:object];
+                }
             }];
         }
     }];
@@ -90,7 +100,7 @@
             NSMutableArray *postIDs = [NSMutableArray array];
             for (Post *post in posts) {
                 [transaction setObject:post forKey:post.path inCollection:@"Post"];
-                [postIDs addObject:post.objectID];
+                [postIDs addObject:post.path];
             }
             [transaction setObject:postIDs forKey:@"drafts" inCollection:@"PostCollection"];
         } completionBlock:^{
@@ -105,7 +115,7 @@
             NSMutableArray *postIDs = [NSMutableArray array];
             for (Post *post in posts) {
                 [transaction setObject:post forKey:post.path inCollection:@"Post"];
-                [postIDs addObject:post.objectID];
+                [postIDs addObject:post.path];
             }
             [transaction setObject:postIDs forKey:@"published" inCollection:@"PostCollection"];
         } completionBlock:^{
