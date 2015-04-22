@@ -53,7 +53,6 @@
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
-    titleLabel.center = CGPointMake(150, 3 + (CGRectGetHeight(titleLabel.bounds) / 2));
     [titleView addSubview:titleLabel];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -62,6 +61,17 @@
     [titleView addSubview:subtitleLabel];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
+    [self.view setNeedsLayout];
+}
+
+- (void)viewDidLayoutSubviews;
+{
+    [super viewDidLayoutSubviews];
+    [UIView animateWithDuration:0.3 animations:^{
+        CGFloat width = CGRectGetWidth(self.titleLabel.superview.bounds);
+        self.titleLabel.center = CGPointMake(width / 2, 3 + (CGRectGetHeight(self.titleLabel.bounds) / 2));
+        self.statusLabel.center = CGPointMake(width / 2, CGRectGetMaxY(self.titleLabel.frame) + 3 + (CGRectGetHeight(self.statusLabel.bounds) / 2));
+    }];
 }
 
 - (void)setupBlogStatusTimer
@@ -85,8 +95,10 @@
 {
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:blogStatus]) {
         self.statusLabel.text = blogStatus;
-        [self.statusLabel sizeToFit];
-        self.statusLabel.center = CGPointMake(150, CGRectGetMaxY(self.titleLabel.frame) + 3 + (CGRectGetHeight(self.statusLabel.bounds) / 2));
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.statusLabel sizeToFit];
+        }];
+        [self.view setNeedsLayout];
     }
 }
 
