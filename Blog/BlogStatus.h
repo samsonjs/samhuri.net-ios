@@ -11,6 +11,7 @@
 
 @interface BlogStatus : MTLModel <MTLJSONSerializing>
 
+@property (nonatomic, readonly, strong) NSDate *date;
 @property (nonatomic, readonly, strong) NSString *localVersion;
 @property (nonatomic, readonly, strong) NSString *remoteVersion;
 @property (nonatomic, readonly, getter=isDirty) BOOL dirty;

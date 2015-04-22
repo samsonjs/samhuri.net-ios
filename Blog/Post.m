@@ -53,6 +53,7 @@
                                               @"body": body ?: [NSNull null],
                                               @"path": self.path ?: [NSNull null],
                                               @"url": self.url ?: [NSNull null],
+                                              @"draft": @(self.draft),
                                               } error:nil];
 }
 
@@ -65,6 +66,7 @@
                                               @"body": self.body ?: [NSNull null],
                                               @"path": self.path ?: [NSNull null],
                                               @"url": self.url ?: [NSNull null],
+                                              @"draft": @(self.draft),
                                               } error:nil];
 }
 
@@ -77,6 +79,7 @@
                                               @"body": self.body ?: [NSNull null],
                                               @"path": self.path ?: [NSNull null],
                                               @"url": url ?: [NSNull null],
+                                              @"draft": @(self.draft),
                                               } error:nil];
 }
 

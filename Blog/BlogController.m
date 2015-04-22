@@ -42,8 +42,9 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     return request;
 }
 
-- (PMKPromise *)requestBlogStatus {
-    BlogStatus *status = [_store blogStatus];
+- (PMKPromise *)requestBlogStatusWithCaching:(BOOL)useCache;
+{
+    BlogStatus *status = useCache ? [_store blogStatus] : nil;
     if (status) {
         return [PMKPromise promiseWithValue:status];
     }
@@ -55,14 +56,13 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestDrafts {
-    NSArray *posts = [_store drafts];
+- (PMKPromise *)requestDraftsWithCaching:(BOOL)useCache;
+{
+    NSArray *posts = useCache ? [_store drafts] : nil;
     if (posts) {
-        NSLog(@"returning %@ cached drafts", @(posts.count));
         return [PMKPromise promiseWithValue:posts];
     }
     else {
-        NSLog(@"requesting drafts from server");
         return [_service requestDrafts].then(^(NSArray *posts) {
             [_store saveDrafts:posts];
             return posts;
@@ -70,8 +70,9 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestPublishedPosts {
-    NSArray *posts = [_store publishedPosts];
+- (PMKPromise *)requestPublishedPostsWithCaching:(BOOL)useCache;
+{
+    NSArray *posts = useCache ? [_store publishedPosts] : nil;
     if (posts) {
         return [PMKPromise promiseWithValue:posts];
     }
@@ -81,6 +82,13 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
             return posts;
         });
     }
+}
+
+- (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache;
+{
+    return [PMKPromise when:@[[self requestDraftsWithCaching:useCache], [self requestPublishedPostsWithCaching:useCache]]].then(^(NSArray *results) {
+        return [results.firstObject arrayByAddingObjectsFromArray:results.lastObject];
+    });
 }
 
 - (PMKPromise *)requestPostWithPath:(NSString *)path {

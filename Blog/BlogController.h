@@ -28,10 +28,12 @@ extern NSString *BlogPostDeletedNotification;
 
 - (NSMutableURLRequest *)previewRequestWithPath:(NSString *)path;
 
-- (PMKPromise *)requestBlogStatus;
+- (PMKPromise *)requestBlogStatusWithCaching:(BOOL)useCache;
 
-- (PMKPromise *)requestDrafts;
-- (PMKPromise *)requestPublishedPosts;
+- (PMKPromise *)requestDraftsWithCaching:(BOOL)useCache;
+
+- (PMKPromise *)requestPublishedPostsWithCaching:(BOOL)useCache;
+- (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache;
 - (PMKPromise *)requestPostWithPath:(NSString *)path;
 
 - (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link;

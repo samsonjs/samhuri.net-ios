@@ -1,5 +1,5 @@
 //
-//  MasterViewController.h
+//  EditorViewController.h
 //  Blog
 //
 //  Created by Sami Samhuri on 2014-10-18.
@@ -9,10 +9,12 @@
 @import UIKit;
 
 @class BlogController;
+@class Post;
 
-@interface MasterViewController : UITableViewController
+@interface EditorViewController : UIViewController
 
 @property (strong, nonatomic) BlogController *blogController;
+@property (strong, nonatomic) Post *post;
 
 @end
 

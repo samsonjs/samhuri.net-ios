@@ -24,10 +24,49 @@
 
 - (BlogStatus *)blogStatus {
     __block BlogStatus *status = nil;
+    __block NSDictionary *metadata = nil;
     [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        status = [transaction objectForKey:@"status" inCollection:@"BlogStatus"];
+        [transaction getObject:&status metadata:&metadata forKey:@"status" inCollection:@"BlogStatus"];
+        if (status && metadata)
+        {
+            NSNumber *timestamp = metadata[@"timestamp"];
+            NSTimeInterval age = [NSDate date].timeIntervalSince1970 - [timestamp unsignedIntegerValue];
+            if (age > 300)
+            {
+                NSLog(@"Blog status is stale (%@s old)", @(age));
+                status = nil;
+            }
+        }
     }];
     return status;
+}
+
+- (PMKPromise *)saveBlogStatus:(BlogStatus *)blogStatus {
+    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
+        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            [transaction setObject:blogStatus forKey:@"status" inCollection:@"BlogStatus" withMetadata:@{@"timestamp": @([NSDate date].timeIntervalSince1970)}];
+        } completionBlock:^{
+            fulfill(blogStatus);
+        }];
+    }];
+}
+
+- (Post *)postWithPath:(NSString *)path {
+    __block Post *post = nil;
+    [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+        post = [transaction objectForKey:path inCollection:@"Post"];
+    }];
+    return post;
+}
+
+- (PMKPromise *)savePost:(Post *)post {
+    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
+        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            [transaction setObject:post forKey:post.path inCollection:@"Post"];
+        } completionBlock:^{
+            fulfill(post);
+        }];
+    }];
 }
 
 - (NSArray *)drafts {
@@ -48,52 +87,6 @@
     return posts;
 }
 
-- (NSArray *)publishedPosts {
-    __block NSMutableArray *posts = nil;
-    [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        NSArray *postPaths = [transaction objectForKey:@"published" inCollection:@"PostCollection"];
-        if (postPaths) {
-            [transaction enumerateObjectsForKeys:postPaths inCollection:@"Post" unorderedUsingBlock:^(NSUInteger keyIndex, id object, BOOL *stop) {
-                if (object) {
-                    if (!posts) {
-                        posts = [NSMutableArray new];
-                    }
-                    [posts addObject:object];
-                }
-            }];
-        }
-    }];
-    return posts;
-}
-
-- (Post *)postWithPath:(NSString *)path {
-    __block Post *post = nil;
-    [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        post = [transaction objectForKey:path inCollection:@"Post"];
-    }];
-    return post;
-}
-
-- (PMKPromise *)saveBlogStatus:(BlogStatus *)blogStatus {
-    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
-        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-            [transaction setObject:blogStatus forKey:@"status" inCollection:@"BlogStatus"];
-        } completionBlock:^{
-            fulfill(blogStatus);
-        }];
-    }];
-}
-
-- (PMKPromise *)savePost:(Post *)post {
-    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
-        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-            [transaction setObject:post forKey:post.path inCollection:@"Post"];
-        } completionBlock:^{
-            fulfill(post);
-        }];
-    }];
-}
-
 - (PMKPromise *)saveDrafts:(NSArray *)posts {
     return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
@@ -103,21 +96,6 @@
                 [postIDs addObject:post.path];
             }
             [transaction setObject:postIDs forKey:@"drafts" inCollection:@"PostCollection"];
-        } completionBlock:^{
-            fulfill(posts);
-        }];
-    }];
-}
-
-- (PMKPromise *)savePublishedPosts:(NSArray *)posts {
-    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
-        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-            NSMutableArray *postIDs = [NSMutableArray array];
-            for (Post *post in posts) {
-                [transaction setObject:post forKey:post.path inCollection:@"Post"];
-                [postIDs addObject:post.path];
-            }
-            [transaction setObject:postIDs forKey:@"published" inCollection:@"PostCollection"];
         } completionBlock:^{
             fulfill(posts);
         }];
@@ -139,6 +117,53 @@
     }];
 }
 
+- (PMKPromise *)removeDraftWithPath:(NSString *)path {
+    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
+        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            NSMutableArray *postIDs = [[transaction objectForKey:@"drafts" inCollection:@"PostCollection"] mutableCopy];
+            if ([postIDs containsObject:path]) {
+                [postIDs removeObject:path];
+                [transaction setObject:postIDs forKey:@"drafts" inCollection:@"PostCollection"];
+            }
+        } completionBlock:^{
+            fulfill(path);
+        }];
+    }];
+}
+
+- (NSArray *)publishedPosts {
+    __block NSMutableArray *posts = nil;
+    [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+        NSArray *postPaths = [transaction objectForKey:@"published" inCollection:@"PostCollection"];
+        if (postPaths) {
+            [transaction enumerateObjectsForKeys:postPaths inCollection:@"Post" unorderedUsingBlock:^(NSUInteger keyIndex, id object, BOOL *stop) {
+                if (object) {
+                    if (!posts) {
+                        posts = [NSMutableArray new];
+                    }
+                    [posts addObject:object];
+                }
+            }];
+        }
+    }];
+    return posts;
+}
+
+- (PMKPromise *)savePublishedPosts:(NSArray *)posts {
+    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
+        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            NSMutableArray *postIDs = [NSMutableArray array];
+            for (Post *post in posts) {
+                [transaction setObject:post forKey:post.path inCollection:@"Post"];
+                [postIDs addObject:post.path];
+            }
+            [transaction setObject:postIDs forKey:@"published" inCollection:@"PostCollection"];
+        } completionBlock:^{
+            fulfill(posts);
+        }];
+    }];
+}
+
 - (PMKPromise *)addPublishedPost:(Post *)post {
     return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
@@ -150,20 +175,6 @@
             }
         } completionBlock:^{
             fulfill(post);
-        }];
-    }];
-}
-
-- (PMKPromise *)removeDraftWithPath:(NSString *)path {
-    return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
-        [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-            NSMutableArray *postIDs = [[transaction objectForKey:@"drafts" inCollection:@"PostCollection"] mutableCopy];
-            if ([postIDs containsObject:path]) {
-                [postIDs removeObject:path];
-                [transaction setObject:postIDs forKey:@"drafts" inCollection:@"PostCollection"];
-            }
-        } completionBlock:^{
-            fulfill(path);
         }];
     }];
 }

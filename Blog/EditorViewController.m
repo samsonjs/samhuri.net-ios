@@ -1,5 +1,5 @@
 //
-//  DetailViewController.m
+//  EditorViewController.m
 //  Blog
 //
 //  Created by Sami Samhuri on 2014-10-18.
@@ -7,19 +7,19 @@
 //
 
 #import <PromiseKit/Promise.h>
-#import "DetailViewController.h"
+#import "EditorViewController.h"
 #import "BlogController.h"
 #import "Post.h"
 #import "PreviewViewController.h"
 
-@interface DetailViewController () <UITextViewDelegate>
+@interface EditorViewController () <UITextViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
 
 @end
 
-@implementation DetailViewController
+@implementation EditorViewController
 
 #pragma mark - Managing the detail item
 

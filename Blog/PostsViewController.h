@@ -1,5 +1,5 @@
 //
-//  DetailViewController.h
+//  PostsViewController.h
 //  Blog
 //
 //  Created by Sami Samhuri on 2014-10-18.
@@ -9,12 +9,10 @@
 @import UIKit;
 
 @class BlogController;
-@class Post;
 
-@interface DetailViewController : UIViewController
+@interface PostsViewController : UITableViewController
 
 @property (strong, nonatomic) BlogController *blogController;
-@property (strong, nonatomic) Post *post;
 
 @end
 

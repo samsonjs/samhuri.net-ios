@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "MasterViewController.h"
-#import "DetailViewController.h"
+#import "PostsViewController.h"
+#import "EditorViewController.h"
 #import "BlogService.h"
 #import "YapDatabase.h"
 #import "ModelStore.h"
@@ -30,11 +30,12 @@
     return YES;
 }
 
-- (MasterViewController *)masterViewController {
+- (PostsViewController *)postsViewController
+{
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    MasterViewController *masterViewController = (MasterViewController *)navigationController.viewControllers.firstObject;
-    return masterViewController;
+    PostsViewController *postsViewController = (PostsViewController *)navigationController.viewControllers.firstObject;
+    return postsViewController;
 }
 
 - (void)setupBlogController {
@@ -43,7 +44,7 @@
     ModelStore *store = [self newModelStoreWithPath:dbPath];
     BlogController *blogController = [self newBlogControllerWithModelStore:store rootURL:@"http://ocean.samhuri.net:6706/"];
 
-    [self masterViewController].blogController = blogController;
+    [self postsViewController].blogController = blogController;
 }
 
 - (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {
@@ -104,7 +105,7 @@
 #pragma mark - UISplitViewDelegate methods
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
-    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[DetailViewController class]] && ([(DetailViewController *)[(UINavigationController *)secondaryViewController topViewController] post] == nil)) {
+    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[EditorViewController class]] && ([(EditorViewController *)[(UINavigationController *)secondaryViewController topViewController] post] == nil)) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
         return YES;
     } else {
