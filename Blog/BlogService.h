@@ -7,9 +7,10 @@
 //
 
 @import Foundation;
+
 #import <PromiseKit/PromiseKit.h>
 
-extern NSString * const BlogServiceErrorDomain;
+extern NSString *const BlogServiceErrorDomain;
 
 typedef NS_ENUM(NSUInteger, BlogServiceErrorCode) {
     BlogServiceErrorCodeWTF

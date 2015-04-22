@@ -27,12 +27,10 @@
     __block NSDictionary *metadata = nil;
     [_connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         [transaction getObject:&status metadata:&metadata forKey:@"status" inCollection:@"BlogStatus"];
-        if (status && metadata)
-        {
+        if (status && metadata) {
             NSNumber *timestamp = metadata[@"timestamp"];
             NSTimeInterval age = [NSDate date].timeIntervalSince1970 - [timestamp unsignedIntegerValue];
-            if (age > 300)
-            {
+            if (age > 300) {
                 NSLog(@"Blog status is stale (%@s old)", @(age));
                 status = nil;
             }

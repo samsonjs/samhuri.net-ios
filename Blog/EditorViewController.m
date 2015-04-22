@@ -55,8 +55,7 @@
     [self configureView];
 }
 
-- (void)viewWillAppear:(BOOL)animated;
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(savePostBody) name:UIApplicationWillResignActiveNotification object:nil];
 }
@@ -92,6 +91,5 @@
         previewViewController.initialRequest = [self.blogController previewRequestWithPath:self.post.path];
     }
 }
-
 
 @end

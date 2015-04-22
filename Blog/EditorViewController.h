@@ -17,4 +17,3 @@
 @property (strong, nonatomic) Post *post;
 
 @end
-

@@ -41,8 +41,7 @@
     [self setupTitleView];
 }
 
-- (void)setupTitleView;
-{
+- (void)setupTitleView {
     UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
     titleView.userInteractionEnabled = YES;
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(requestStatusWithoutCaching)];
@@ -64,8 +63,7 @@
     [self.view setNeedsLayout];
 }
 
-- (void)viewDidLayoutSubviews;
-{
+- (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [UIView animateWithDuration:0.3 animations:^{
         CGFloat width = CGRectGetWidth(self.titleLabel.superview.bounds);
@@ -74,13 +72,11 @@
     }];
 }
 
-- (void)setupBlogStatusTimer
-{
     self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
+- (void)setupBlogStatusTimer {
 }
 
-- (void)teardownBlogStatusTimer
-{
+- (void)teardownBlogStatusTimer {
     [self.blogStatusTimer invalidate];
     self.blogStatusTimer = nil;
 }
@@ -91,8 +87,7 @@
     self.editorViewController = (EditorViewController *)detailNavController.topViewController;
 }
 
-- (void)updateStatusLabel:(NSString *)blogStatus;
-{
+- (void)updateStatusLabel:(NSString *)blogStatus {
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:blogStatus]) {
         self.statusLabel.text = blogStatus;
         [UIView animateWithDuration:0.3 animations:^{
@@ -102,9 +97,9 @@
     }
 }
 
-- (void)updateBlogStatus;
-{
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]]];
+- (void)updateBlogStatus {
+    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText,
+                                                       [self.blogStatusDate mm_relativeToNow]]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,8 +111,7 @@
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated;
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self teardownBlogStatusTimer];
 }
@@ -153,8 +147,7 @@
     });
 }
 
-- (PMKPromise *)requestPostsWithCaching:(BOOL)useCache;
-{
+- (PMKPromise *)requestPostsWithCaching:(BOOL)useCache {
     return [self.blogController requestAllPostsWithCaching:useCache].then(^(NSArray *posts) {
         self.posts = [posts mutableCopy];
         [self.tableView reloadData];

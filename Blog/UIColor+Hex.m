@@ -6,8 +6,7 @@
 
 @implementation UIColor (Hex)
 
-+ (UIColor *)mm_colorFromInteger:(NSUInteger)color;
-{
++ (UIColor *)mm_colorFromInteger:(NSUInteger)color {
     unsigned char red = color >> 16;
     unsigned char green = (color >> 8) & 0xff;
     unsigned char blue = color & 0xff;

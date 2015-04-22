@@ -30,8 +30,7 @@
     return YES;
 }
 
-- (PostsViewController *)postsViewController
-{
+- (PostsViewController *)postsViewController {
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
     PostsViewController *postsViewController = (PostsViewController *)navigationController.viewControllers.firstObject;

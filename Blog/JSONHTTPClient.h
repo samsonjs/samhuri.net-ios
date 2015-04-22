@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <PromiseKit/PromiseKit.h>
 
-extern NSString * const JSONHTTPClientErrorDomain;
+extern NSString *const JSONHTTPClientErrorDomain;
 
 typedef enum : NSUInteger {
     JSONHTTPClientErrorCodeWTF,

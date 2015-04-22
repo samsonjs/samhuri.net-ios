@@ -11,16 +11,15 @@
 @implementation BlogStatus
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{@"localVersion": @"local-version",
-             @"remoteVersion": @"remote-version",
-             };
+    return @{
+            @"localVersion"  : @"local-version",
+            @"remoteVersion" : @"remote-version",
+    };
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error;
-{
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
-    if (self)
-    {
+    if (self) {
         _date = [NSDate date];
     }
     return self;

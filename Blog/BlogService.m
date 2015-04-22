@@ -13,7 +13,7 @@
 #import "BlogStatus.h"
 #import "Post.h"
 
-NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
+NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 
 @interface BlogService ()
 
@@ -90,11 +90,12 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 }
 
 - (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link {
-    NSDictionary *fields = @{@"id": draftID,
-                             @"title": title,
-                             @"body": body,
-                             @"link": link ?: [NSNull null],
-                             };
+    NSDictionary *fields = @{
+            @"id"    : draftID,
+            @"title" : title,
+            @"body"  : body,
+            @"link"  : link ?: [NSNull null],
+    };
     return [self.client postJSON:[self urlFor:@"/posts/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
 }
 
@@ -107,10 +108,11 @@ NSString * const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 }
 
 - (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
-    NSDictionary *fields = @{@"title": title,
-                             @"body": body,
-                             @"link": link ?: [NSNull null],
-                             };
+    NSDictionary *fields = @{
+            @"title" : title,
+            @"body"  : body,
+            @"link"  : link ?: [NSNull null],
+    };
     return [self.client putJSON:[self urlFor:path] headers:nil fields:fields];
 }
 

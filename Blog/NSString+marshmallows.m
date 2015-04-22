@@ -44,13 +44,13 @@
     if (match.location != NSNotFound) {
         NSString *rest = [self substringFromIndex:match.location + match.length];
         return [[[self substringToIndex:match.location]
-                 stringByAppendingString:replacement]
+                stringByAppendingString:replacement]
                 stringByAppendingString:rest];
     }
     return [self copy];
 }
 
-- (NSString *) mm_stringByURLEncoding {
+- (NSString *)mm_stringByURLEncoding {
     return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
                                                                                  (CFStringRef)self,
                                                                                  NULL,

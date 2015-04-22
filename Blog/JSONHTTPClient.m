@@ -8,7 +8,7 @@
 
 #import "JSONHTTPClient.h"
 
-NSString * const JSONHTTPClientErrorDomain = @"JSONHTTPClientErrorDomain";
+NSString *const JSONHTTPClientErrorDomain = @"JSONHTTPClientErrorDomain";
 
 @interface JSONHTTPClient ()
 

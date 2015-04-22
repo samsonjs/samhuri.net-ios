@@ -35,15 +35,13 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     return self;
 }
 
-- (NSMutableURLRequest *)previewRequestWithPath:(NSString *)path;
-{
+- (NSMutableURLRequest *)previewRequestWithPath:(NSString *)path {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[_service urlFor:path]];
     [request addValue:@"text/html" forHTTPHeaderField:@"Accept"];
     return request;
 }
 
-- (PMKPromise *)requestBlogStatusWithCaching:(BOOL)useCache;
-{
+- (PMKPromise *)requestBlogStatusWithCaching:(BOOL)useCache {
     BlogStatus *status = useCache ? [_store blogStatus] : nil;
     if (status) {
         return [PMKPromise promiseWithValue:status];
@@ -56,8 +54,7 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestDraftsWithCaching:(BOOL)useCache;
-{
+- (PMKPromise *)requestDraftsWithCaching:(BOOL)useCache {
     NSArray *posts = useCache ? [_store drafts] : nil;
     if (posts) {
         return [PMKPromise promiseWithValue:posts];
@@ -70,8 +67,7 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestPublishedPostsWithCaching:(BOOL)useCache;
-{
+- (PMKPromise *)requestPublishedPostsWithCaching:(BOOL)useCache {
     NSArray *posts = useCache ? [_store publishedPosts] : nil;
     if (posts) {
         return [PMKPromise promiseWithValue:posts];
@@ -84,11 +80,11 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache;
-{
-    return [PMKPromise when:@[[self requestDraftsWithCaching:useCache], [self requestPublishedPostsWithCaching:useCache]]].then(^(NSArray *results) {
-        return [results.firstObject arrayByAddingObjectsFromArray:results.lastObject];
-    });
+- (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache {
+    return [PMKPromise when:@[[self requestDraftsWithCaching:useCache], [self requestPublishedPostsWithCaching:useCache]]]
+            .then(^(NSArray *results) {
+                return [results.firstObject arrayByAddingObjectsFromArray:results.lastObject];
+            });
 }
 
 - (PMKPromise *)requestPostWithPath:(NSString *)path {

@@ -7,6 +7,7 @@
 //
 
 @import Foundation;
+
 #import <Mantle/Mantle.h>
 
 @interface BlogStatus : MTLModel <MTLJSONSerializing>

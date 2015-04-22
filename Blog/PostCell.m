@@ -21,8 +21,7 @@
     self.backgroundColor = [UIColor colorWithWhite:0.1333 alpha:1.0];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     UIColor *backgroundColor = [UIColor colorWithWhite:0.1333 alpha:1.0];
     UIColor *textColor = [UIColor whiteColor];
     if (selected) {

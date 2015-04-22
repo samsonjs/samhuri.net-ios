@@ -25,11 +25,12 @@
 @synthesize formattedDate = _formattedDate;
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{@"objectID": @"id",
-             @"path": @"url",
-             @"url": @"link",
-             @"time": @"", // ignore
-             };
+    return @{
+            @"objectID" : @"id",
+            @"path"     : @"url",
+            @"url"      : @"link",
+            @"time"     : @"", // ignore
+    };
 }
 
 + (NSValueTransformer *)urlJSONTransformer {
@@ -120,10 +121,10 @@
 - (NSString *)slug {
     if (!_slug && !self.draft && self.title) {
         _slug = [[[[[self.title lowercaseString]
-                 mm_stringByReplacing:@"'" with:@""]
-                 mm_stringByReplacing:@"[^[:alpha:]\\d_]" with:@"-"]
-                 mm_stringByReplacing:@"^-+|-+$" with:@""]
-                 mm_stringByReplacing:@"-+" with:@"-"];
+                mm_stringByReplacing:@"'" with:@""]
+                mm_stringByReplacing:@"[^[:alpha:]\\d_]" with:@"-"]
+                mm_stringByReplacing:@"^-+|-+$" with:@""]
+                mm_stringByReplacing:@"-+" with:@"-"];
     }
     return _slug;
 }
