@@ -31,11 +31,23 @@
 }
 
 - (void)configureView {
+    NSString *title = nil;
+    NSString *text = nil;
+    CGPoint scrollOffset = CGPointZero;
     if (self.post) {
         // FIXME: date, status (draft, published)
-        self.navigationItem.title = self.post.title ?: @"Untitled";
-        self.textView.text = self.post.body;
+        title = self.post.title ?: @"Untitled";
+        text = self.post.body;
+        // TODO: restore scroll offset for this post ... user defaults?
     }
+    self.navigationItem.title = title;
+    self.textView.text = text;
+    self.textView.contentOffset = scrollOffset;
+
+    BOOL toolbarEnabled = self.post != nil;
+    [self.toolbar.items enumerateObjectsUsingBlock:^(UIBarButtonItem *item, NSUInteger idx, BOOL *stop) {
+        item.enabled = toolbarEnabled;
+    }];
 }
 
 - (void)viewDidLoad {

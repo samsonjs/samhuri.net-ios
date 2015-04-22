@@ -105,10 +105,12 @@
 #pragma mark - UISplitViewDelegate methods
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
-    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[EditorViewController class]] && ([(EditorViewController *)[(UINavigationController *)secondaryViewController topViewController] post] == nil)) {
+    UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]] ? (UINavigationController *)secondaryViewController : nil;
+    if ([navigationController.topViewController isKindOfClass:[EditorViewController class]] && ([(EditorViewController *)navigationController.topViewController post] == nil)) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
         return YES;
-    } else {
+    }
+    else {
         return NO;
     }
 }
