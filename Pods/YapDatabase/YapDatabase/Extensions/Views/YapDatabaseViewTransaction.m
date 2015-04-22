@@ -11,6 +11,10 @@
 #import "YapDatabaseString.h"
 #import "YapDatabaseLogging.h"
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
@@ -116,7 +120,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		// So we can skip all the checks because we know we need to create the memory tables.
 		
 		if (![self createTables]) return NO;
-		if (![self populateView]) return NO;
+		
+		if (!viewConnection->view->options.skipInitialViewPopulation)
+		{
+			if (![self populateView]) return NO;
+		}
 		
 		// Store initial versionTag in prefs table
 		
@@ -162,7 +170,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			// First time registration
 			
 			needsCreateTables = YES;
-			needsPopulateView = YES;
+			needsPopulateView = !viewConnection->view->options.skipInitialViewPopulation;
 		}
 		else if (oldClassVersion != classVersion)
 		{
@@ -170,7 +178,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			[self dropTablesForOldClassVersion:oldClassVersion];
 			needsCreateTables = YES;
-			needsPopulateView = YES;
+			needsPopulateView = YES; // Not initialViewPopulation, but rather codebase upgrade.
 		}
 	
 		// Create the database tables (if needed)
@@ -211,7 +219,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			
 			if (![oldVersionTag isEqualToString:versionTag])
 			{
-				needsPopulateView = YES;
+				needsPopulateView = YES; // Not initialViewPopulation, but rather versionTag upgrade.
 			}
 		}
 		
@@ -751,12 +759,17 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				}
 			};
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateRowsInCollections:[allowedCollections allObjects] usingBlock:block];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *outerStop) {
+					
+					if ([allowedCollections isAllowed:collection]) {
+						[databaseTransaction _enumerateRowsInCollections:@[ collection ] usingBlock:block];
+					}
+				}];
 			}
-			else
+			else // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block];
 			}
@@ -787,14 +800,20 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				          inGroup:group withChanges:flags isNew:YES];
 			};
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateRowsInCollections:[allowedCollections allObjects]
-				                                      usingBlock:block
-				                                      withFilter:filter];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+					
+					if ([allowedCollections isAllowed:collection])
+					{
+						[databaseTransaction _enumerateRowsInCollections:@[ collection ]
+						                                      usingBlock:block
+						                                      withFilter:filter];
+					}
+				}];
 			}
-			else
+			else // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateRowsInAllCollectionsUsingBlock:block withFilter:filter];
 			}
@@ -820,13 +839,19 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				}
 			};
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateKeysAndObjectsInCollections:[allowedCollections allObjects]
-				                                                usingBlock:block];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+					
+					if ([allowedCollections isAllowed:collection])
+					{
+						[databaseTransaction _enumerateKeysAndObjectsInCollections:@[ collection ]
+						                                                usingBlock:block];
+					}
+				}];
 			}
-			else
+			else // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block];
 			}
@@ -857,14 +882,20 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				        inGroup:group withChanges:flags isNew:YES];
 			};
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateKeysAndObjectsInCollections:[allowedCollections allObjects]
-				                                                usingBlock:block
-				                                                withFilter:filter];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+					
+					if ([allowedCollections isAllowed:collection])
+					{
+						[databaseTransaction _enumerateKeysAndObjectsInCollections:@[ collection ]
+						                                                usingBlock:block
+						                                                withFilter:filter];
+					}
+				}];
 			}
-			else
+			else // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateKeysAndObjectsInAllCollectionsUsingBlock:block withFilter:filter];
 			}
@@ -891,13 +922,19 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			};
 			
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateKeysAndMetadataInCollections:[allowedCollections allObjects]
-				                                                 usingBlock:block];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+					
+					if ([allowedCollections isAllowed:collection])
+					{
+						[databaseTransaction _enumerateKeysAndMetadataInCollections:@[ collection ]
+						                                                 usingBlock:block];
+					}
+				}];
 			}
-			else
+			else  // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block];
 			}
@@ -928,14 +965,20 @@ static NSString *const ExtKey_version_deprecated = @"version";
 				          inGroup:group withChanges:flags isNew:YES];
 			};
 			
-			NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 			if (allowedCollections)
 			{
-				[databaseTransaction _enumerateKeysAndMetadataInCollections:[allowedCollections allObjects]
-				                                                 usingBlock:block
-				                                                 withFilter:filter];
+				[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+					
+					if ([allowedCollections isAllowed:collection])
+					{
+						[databaseTransaction _enumerateKeysAndMetadataInCollections:@[ collection ]
+						                                                 usingBlock:block
+						                                                 withFilter:filter];
+					}
+				}];
 			}
-			else
+			else  // if (!allowedCollections)
 			{
 				[databaseTransaction _enumerateKeysAndMetadataInAllCollectionsUsingBlock:block withFilter:filter];
 			}
@@ -959,12 +1002,18 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			}
 		};
 		
-		NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 		if (allowedCollections)
 		{
-			[databaseTransaction _enumerateKeysInCollections:[allowedCollections allObjects] usingBlock:block];
+			[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *stop) {
+				
+				if ([allowedCollections isAllowed:collection])
+				{
+					[databaseTransaction _enumerateKeysInCollections:@[ collection ] usingBlock:block];
+				}
+			}];
 		}
-		else
+		else  // if (!allowedCollections)
 		{
 			[databaseTransaction _enumerateKeysInAllCollectionsUsingBlock:block];
 		}
@@ -1118,7 +1167,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	pageKey = [viewConnection->dirtyMaps objectForKey:rowidNumber];
 	if (pageKey)
 	{
-		if ((__bridge void *)pageKey == (__bridge void *)[NSNull null])
+		if ((id)pageKey == (id)[NSNull null])
 			return nil;
 		else
 			return pageKey;
@@ -1127,7 +1176,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	pageKey = [viewConnection->mapCache objectForKey:rowidNumber];
 	if (pageKey)
 	{
-		if ((__bridge void *)pageKey == (__bridge void *)[NSNull null])
+		if ((id)pageKey == (id)[NSNull null])
 			return nil;
 		else
 			return pageKey;
@@ -1194,133 +1243,197 @@ static NSString *const ExtKey_version_deprecated = @"version";
 **/
 - (NSDictionary *)pageKeysForRowids:(NSArray **)rowidsPtr withKeyMappings:(NSDictionary *)keyMappings
 {
-	NSArray *rowids = *rowidsPtr;
-	NSMutableArray *outRowids = [NSMutableArray arrayWithCapacity:[rowids count]];
-	
-	NSUInteger count = [rowids count];
-	if (count == 0)
+	if ([*rowidsPtr count] == 0)
 	{
-		*rowidsPtr = outRowids;
+		*rowidsPtr = [NSArray array];
 		return [NSDictionary dictionary];
 	}
 	
-	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:count];
+	NSMutableArray *inRowids =  [*rowidsPtr mutableCopy];
+	NSMutableArray *outRowids = [NSMutableArray arrayWithCapacity:[inRowids count]];
 	
-	if ([self isPersistentView])
+	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:[inRowids count]];
+	
+	// Step 1 of 2:
+	//
+	// Check for any (rowid, pageKey) information we already have in memory.
+	//
+	// This is actually a requirement if the information is in dirtyMaps.
+	// If the info is in mapCache, then its just an optimization.
+	
+	for (NSUInteger iPlusOne = [inRowids count]; iPlusOne > 0; iPlusOne--)
 	{
-		sqlite3 *db = databaseTransaction->connection->db;
+		NSUInteger i = iPlusOne - 1;
+		NSNumber *rowidNumber = [inRowids objectAtIndex:i];
 		
-		// Note:
-		// The handleRemoveObjectsForKeys:inCollection:withRowids: has the following guarantee:
-		//     count <= (SQLITE_LIMIT_VARIABLE_NUMBER - 1)
-		//
-		// So we don't have to worry about sqlite's upper bound on host parameters.
+		NSString *pageKey = nil;
 		
-		// SELECT "rowid", "pageKey" FROM "mapTableName" WHERE "rowid" IN (?, ?, ...);
-		
-		NSUInteger capacity = 50 + (count * 3);
-		NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
-		
-		[query appendFormat:@"SELECT \"rowid\", \"pageKey\" FROM \"%@\" WHERE \"rowid\" IN (", [self mapTableName]];
-		
-		for (NSUInteger i = 0; i < count; i++)
+		pageKey = [viewConnection->dirtyMaps objectForKey:rowidNumber];
+		if (pageKey == nil)
 		{
-			if (i == 0)
-				[query appendFormat:@"?"];
+			pageKey = [viewConnection->mapCache objectForKey:rowidNumber];
+		}
+		
+		if (pageKey)
+		{
+			if ((id)pageKey == (id)[NSNull null])
+			{
+				// This rowid has already been removed from the view,
+				// and is marked for deletion from the mapTable.
+				//
+				// However, it has not been deleted yet, as that will occur during flushPendingChangesToExtensionTables.
+				// So we need to remove it from inRowids, as the mapTable will still contain the rowid.
+				
+				[inRowids removeObjectAtIndex:i];
+			}
 			else
-				[query appendFormat:@", ?"];
-		}
-		
-		[query appendString:@");"];
-		
-		sqlite3_stmt *statement;
-		int status;
-		
-		status = sqlite3_prepare_v2(db, [query UTF8String], -1, &statement, NULL);
-		if (status != SQLITE_OK)
-		{
-			YDBLogError(@"%@ (%@): Error creating statement\n"
-			            @" - status(%d), errmsg: %s\n"
-			            @" - query: %@",
-			            THIS_METHOD, [self registeredName], status, sqlite3_errmsg(db), query);
-			
-			*rowidsPtr = nil;
-			return nil;
-		}
-		
-		for (NSUInteger i = 0; i < count; i++)
-		{
-			int64_t rowid = [[rowids objectAtIndex:i] longLongValue];
-			
-			sqlite3_bind_int64(statement, (int)(i + 1), rowid);
-		}
-		
-		while ((status = sqlite3_step(statement)) == SQLITE_ROW)
-		{
-			// Extract rowid & pageKey from row
-			
-			int64_t rowid = sqlite3_column_int64(statement, 0);
-			
-			const unsigned char *text = sqlite3_column_text(statement, 1);
-			int textSize = sqlite3_column_bytes(statement, 1);
-			
-			NSNumber *rowidNumber = @(rowid);
-			NSString *pageKey = [[NSString alloc] initWithBytes:text length:textSize encoding:NSUTF8StringEncoding];
-			
-			// Add to result dictionary
-			
-			NSMutableDictionary *subKeyMappings = [result objectForKey:pageKey];
-			if (subKeyMappings == nil)
 			{
-				subKeyMappings = [NSMutableDictionary dictionaryWithCapacity:1];
-				[result setObject:subKeyMappings forKey:pageKey];
-			}
-			
-			YapCollectionKey *collectionKey = [keyMappings objectForKey:rowidNumber];
-			[subKeyMappings setObject:collectionKey forKey:rowidNumber];
-			
-			// Add to outRowids
-			
-			[outRowids addObject:rowidNumber];
-		}
-		
-		if (status != SQLITE_DONE)
-		{
-			YDBLogError(@"%@ (%@): Error executing statement: %d %s",
-			            THIS_METHOD, [self registeredName], status, sqlite3_errmsg(db));
-			
-			*rowidsPtr = nil;
-			return nil;
-		}
-	
-	}
-	else // if (isNonPersistentView)
-	{
-		[mapTableTransaction accessWithBlock:^{ @autoreleasepool {
-			
-			for (NSNumber *rowidNumber in rowids)
-			{
-				NSString *pageKey = [mapTableTransaction objectForKey:rowidNumber];
-				if (pageKey)
+				// Add to result dictionary
+				
+				NSMutableDictionary *subKeyMappings = [result objectForKey:pageKey];
+				if (subKeyMappings == nil)
 				{
-					// Add to result dictionary
-					
-					NSMutableDictionary *subKeyMappings = [result objectForKey:pageKey];
-					if (subKeyMappings == nil)
-					{
-						subKeyMappings = [NSMutableDictionary dictionaryWithCapacity:1];
-						[result setObject:subKeyMappings forKey:pageKey];
-					}
-					
-					NSString *key = [keyMappings objectForKey:rowidNumber];
-					[subKeyMappings setObject:key forKey:rowidNumber];
-					
-					// Add to outRowids
-					
-					[outRowids addObject:rowidNumber];
+					subKeyMappings = [NSMutableDictionary dictionaryWithCapacity:1];
+					[result setObject:subKeyMappings forKey:pageKey];
 				}
+				
+				YapCollectionKey *collectionKey = [keyMappings objectForKey:rowidNumber];
+				[subKeyMappings setObject:collectionKey forKey:rowidNumber];
+				
+				// Add to outRowids
+				
+				[outRowids addObject:rowidNumber];
+				
+				// Remove from inRowids
+				
+				[inRowids removeObjectAtIndex:i];
 			}
-		}}];
+		}
+		
+	}
+	
+	// Step 2 of 2:
+	//
+	// Fetch any pageKey information we're still missing from the database.
+	
+	NSUInteger count = [inRowids count];
+	if (count > 0)
+	{
+		if ([self isPersistentView])
+		{
+			sqlite3 *db = databaseTransaction->connection->db;
+			
+			// Note:
+			// The handleRemoveObjectsForKeys:inCollection:withRowids: has the following guarantee:
+			//     count <= (SQLITE_LIMIT_VARIABLE_NUMBER - 1)
+			//
+			// So we don't have to worry about sqlite's upper bound on host parameters.
+			
+			// SELECT "rowid", "pageKey" FROM "mapTableName" WHERE "rowid" IN (?, ?, ...);
+			
+			NSUInteger capacity = 50 + (count * 3);
+			NSMutableString *query = [NSMutableString stringWithCapacity:capacity];
+			
+			[query appendFormat:@"SELECT \"rowid\", \"pageKey\" FROM \"%@\" WHERE \"rowid\" IN (", [self mapTableName]];
+			
+			for (NSUInteger i = 0; i < count; i++)
+			{
+				if (i == 0)
+					[query appendFormat:@"?"];
+				else
+					[query appendFormat:@", ?"];
+			}
+			
+			[query appendString:@");"];
+			
+			sqlite3_stmt *statement;
+			int status;
+			
+			status = sqlite3_prepare_v2(db, [query UTF8String], -1, &statement, NULL);
+			if (status != SQLITE_OK)
+			{
+				YDBLogError(@"%@ (%@): Error creating statement\n"
+				            @" - status(%d), errmsg: %s\n"
+				            @" - query: %@",
+				            THIS_METHOD, [self registeredName], status, sqlite3_errmsg(db), query);
+				
+				*rowidsPtr = nil;
+				return nil;
+			}
+			
+			for (NSUInteger i = 0; i < count; i++)
+			{
+				int64_t rowid = [[inRowids objectAtIndex:i] longLongValue];
+				
+				sqlite3_bind_int64(statement, (int)(i + 1), rowid);
+			}
+			
+			while ((status = sqlite3_step(statement)) == SQLITE_ROW)
+			{
+				// Extract rowid & pageKey from row
+				
+				int64_t rowid = sqlite3_column_int64(statement, 0);
+				
+				const unsigned char *text = sqlite3_column_text(statement, 1);
+				int textSize = sqlite3_column_bytes(statement, 1);
+				
+				NSNumber *rowidNumber = @(rowid);
+				NSString *pageKey = [[NSString alloc] initWithBytes:text length:textSize encoding:NSUTF8StringEncoding];
+				
+				// Add to result dictionary
+				
+				NSMutableDictionary *subKeyMappings = [result objectForKey:pageKey];
+				if (subKeyMappings == nil)
+				{
+					subKeyMappings = [NSMutableDictionary dictionaryWithCapacity:1];
+					[result setObject:subKeyMappings forKey:pageKey];
+				}
+				
+				YapCollectionKey *collectionKey = [keyMappings objectForKey:rowidNumber];
+				[subKeyMappings setObject:collectionKey forKey:rowidNumber];
+				
+				// Add to outRowids
+				
+				[outRowids addObject:rowidNumber];
+			}
+			
+			if (status != SQLITE_DONE)
+			{
+				YDBLogError(@"%@ (%@): Error executing statement: %d %s",
+				            THIS_METHOD, [self registeredName], status, sqlite3_errmsg(db));
+			}
+		
+			sqlite3_finalize(statement);
+			
+		}
+		else // if (isNonPersistentView)
+		{
+			[mapTableTransaction accessWithBlock:^{ @autoreleasepool {
+				
+				for (NSNumber *rowidNumber in inRowids)
+				{
+					NSString *pageKey = [mapTableTransaction objectForKey:rowidNumber];
+					if (pageKey)
+					{
+						// Add to result dictionary
+						
+						NSMutableDictionary *subKeyMappings = [result objectForKey:pageKey];
+						if (subKeyMappings == nil)
+						{
+							subKeyMappings = [NSMutableDictionary dictionaryWithCapacity:1];
+							[result setObject:subKeyMappings forKey:pageKey];
+						}
+						
+						NSString *key = [keyMappings objectForKey:rowidNumber];
+						[subKeyMappings setObject:key forKey:rowidNumber];
+						
+						// Add to outRowids
+						
+						[outRowids addObject:rowidNumber];
+					}
+				}
+			}}];
+		}
 	}
 	
 	*rowidsPtr = outRowids;
@@ -2204,10 +2317,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	if (count == 0) return;
 	if (count == 1)
 	{
-		for (NSNumber *number in keyMappings)
+		for (NSNumber *rowidNumber in keyMappings)
 		{
-			int64_t rowid = [number longLongValue];
-			YapCollectionKey *collectionKey = [keyMappings objectForKey:number];
+			int64_t rowid = [rowidNumber longLongValue];
+			YapCollectionKey *collectionKey = [keyMappings objectForKey:rowidNumber];
 			
 			[self removeRowid:rowid collectionKey:collectionKey
 			                          withPageKey:pageKey
@@ -2290,10 +2403,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	
 	// Mark rowid mappings for deletion
 	
-	for (NSNumber *number in keyMappings)
+	for (NSNumber *rowidNumber in keyMappings)
 	{
-		[viewConnection->dirtyMaps setObject:[NSNull null] forKey:number];
-		[viewConnection->mapCache removeObjectForKey:number];
+		[viewConnection->dirtyMaps setObject:[NSNull null] forKey:rowidNumber];
+		[viewConnection->mapCache removeObjectForKey:rowidNumber];
 	}
 }
 
@@ -2671,12 +2784,13 @@ static NSString *const ExtKey_version_deprecated = @"version";
 }
 
 /**
- * This method is only called if within a readwrite transaction.
- *
- * Extensions may implement it to perform any "cleanup" before the changeset is requested.
- * Remember, the changeset is requested before the commitTransaction method is invoked.
+ * This method performs the appropriate actions in order to keep the pages of an appropriate size.
+ * Specifically it does the following:
+ * 
+ * - Splits oversized pages to hit our target max_page_size
+ * - Drops empty pages to reduce disk usage
 **/
-- (void)prepareChangeset
+- (void)cleanupPages
 {
 	YDBLogAutoTrace();
 	
@@ -2726,9 +2840,22 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	}
 }
 
-- (void)commitTransaction
+/**
+ * Subclasses MUST implement this method.
+ * This method is only called if within a readwrite transaction.
+ *
+ * Subclasses should write any last changes to their database table(s) if needed,
+ * and should perform any needed cleanup before the changeset is requested.
+ *
+ * Remember, the changeset is requested immediately after this method is invoked.
+**/
+- (void)flushPendingChangesToExtensionTables
 {
 	YDBLogAutoTrace();
+	
+	// Cleanup pages (as needed)
+	
+	[self cleanupPages];
 	
 	// During the transaction we stored all changes in the "dirty" dictionaries.
 	// This allows the view to make multiple changes to a page, yet only write it once.
@@ -2782,8 +2909,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			if ((id)page == (id)[NSNull null])
 			{
 				sqlite3_stmt *statement = [viewConnection pageTable_removeForPageKeyStatement];
-				if (statement == NULL) {
-					*stop = YES;
+				if (statement == NULL)
+				{
+					NSAssert(NO, @"Cannot get proper statement! View will become corrupt!");
 					return;//from block
 				}
 				
@@ -2810,8 +2938,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			else if (needsInsert)
 			{
 				sqlite3_stmt *statement = [viewConnection pageTable_insertForPageKeyStatement];
-				if (statement == NULL) {
-					*stop = YES;
+				if (statement == NULL)
+				{
+					NSAssert(NO, @"Cannot get proper statement! View will become corrupt!");
 					return;//from block
 				}
 				
@@ -2859,8 +2988,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			else if (hasDirtyLink)
 			{
 				sqlite3_stmt *statement = [viewConnection pageTable_updateAllForPageKeyStatement];
-				if (statement == NULL) {
-					*stop = YES;
+				if (statement == NULL)
+				{
+					NSAssert(NO, @"Cannot get proper statement! View will become corrupt!");
 					return;//from block
 				}
 				
@@ -2901,8 +3031,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			else
 			{
 				sqlite3_stmt *statement = [viewConnection pageTable_updatePageForPageKeyStatement];
-				if (statement == NULL) {
-					*stop = YES;
+				if (statement == NULL)
+				{
+					NSAssert(NO, @"Cannot get proper statement! View will become corrupt!");
 					return;//from block
 				}
 			
@@ -3181,6 +3312,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		[pageTableTransaction commit];
 		[pageMetadataTableTransaction commit];
 	}
+}
+
+- (void)didCommitTransaction
+{
+	YDBLogAutoTrace();
 	
 	// Commit is complete.
 	// Forward to connection for further cleanup.
@@ -3196,9 +3332,11 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	databaseTransaction = nil; // Do not remove !
 }
 
-- (void)rollbackTransaction
+- (void)didRollbackTransaction
 {
-	if ([self isPersistentView])
+	YDBLogAutoTrace();
+	
+	if (![self isPersistentView])
 	{
 		[mapTableTransaction rollback];
 		[pageTableTransaction rollback];
@@ -3242,9 +3380,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	// Invoke the grouping block to find out if the object should be included in the view.
 	
 	NSString *group = nil;
-	NSSet *allowedCollections = view->options.allowedCollections;
+	YapWhitelistBlacklist *allowedCollections = view->options.allowedCollections;
 	
-	if (!allowedCollections || [allowedCollections containsObject:collection])
+	if (!allowedCollections || [allowedCollections isAllowed:collection])
 	{
 		YapDatabaseViewGroupingBlock groupingBlock_generic;
 		YapDatabaseViewBlockType     groupingBlockType;
@@ -3322,9 +3460,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	// Invoke the grouping block to find out if the object should be included in the view.
 	
 	NSString *group = nil;
-	NSSet *allowedCollections = view->options.allowedCollections;
+	YapWhitelistBlacklist *allowedCollections = view->options.allowedCollections;
 	
-	if (!allowedCollections || [allowedCollections containsObject:collection])
+	if (!allowedCollections || [allowedCollections isAllowed:collection])
 	{
 		YapDatabaseViewGroupingBlock groupingBlock_generic;
 		YapDatabaseViewBlockType     groupingBlockType;
@@ -3470,9 +3608,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		__unsafe_unretained NSString *collection = collectionKey.collection;
 		__unsafe_unretained NSString *key = collectionKey.key;
 		
-		NSSet *allowedCollections = view->options.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = view->options.allowedCollections;
 		
-		if (!allowedCollections || [allowedCollections containsObject:collection])
+		if (!allowedCollections || [allowedCollections isAllowed:collection])
 		{
 			if (groupingBlockType == YapDatabaseViewBlockTypeWithObject)
 			{
@@ -3633,9 +3771,9 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		__unsafe_unretained NSString *collection = collectionKey.collection;
 		__unsafe_unretained NSString *key = collectionKey.key;
 		
-		NSSet *allowedCollections = view->options.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = view->options.allowedCollections;
 		
-		if (!allowedCollections || [allowedCollections containsObject:collection])
+		if (!allowedCollections || [allowedCollections isAllowed:collection])
 		{
 			if (groupingBlockType == YapDatabaseViewBlockTypeWithMetadata)
 			{
@@ -3819,6 +3957,7 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		__unsafe_unretained NSDictionary *keyMappingsForPage = (NSDictionary *)dictObj;
 		
 		NSString *group = [viewConnection->state groupForPageKey:pageKey];
+		NSAssert(group != nil, @"Unknown group for pageKey: %@", pageKey);
 		
 		[self removeRowidsWithKeyMappings:keyMappingsForPage pageKey:pageKey inGroup:group];
 	}];
@@ -3945,6 +4084,28 @@ static NSString *const ExtKey_version_deprecated = @"version";
 	return count;
 }
 
+/**
+ * Returns YES if the group is empty (has zero items).
+ * Shorthand for: [[transaction ext:viewName] numberOfItemsInGroup:group] == 0
+**/
+- (BOOL)isEmptyGroup:(NSString *)group
+{
+	NSArray *pagesMetadataForGroup = [viewConnection->state pagesMetadataForGroup:group];
+	
+	for (YapDatabaseViewPageMetadata *pageMetadata in pagesMetadataForGroup)
+	{
+		if (pageMetadata->count > 0) {
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+/**
+ * Returns YES if the view is empty (has zero groups).
+ * Shorthand for: [[transaction ext:viewName] numberOfItemsInAllGroups] == 0
+**/
 - (BOOL)isEmpty
 {
 	__block BOOL result = YES;
@@ -4859,32 +5020,18 @@ static NSString *const ExtKey_version_deprecated = @"version";
 }
 
 /**
- * This method allows you to change the groupingBlock and/or sortingBlock on-the-fly.
+ * This method allows you to change the grouping and/or sorting on-the-fly.
  * 
  * Note: You must pass a different versionTag, or this method does nothing.
 **/
-- (void)setGroupingBlock:(YapDatabaseViewGroupingBlock)newGroupingBlock
-       groupingBlockType:(YapDatabaseViewBlockType)newGroupingBlockType
-            sortingBlock:(YapDatabaseViewSortingBlock)newSortingBlock
-        sortingBlockType:(YapDatabaseViewBlockType)newSortingBlockType
-              versionTag:(NSString *)inVersionTag
+- (void)setGrouping:(YapDatabaseViewGrouping *)grouping
+            sorting:(YapDatabaseViewSorting *)sorting
+         versionTag:(NSString *)inVersionTag
 {
 	YDBLogAutoTrace();
 	
-	NSAssert(newGroupingBlock != NULL, @"Invalid grouping block");
-	NSAssert(newSortingBlock != NULL, @"Invalid grouping block");
-	
-	NSAssert(newGroupingBlockType == YapDatabaseViewBlockTypeWithKey ||
-	         newGroupingBlockType == YapDatabaseViewBlockTypeWithObject ||
-	         newGroupingBlockType == YapDatabaseViewBlockTypeWithMetadata ||
-	         newGroupingBlockType == YapDatabaseViewBlockTypeWithRow,
-	         @"Invalid grouping block type");
-	
-	NSAssert(newSortingBlockType == YapDatabaseViewBlockTypeWithKey ||
-	         newSortingBlockType == YapDatabaseViewBlockTypeWithObject ||
-	         newSortingBlockType == YapDatabaseViewBlockTypeWithMetadata ||
-	         newSortingBlockType == YapDatabaseViewBlockTypeWithRow,
-	         @"Invalid sorting block type");
+	NSAssert(grouping != nil, @"Invalid parameter: grouping == nil");
+	NSAssert(sorting != nil, @"Invalid parameter: sorting == nil");
 	
 	if (!databaseTransaction->isReadWriteTransaction)
 	{
@@ -4900,10 +5047,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 		return;
 	}
 	
-	[viewConnection setGroupingBlock:newGroupingBlock
-	               groupingBlockType:newGroupingBlockType
-	                    sortingBlock:newSortingBlock
-	                sortingBlockType:newSortingBlockType
+	[viewConnection setGroupingBlock:grouping.groupingBlock
+	               groupingBlockType:grouping.groupingBlockType
+	                    sortingBlock:sorting.sortingBlock
+	                sortingBlockType:sorting.sortingBlockType
 	                      versionTag:newVersionTag];
 	
 	[self repopulateView];
@@ -4933,6 +5080,22 @@ static NSString *const ExtKey_version_deprecated = @"version";
 			}
 		}
 	}];
+}
+
+/**
+ * DEPRECATED
+ * Use method setGrouping:sorting:versionTag: instead.
+**/
+- (void)setGroupingBlock:(YapDatabaseViewGroupingBlock)grpBlock
+       groupingBlockType:(YapDatabaseViewBlockType)grpBlockType
+            sortingBlock:(YapDatabaseViewSortingBlock)srtBlock
+        sortingBlockType:(YapDatabaseViewBlockType)srtBlockType
+              versionTag:(NSString *)inVersionTag
+{
+	YapDatabaseViewGrouping *grouping = [YapDatabaseViewGrouping withBlock:grpBlock blockType:grpBlockType];
+	YapDatabaseViewSorting *sorting = [YapDatabaseViewSorting withBlock:srtBlock blockType:srtBlockType];
+	
+	[self setGrouping:grouping sorting:sorting versionTag:inVersionTag];
 }
 
 @end
@@ -5053,10 +5216,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 - (void)enumerateKeysAndMetadataInGroup:(NSString *)group
                             withOptions:(NSEnumerationOptions)options
                                   range:(NSRange)range
+                                 filter:
+                    (BOOL (^)(NSString *collection, NSString *key))filter
                              usingBlock:
                     (void (^)(NSString *collection, NSString *key, id metadata, NSUInteger index, BOOL *stop))block
-                             withFilter:
-                    (BOOL (^)(NSString *collection, NSString *key))filter
 {
 	if (filter == NULL) {
 		[self enumerateKeysAndMetadataInGroup:group withOptions:options range:range usingBlock:block];
@@ -5143,10 +5306,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 - (void)enumerateKeysAndObjectsInGroup:(NSString *)group
                            withOptions:(NSEnumerationOptions)options
                                  range:(NSRange)range
+                                filter:
+            (BOOL (^)(NSString *collection, NSString *key))filter
                             usingBlock:
             (void (^)(NSString *collection, NSString *key, id object, NSUInteger index, BOOL *stop))block
-                            withFilter:
-            (BOOL (^)(NSString *collection, NSString *key))filter
 {
 	if (filter == NULL) {
 		[self enumerateKeysAndObjectsInGroup:group withOptions:options range:range usingBlock:block];
@@ -5236,10 +5399,10 @@ static NSString *const ExtKey_version_deprecated = @"version";
 - (void)enumerateRowsInGroup:(NSString *)group
                  withOptions:(NSEnumerationOptions)options
                        range:(NSRange)range
+                      filter:
+            (BOOL (^)(NSString *collection, NSString *key))filter
                   usingBlock:
             (void (^)(NSString *collection, NSString *key, id object, id metadata, NSUInteger index, BOOL *stop))block
-                  withFilter:
-            (BOOL (^)(NSString *collection, NSString *key))filter
 {
 	if (filter == NULL) {
 		[self enumerateRowsInGroup:group withOptions:options range:range usingBlock:block];

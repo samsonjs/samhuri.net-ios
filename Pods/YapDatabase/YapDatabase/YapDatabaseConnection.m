@@ -1,3 +1,4 @@
+
 #import "YapDatabaseConnection.h"
 #import "YapDatabaseConnectionState.h"
 #import "YapDatabasePrivate.h"
@@ -14,6 +15,10 @@
 
 #import <objc/runtime.h>
 #import <libkern/OSAtomic.h>
+
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -34,9 +39,37 @@ static NSUInteger const MIN_KEY_CACHE_LIMIT   = 500;
 
 static NSString *const ExtKey_class = @"class";
 
+typedef BOOL (*IMP_NSThread_isMainThread)(id, SEL);
+static IMP_NSThread_isMainThread ydb_NSThread_isMainThread;
+static Class ydb_NSThread_Class;
+
+NS_INLINE BOOL YDBIsMainThread()
+{
+	return ydb_NSThread_isMainThread(ydb_NSThread_Class, @selector(isMainThread));
+}
 
 @implementation YapDatabaseConnection {
 @private
+	
+	uint64_t snapshot;
+	
+	id sharedKeySetForInternalChangeset;
+	id sharedKeySetForExternalChangeset;
+	
+	YapDatabaseReadTransaction *longLivedReadTransaction;
+	BOOL throwExceptionsForImplicitlyEndingLongLivedReadTransaction;
+	NSMutableArray *pendingChangesets;
+	NSMutableArray *processedChangesets;
+	
+	NSDictionary *registeredExtensions;
+	BOOL registeredExtensionsChanged;
+	
+	NSDictionary *registeredMemoryTables;
+	BOOL registeredMemoryTablesChanged;
+	
+	NSMutableDictionary *extensions;
+	BOOL extensionsReady;
+	id sharedKeySetForExtensions;
 	
 	sqlite3_stmt *beginTransactionStatement;
 	sqlite3_stmt *commitTransactionStatement;
@@ -96,6 +129,14 @@ static NSString *const ExtKey_class = @"class";
 		
 		method_setImplementation(extMethod, extensionIMP);
 		loaded = YES;
+		
+		// Optimized invocation of [NSThread isMainThread].
+		// Benchmarks seem to indicate:
+		// - ~30% performance improvement on the main thread
+		// - ~50% performance improvement on background thread(s)
+		
+		ydb_NSThread_isMainThread = (IMP_NSThread_isMainThread)[NSThread methodForSelector:@selector(isMainThread)];
+		ydb_NSThread_Class = [NSThread class];
 	}
 }
 
@@ -131,9 +172,9 @@ static NSString *const ExtKey_class = @"class";
 		if (defaults.objectCacheEnabled)
 		{
 			objectCacheLimit = defaults.objectCacheLimit;
-			objectCache = [[YapCache alloc] initWithKeyClass:[YapCollectionKey class]
-			                                    keyCallbacks:[YapCollectionKey keyCallbacks]
-			                                      countLimit:objectCacheLimit];
+			objectCache = [[YapCache alloc] initWithCountLimit:objectCacheLimit
+			                                      keyCallbacks:[YapCollectionKey keyCallbacks]];
+			objectCache.allowedKeyClasses = [NSSet setWithObject:[YapCollectionKey class]];
 			
 			if (keyCacheLimit != UNLIMITED_CACHE_LIMIT)
 			{
@@ -146,9 +187,9 @@ static NSString *const ExtKey_class = @"class";
 		if (defaults.metadataCacheEnabled)
 		{
 			metadataCacheLimit = defaults.metadataCacheLimit;
-			metadataCache = [[YapCache alloc] initWithKeyClass:[YapCollectionKey class]
-			                                      keyCallbacks:[YapCollectionKey keyCallbacks]
-		 	                                        countLimit:metadataCacheLimit];
+			metadataCache = [[YapCache alloc] initWithCountLimit:metadataCacheLimit
+			                                        keyCallbacks:[YapCollectionKey keyCallbacks]];
+			metadataCache.allowedKeyClasses = [NSSet setWithObject:[YapCollectionKey class]];
 			
 			if (keyCacheLimit != UNLIMITED_CACHE_LIMIT)
 			{
@@ -162,7 +203,13 @@ static NSString *const ExtKey_class = @"class";
 		objectPolicy = defaults.objectPolicy;
 		metadataPolicy = defaults.metadataPolicy;
 		
-		keyCache = [[YapCache alloc] initWithKeyClass:[NSNumber class] countLimit:keyCacheLimit];
+	#if YapDatabaseEnforcePermittedTransactions
+		self.permittedTransactions = YDB_AnyTransaction;
+	#endif
+		
+		keyCache = [[YapCache alloc] initWithCountLimit:keyCacheLimit];
+		keyCache.allowedKeyClasses = [NSSet setWithObject:[NSNumber class]];
+		keyCache.allowedObjectClasses = [NSSet setWithObject:[YapCollectionKey class]];
 		
 		#if TARGET_OS_IPHONE
 		self.autoFlushMemoryFlags = defaults.autoFlushMemoryFlags;
@@ -430,6 +477,10 @@ static NSString *const ExtKey_class = @"class";
 @synthesize database = database;
 @synthesize name = _name;
 
+#if YapDatabaseEnforcePermittedTransactions
+@synthesize permittedTransactions = _mustUseAtomicProperty_permittedTransactions;
+#endif
+
 #if TARGET_OS_IPHONE
 @synthesize autoFlushMemoryFlags;
 #endif
@@ -458,9 +509,9 @@ static NSString *const ExtKey_class = @"class";
 		{
 			if (objectCache == nil)
 			{
-				objectCache = [[YapCache alloc] initWithKeyClass:[YapCollectionKey class]
-				                                    keyCallbacks:[YapCollectionKey keyCallbacks]
-				                                      countLimit:objectCacheLimit];
+				objectCache = [[YapCache alloc] initWithCountLimit:objectCacheLimit
+				                                      keyCallbacks:[YapCollectionKey keyCallbacks]];
+				objectCache.allowedKeyClasses = [NSSet setWithObject:[YapCollectionKey class]];
 			}
 		}
 		else // Disabled
@@ -543,9 +594,9 @@ static NSString *const ExtKey_class = @"class";
 		{
 			if (metadataCache == nil)
 			{
-				metadataCache = [[YapCache alloc] initWithKeyClass:[YapCollectionKey class]
-				                                      keyCallbacks:[YapCollectionKey keyCallbacks]
-				                                        countLimit:metadataCacheLimit];
+				metadataCache = [[YapCache alloc] initWithCountLimit:metadataCacheLimit
+				                                        keyCallbacks:[YapCollectionKey keyCallbacks]];
+				metadataCache.allowedKeyClasses = [NSSet setWithObject:[YapCollectionKey class]];
 			}
 		}
 		else // Disabled
@@ -1399,6 +1450,18 @@ static NSString *const ExtKey_class = @"class";
 **/
 - (void)readWithBlock:(void (^)(YapDatabaseReadTransaction *))block
 {
+#if YapDatabaseEnforcePermittedTransactions
+	YapDatabasePermittedTransactions flags = self.permittedTransactions;
+	if ((flags & YDB_MainThreadOnly) && !YDBIsMainThread())
+	{
+		@throw [self nonMainThreadException];
+	}
+	if (!(flags & YDB_SyncReadTransaction))
+	{
+		@throw [self unpermittedTransactionException:YDB_SyncReadTransaction];
+	}
+#endif
+	
 	dispatch_sync(connectionQueue, ^{ @autoreleasepool {
 		
 		if (longLivedReadTransaction)
@@ -1426,6 +1489,18 @@ static NSString *const ExtKey_class = @"class";
 **/
 - (void)readWriteWithBlock:(void (^)(YapDatabaseReadWriteTransaction *transaction))block
 {
+#if YapDatabaseEnforcePermittedTransactions
+	YapDatabasePermittedTransactions flags = self.permittedTransactions;
+	if ((flags & YDB_MainThreadOnly) && !YDBIsMainThread())
+	{
+		@throw [self nonMainThreadException];
+	}
+	if (!(flags & YDB_SyncReadWriteTransaction))
+	{
+		@throw [self unpermittedTransactionException:YDB_SyncReadWriteTransaction];
+	}
+#endif
+	
 	// Order matters.
 	// First go through the serial connection queue.
 	// Then go through serial write queue for the database.
@@ -1510,6 +1585,18 @@ static NSString *const ExtKey_class = @"class";
            completionQueue:(dispatch_queue_t)completionQueue
            completionBlock:(dispatch_block_t)completionBlock
 {
+#if YapDatabaseEnforcePermittedTransactions
+	YapDatabasePermittedTransactions flags = self.permittedTransactions;
+	if ((flags & YDB_MainThreadOnly) && !YDBIsMainThread())
+	{
+		@throw [self nonMainThreadException];
+	}
+	if (!(flags & YDB_AsyncReadTransaction))
+	{
+		@throw [self unpermittedTransactionException:YDB_AsyncReadTransaction];
+	}
+#endif
+	
 	if (completionQueue == NULL && completionBlock != NULL)
 		completionQueue = dispatch_get_main_queue();
 	
@@ -1613,6 +1700,18 @@ static NSString *const ExtKey_class = @"class";
                 completionQueue:(dispatch_queue_t)completionQueue
                 completionBlock:(dispatch_block_t)completionBlock
 {
+#if YapDatabaseEnforcePermittedTransactions
+	YapDatabasePermittedTransactions flags = self.permittedTransactions;
+	if ((flags & YDB_MainThreadOnly) && !YDBIsMainThread())
+	{
+		@throw [self nonMainThreadException];
+	}
+	if (!(flags & YDB_AsyncReadWriteTransaction))
+	{
+		@throw [self unpermittedTransactionException:YDB_AsyncReadWriteTransaction];
+	}
+#endif
+	
 	if (completionQueue == NULL && completionBlock != NULL)
 		completionQueue = dispatch_get_main_queue();
 	
@@ -2188,7 +2287,9 @@ static NSString *const ExtKey_class = @"class";
 	// - At the end of a readwrite transaction that has made modifications to the database
 	// - Only if the modifications weren't dedicated to registering/unregistring an extension
 	
-	if (database->previouslyRegisteredExtensionNames && changeset && !registeredExtensionsChanged)
+	BOOL clearPreviouslyRegisteredExtensionNames = NO;
+	
+	if (changeset && !registeredExtensionsChanged && database->previouslyRegisteredExtensionNames)
 	{
 		for (NSString *prevExtensionName in database->previouslyRegisteredExtensionNames)
 		{
@@ -2198,7 +2299,7 @@ static NSString *const ExtKey_class = @"class";
 			}
 		}
 		
-		database->previouslyRegisteredExtensionNames = nil;
+		clearPreviouslyRegisteredExtensionNames = YES;
 	}
 	
 	// Post-Write-Transaction: Step 4 of 11
@@ -2263,7 +2364,7 @@ static NSString *const ExtKey_class = @"class";
 				//
 				// This two step process means we have an edge case,
 				// where another connection could come around and begin its yap level transaction
-				// before this connections yap level commit, but after this connections sqlite level commit.
+				// before this connection's yap level commit, but after this connection's sqlite level commit.
 				//
 				// By registering the pending changeset in advance,
 				// we provide a near seamless workaround for the edge case.
@@ -2271,6 +2372,12 @@ static NSString *const ExtKey_class = @"class";
 				if (changeset)
 				{
 					[database notePendingChanges:changeset fromConnection:self];
+				}
+				
+				if (clearPreviouslyRegisteredExtensionNames)
+				{
+					// It's only safe to clear this ivar within the snapshot queue
+					database->previouslyRegisteredExtensionNames = nil;
 				}
 			}
 			
@@ -3742,6 +3849,187 @@ static NSString *const ExtKey_class = @"class";
 	                 metadataChanges:YES];
 }
 
+// Advanced query techniques
+
+/**
+ * Returns YES if [transaction removeAllObjectsInCollection:] was invoked on the collection,
+ * or if [transaction removeAllObjectsInAllCollections] was invoked
+ * during any of the commits represented by the given notifications.
+ * 
+ * If this was the case then YapDatabase may not have tracked every single key within the collection.
+ * And thus a key that was removed via clearing the collection may not show up while enumerating changedKeys.
+ *
+ * This method is designed to be used in conjunction with the enumerateChangedKeys.... methods (below).
+ * The hasChange... methods (above) already take this into account.
+**/
+- (BOOL)didClearCollection:(NSString *)collection inNotifications:(NSArray *)notifications
+{
+	if (collection == nil)
+		collection = @"";
+	
+	for (NSNotification *notification in notifications)
+	{
+		if (![notification isKindOfClass:[NSNotification class]])
+		{
+			YDBLogWarn(@"%@ - notifications parameter contains non-NSNotification object", THIS_METHOD);
+			continue;
+		}
+		
+		NSDictionary *changeset = notification.userInfo;
+		
+		YapSet *changeset_removedCollections = [changeset objectForKey:YapDatabaseRemovedCollectionsKey];
+		if ([changeset_removedCollections containsObject:collection])
+			return YES;
+	}
+	
+	return NO;
+}
+
+/**
+ * Returns YES if [transaction removeAllObjectsInAllCollections] was invoked
+ * during any of the commits represented by the given notifications.
+ *
+ * If this was the case then YapDatabase may not have tracked every single key within every single collection.
+ * And thus a key that was removed via clearing the database may not show up while enumerating changedKeys.
+ *
+ * This method is designed to be used in conjunction with the enumerateChangedKeys.... methods (below).
+ * The hasChange... methods (above) already take this into account.
+**/
+- (BOOL)didClearAllCollectionsInNotifications:(NSArray *)notifications
+{
+	for (NSNotification *notification in notifications)
+	{
+		if (![notification isKindOfClass:[NSNotification class]])
+		{
+			YDBLogWarn(@"%@ - notifications parameter contains non-NSNotification object", THIS_METHOD);
+			continue;
+		}
+		
+		NSDictionary *changeset = notification.userInfo;
+		
+		BOOL changeset_allKeysRemoved = [[changeset objectForKey:YapDatabaseAllKeysRemovedKey] boolValue];
+		if (changeset_allKeysRemoved)
+			return YES;
+	}
+	
+	return NO;
+}
+
+/**
+ * Allows you to enumerate all the changed keys in the given collection, for the given commits.
+ * 
+ * Keep in mind that if [transaction removeAllObjectsInCollection:] was invoked on the given collection
+ * or [transaction removeAllObjectsInAllCollections] was invoked
+ * during any of the commits represented by the given notifications,
+ * then the key may not be included in the enumeration.
+ * You must use didClearCollection:inNotifications: if you need to handle that case.
+ * 
+ * @see didClearCollection:inNotifications:
+**/
+- (void)enumerateChangedKeysInCollection:(NSString *)collection
+                         inNotifications:(NSArray *)notifications
+                              usingBlock:(void (^)(NSString *key, BOOL *stop))block
+{
+	if (block == NULL) return;
+	if (collection == nil)
+		collection = @"";
+	
+	BOOL stop = NO;
+	NSMutableSet *keys = [NSMutableSet set];
+	
+	for (NSNotification *notification in notifications)
+	{
+		if (![notification isKindOfClass:[NSNotification class]])
+		{
+			YDBLogWarn(@"%@ - notifications parameter contains non-NSNotification object", THIS_METHOD);
+			continue;
+		}
+		
+		NSDictionary *changeset = notification.userInfo;
+		
+		YapSet *changeset_objectChanges = [changeset objectForKey:YapDatabaseObjectChangesKey];
+		for (YapCollectionKey *ck in changeset_objectChanges)
+		{
+			if ([ck.collection isEqualToString:collection])
+			{
+				if (![keys containsObject:ck.key])
+				{
+					block(ck.key, &stop);
+					if (stop) return;
+					
+					[keys addObject:ck.key];
+				}
+			}
+		}
+		
+		YapSet *changeset_metadataChanges = [changeset objectForKey:YapDatabaseMetadataChangesKey];
+		for (YapCollectionKey *ck in changeset_metadataChanges)
+		{
+			if ([ck.collection isEqualToString:collection])
+			{
+				if (![keys containsObject:ck.key])
+				{
+					block(ck.key, &stop);
+					if (stop) return;
+					
+					[keys addObject:ck.key];
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Allows you to enumerate all the changed collection/key tuples for the given commits.
+ * 
+ * Keep in mind that if [transaction removeAllObjectsInAllCollections] was invoked
+ * during any of the commits represented by the given notifications,
+ * then the collection/key tuple may not be included in the enumeration.
+ * You must use didClearAllCollectionsInNotifications: if you need to handle that case.
+ * 
+ * @see didClearAllCollectionsInNotifications:
+**/
+- (void)enumerateChangedCollectionKeysInNotifications:(NSArray *)notifications
+                                           usingBlock:(void (^)(YapCollectionKey *ck, BOOL *stop))block
+{
+	if (block == NULL) return;
+	
+	BOOL stop = NO;
+	NSMutableSet *collectionKeys = [NSMutableSet set];
+	
+	for (NSNotification *notification in notifications)
+	{
+		if (![notification isKindOfClass:[NSNotification class]])
+		{
+			YDBLogWarn(@"%@ - notifications parameter contains non-NSNotification object", THIS_METHOD);
+			continue;
+		}
+		
+		NSDictionary *changeset = notification.userInfo;
+		
+		YapSet *changeset_objectChanges = [changeset objectForKey:YapDatabaseObjectChangesKey];
+		for (YapCollectionKey *ck in changeset_objectChanges)
+		{
+			if (![collectionKeys containsObject:ck])
+			{
+				block(ck, &stop);
+				if (stop) return;
+				
+				[collectionKeys addObject:ck];
+			}
+		}
+		
+		YapSet *changeset_metadataChanges = [changeset objectForKey:YapDatabaseMetadataChangesKey];
+		for (YapCollectionKey *ck in changeset_metadataChanges)
+		{
+			block(ck, &stop);
+			if (stop) return;
+			
+			[collectionKeys addObject:ck];
+		}
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Extensions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4227,6 +4515,57 @@ static NSString *const ExtKey_class = @"class";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Upgrade Notice:
+ *
+ * The "auto_vacuum=FULL" was not properly set until YapDatabase v2.5.
+ * And thus if you have an app that was using YapDatabase prior to this version,
+ * then the existing database file will continue to operate in "auto_vacuum=NONE" mode.
+ * This means the existing database file won't be properly truncated as you delete information from the db.
+ * That is, the data will be removed, but the pages will be moved to the freelist,
+ * and the file itself will remain the same size on disk. (I.e. the file size can grow, but not shrink.)
+ * To correct this problem, you should run the vacuum operation is at least once.
+ * After it is run, the "auto_vacuum=FULL" mode will be set,
+ * and the database file size will automatically shrink in the future (as you delete data).
+ *
+ * @returns Result from "PRAGMA auto_vacuum;" command, as a readable string:
+ *   - NONE
+ *   - FULL
+ *   - INCREMENTAL
+ *   - UNKNOWN (future proofing)
+ *
+ * If the return value is NONE, then you should run the vacuum operation at some point
+ * in order to properly reconfigure the database.
+ *
+ * Concerning Method Invocation:
+ *
+ * You can invoke this method as a standalone method on the connection:
+ *
+ *   NSString *value = [databaseConnection pragmaAutoVacuum]
+ *
+ * Or you can invoke this method within a transaction:
+ *
+ * [databaseConnection asyncReadWithBlock:^(YapDatabaseReadTransaction *transaction){
+ *     NSString *value = [databaseConnection pragmaAutoVacuum];
+ * }];
+**/
+- (NSString *)pragmaAutoVacuum
+{
+	__block int value = -1;
+	
+	dispatch_block_t block = ^{ @autoreleasepool {
+	
+		value = [YapDatabase pragma:@"auto_vacuum" using:db];
+	}};
+	
+	if (dispatch_get_specific(IsOnConnectionQueueKey))
+		block();
+	else
+		dispatch_sync(connectionQueue, block);
+	
+	return [YapDatabase pragmaValueForAutoVacuum:value];
+}
+
+/**
  * Performs a VACUUM on the sqlite database.
  *
  * This method operates as a synchronous ReadWrite "transaction".
@@ -4237,16 +4576,7 @@ static NSString *const ExtKey_class = @"class";
  *
  * Remember that YapDatabase operates in WAL mode, with "auto_vacuum=FULL" set.
  *
- * Upgrade Notice:
- *   The "auto_vacuum=FULL" was not properly set until YapDatabase v2.5.
- *   And thus if you have an app that was using YapDatabase prior to this version,
- *   then the existing database file will continue to operate in "auto_vacuum=NONE" mode.
- *   This means the existing database file won't be properly truncated as you delete information from the db.
- *   That is, the data will be removed, but the pages will be moved to the freelist,
- *   and the file itself will remain the same size on disk.
- *   To correct this problem, you should run the vacuum operation is at least once.
- *   After it is run, the "auto_vacuum=FULL" mode will be set,
- *   and the database file size will automatically shrink in the future (as you delete data).
+ * @see pragmaAutoVacuum
 **/
 - (void)vacuum
 {
@@ -4308,19 +4638,10 @@ static NSString *const ExtKey_class = @"class";
  *
  * Remember that YapDatabase operates in WAL mode, with "auto_vacuum=FULL" set.
  *
- * Upgrade Notice:
- *   The "auto_vacuum=FULL" was not properly set until YapDatabase v2.5.
- *   And thus if you have an app that was using YapDatabase prior to this version,
- *   then the existing database file will continue to operate in "auto_vacuum=NONE" mode.
- *   This means the existing database file won't be properly truncated as you delete information from the db.
- *   That is, the data will be removed, but the pages will be moved to the freelist,
- *   and the file itself will remain the same size on disk.
- *   To correct this problem, you should run the vacuum operation is at least once.
- *   After it is run, the "auto_vacuum=FULL" mode will be set,
- *   and the database file size will automatically shrink in the future (as you delete data).
- *
  * An optional completion block may be used.
  * The completionBlock will be invoked on the main thread (dispatch_get_main_queue()).
+ *
+ * @see pragmaAutoVacuum
 **/
 - (void)asyncVacuumWithCompletionBlock:(dispatch_block_t)completionBlock
 {
@@ -4338,20 +4659,11 @@ static NSString *const ExtKey_class = @"class";
  *
  * Remember that YapDatabase operates in WAL mode, with "auto_vacuum=FULL" set.
  *
- * Upgrade Notice:
- *   The "auto_vacuum=FULL" was not properly set until YapDatabase v2.5.
- *   And thus if you have an app that was using YapDatabase prior to this version,
- *   then the existing database file will continue to operate in "auto_vacuum=NONE" mode.
- *   This means the existing database file won't be properly truncated as you delete information from the db.
- *   That is, the data will be removed, but the pages will be moved to the freelist,
- *   and the file itself will remain the same size on disk.
- *   To correct this problem, you should run the vacuum operation is at least once.
- *   After it is run, the "auto_vacuum=FULL" mode will be set,
- *   and the database file size will automatically shrink in the future (as you delete data).
- *
  * An optional completion block may be used.
  * Additionally the dispatch_queue to invoke the completion block may also be specified.
  * If NULL, dispatch_get_main_queue() is automatically used.
+ * 
+ * @see pragmaAutoVacuum
 **/
 - (void)asyncVacuumWithCompletionQueue:(dispatch_queue_t)completionQueue
                        completionBlock:(dispatch_block_t)completionBlock
@@ -4546,6 +4858,67 @@ NS_INLINE void __postWriteQueue(YapDatabaseConnection *connection)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Exceptions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (NSException *)nonMainThreadException
+{
+	NSString *connectionName = self.name;
+	NSString *nameInfo = ([connectionName length] > 0) ? [NSString stringWithFormat:@" <%@>", connectionName] : @"";
+	
+	NSString *reason = [NSString stringWithFormat:
+	    @"YapDatabaseConnection[%p]%@ - unpermitted attempt to execute transaction on nom-main thread",
+	    self, nameInfo];
+	
+	NSDictionary *userInfo = @{ NSLocalizedRecoverySuggestionErrorKey:
+		@"This connection was configured (via the permittedTransactions property) to only allow transactions"
+		@" to be executed from the main-thread. Presumably this connection is dedicated to UI tasks, and thus"
+		@" its use on background threads is being discouraged in order to guarantee the connection never blocks."
+		@" Perhaps you're using the wrong dedicated connection."
+		@" Or you need to create a temporary connection via [database newConnection]."};
+	
+	return [NSException exceptionWithName:@"YapDatabaseException" reason:reason userInfo:userInfo];
+}
+
+#if YapDatabaseEnforcePermittedTransactions
+- (NSException *)unpermittedTransactionException:(NSUInteger)transactionFlag
+{
+	NSUInteger flags = self.permittedTransactions;
+	
+	NSString *connectionName = self.name;
+	NSString *nameInfo = ([connectionName length] > 0) ? [NSString stringWithFormat:@" <%@>", connectionName] : @"";
+	
+	NSString *unpermittedTransaction = @"unknownTransaction";
+	if (transactionFlag == YDB_SyncReadTransaction)
+		unpermittedTransaction = @"(sync)readTransaction";
+	if (transactionFlag == YDB_AsyncReadTransaction)
+		unpermittedTransaction = @"asyncReadTransaction";
+	if (transactionFlag == YDB_SyncReadWriteTransaction)
+		unpermittedTransaction = @"(sync)readWriteTransaction";
+	if (transactionFlag == YDB_AsyncReadWriteTransaction)
+		unpermittedTransaction = @"asyncReadWriteTransaction";
+	
+	NSString *reason = [NSString stringWithFormat:
+	    @"YapDatabaseConnection[%p]%@ - unpermitted attempt to execute %@", self, nameInfo, unpermittedTransaction];
+	
+	NSMutableArray *permittedComponents = [NSMutableArray arrayWithCapacity:4];
+	if (flags & YDB_SyncReadTransaction)
+		[permittedComponents addObject:@"(sync)readTransaction"];
+	if (flags & YDB_AsyncReadTransaction)
+		[permittedComponents addObject:@"asyncReadTransaction"];
+	if (flags & YDB_SyncReadWriteTransaction)
+		[permittedComponents addObject:@"(sync)readWriteTransaction"];
+	if (flags & YDB_AsyncReadWriteTransaction)
+		[permittedComponents addObject:@"asyncReadWriteTransaction"];
+	
+	NSString *suggestion = [NSString stringWithFormat:
+	    @"This connection was configured (via the permittedTransactions property) to only allow"
+	    @" certain types of transactions. The permittedTransactions are: %@",
+	    [permittedComponents componentsJoinedByString:@", "]];
+	
+	NSDictionary *userInfo = @{ NSLocalizedRecoverySuggestionErrorKey: suggestion };
+	
+	return [NSException exceptionWithName:@"YapDatabaseException" reason:reason userInfo:userInfo];
+}
+#endif
 
 - (NSException *)implicitlyEndingLongLivedReadTransactionException
 {

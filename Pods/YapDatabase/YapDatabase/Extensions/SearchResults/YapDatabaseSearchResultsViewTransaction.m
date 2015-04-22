@@ -1,6 +1,7 @@
 #import "YapDatabaseSearchResultsViewTransaction.h"
 #import "YapDatabaseSearchResultsViewPrivate.h"
 #import "YapDatabaseViewChangePrivate.h"
+#import "YapDatabaseViewPrivate.h"
 #import "YapDatabaseFullTextSearchPrivate.h"
 #import "YapDatabaseExtensionPrivate.h"
 #import "YapDatabasePrivate.h"
@@ -549,12 +550,20 @@ static NSString *const ExtKey_query             = @"query";
 	NSMutableArray *groupsInSelf = [[self allGroups] mutableCopy];
 	id <NSFastEnumeration> groupsInParent;
 	
-	if (searchResultsOptions.allowedGroups)
+	__unsafe_unretained YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+	if (allowedGroups)
 	{
-		NSMutableSet *groupsInParentSet = [NSMutableSet setWithArray:[parentViewTransaction allGroups]];
-		[groupsInParentSet intersectSet:searchResultsOptions.allowedGroups];
+		NSArray *allGroups = [parentViewTransaction allGroups];
+		NSMutableArray *groups = [NSMutableArray arrayWithCapacity:[allGroups count]];
 		
-		groupsInParent = groupsInParentSet;
+		for (NSString *group in allGroups)
+		{
+			if ([allowedGroups isAllowed:group]) {
+				[groups addObject:group];
+			}
+		}
+		
+		groupsInParent = groups;
 	}
 	else
 	{
@@ -942,7 +951,7 @@ static NSString *const ExtKey_query             = @"query";
 #pragma mark Cleanup & Commit
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)commitTransaction
+- (void)flushPendingChangesToExtensionTables
 {
 	YDBLogAutoTrace();
 	
@@ -966,10 +975,10 @@ static NSString *const ExtKey_query             = @"query";
 	}
 	
 	// This must be done LAST.
-	[super commitTransaction];
+	[super flushPendingChangesToExtensionTables];
 }
 
-- (void)rollbackTransaction
+- (void)didRollbackTransaction
 {
 	YDBLogAutoTrace();
 	
@@ -979,7 +988,7 @@ static NSString *const ExtKey_query             = @"query";
 	}
 	
 	// This must be done LAST.
-	[super rollbackTransaction];
+	[super didRollbackTransaction];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1018,8 +1027,8 @@ static NSString *const ExtKey_query             = @"query";
 		
 		if (group)
 		{
-			NSSet *allowedGroups = searchResultsOptions.allowedGroups;
-			if (allowedGroups && ![allowedGroups containsObject:group])
+			YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+			if (allowedGroups && ![allowedGroups isAllowed:group])
 			{
 				group = nil;
 			}
@@ -1032,9 +1041,9 @@ static NSString *const ExtKey_query             = @"query";
 		__unsafe_unretained NSString *collection = collectionKey.collection;
 		__unsafe_unretained NSString *key = collectionKey.key;
 		
-		NSSet *allowedCollections = searchResultsOptions.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = searchResultsOptions.allowedCollections;
 		
-		if (!allowedCollections || [allowedCollections containsObject:collection])
+		if (!allowedCollections || [allowedCollections isAllowed:collection])
 		{
 			YapDatabaseViewGroupingBlock groupingBlock_generic;
 			YapDatabaseViewBlockType     groupingBlockType;
@@ -1139,8 +1148,8 @@ static NSString *const ExtKey_query             = @"query";
 		
 		if (group)
 		{
-			NSSet *allowedGroups = searchResultsOptions.allowedGroups;
-			if (allowedGroups && ![allowedGroups containsObject:group])
+			YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+			if (allowedGroups && ![allowedGroups isAllowed:group])
 			{
 				group = nil;
 			}
@@ -1153,9 +1162,9 @@ static NSString *const ExtKey_query             = @"query";
 		__unsafe_unretained NSString *collection = collectionKey.collection;
 		__unsafe_unretained NSString *key = collectionKey.key;
 		
-		NSSet *allowedCollections = searchResultsOptions.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = searchResultsOptions.allowedCollections;
 		
-		if (!allowedCollections || [allowedCollections containsObject:collection])
+		if (!allowedCollections || [allowedCollections isAllowed:collection])
 		{
 			YapDatabaseViewGroupingBlock groupingBlock_generic;
 			YapDatabaseViewBlockType     groupingBlockType;
@@ -1277,8 +1286,8 @@ static NSString *const ExtKey_query             = @"query";
 		
 		if (group)
 		{
-			NSSet *allowedGroups = searchResultsOptions.allowedGroups;
-			if (allowedGroups && ![allowedGroups containsObject:group])
+			YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+			if (allowedGroups && ![allowedGroups isAllowed:group])
 			{
 				group = nil;
 			}
@@ -1438,9 +1447,9 @@ static NSString *const ExtKey_query             = @"query";
 			__unsafe_unretained NSString *collection = collectionKey.collection;
 			__unsafe_unretained NSString *key = collectionKey.key;
 			
-			NSSet *allowedCollections = searchResultsOptions.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = searchResultsOptions.allowedCollections;
 			
-			if (!allowedCollections || [allowedCollections containsObject:collection])
+			if (!allowedCollections || [allowedCollections isAllowed:collection])
 			{
 				if (groupingBlockType == YapDatabaseViewBlockTypeWithObject)
 				{
@@ -1562,8 +1571,8 @@ static NSString *const ExtKey_query             = @"query";
 		
 		if (group)
 		{
-			NSSet *allowedGroups = searchResultsOptions.allowedGroups;
-			if (allowedGroups && ![allowedGroups containsObject:group])
+			YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+			if (allowedGroups && ![allowedGroups isAllowed:group])
 			{
 				group = nil;
 			}
@@ -1723,9 +1732,9 @@ static NSString *const ExtKey_query             = @"query";
 			__unsafe_unretained NSString *collection = collectionKey.collection;
 			__unsafe_unretained NSString *key = collectionKey.key;
 			
-			NSSet *allowedCollections = searchResultsOptions.allowedCollections;
+			YapWhitelistBlacklist *allowedCollections = searchResultsOptions.allowedCollections;
 			
-			if (!allowedCollections || [allowedCollections containsObject:collection])
+			if (!allowedCollections || [allowedCollections isAllowed:collection])
 			{
 				if (groupingBlockType == YapDatabaseViewBlockTypeWithMetadata)
 				{
@@ -1882,11 +1891,9 @@ static NSString *const ExtKey_query             = @"query";
 #pragma mark ReadWrite
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)setGroupingBlock:(YapDatabaseViewGroupingBlock)inGroupingBlock
-       groupingBlockType:(YapDatabaseViewBlockType)inGroupingBlockType
-            sortingBlock:(YapDatabaseViewSortingBlock)inSortingBlock
-        sortingBlockType:(YapDatabaseViewBlockType)inSortingBlockType
-              versionTag:(NSString *)inVersionTag
+- (void)setGrouping:(YapDatabaseViewGrouping *)inGrouping
+            sorting:(YapDatabaseViewSorting *)inSorting
+         versionTag:(NSString *)inVersionTag
 {
 	YDBLogAutoTrace();
 	
@@ -1907,12 +1914,26 @@ static NSString *const ExtKey_query             = @"query";
 	}
 	else
 	{
-		[super setGroupingBlock:inGroupingBlock
-		      groupingBlockType:inGroupingBlockType
-		           sortingBlock:inSortingBlock
-		       sortingBlockType:inSortingBlockType
-		             versionTag:inVersionTag];
+		[super setGrouping:inGrouping
+		           sorting:inSorting
+		        versionTag:inVersionTag];
 	}
+}
+
+/**
+ * DEPRECATED
+ * Use method setGrouping:sorting:versionTag: instead.
+**/
+- (void)setGroupingBlock:(YapDatabaseViewGroupingBlock)grpBlock
+       groupingBlockType:(YapDatabaseViewBlockType)grpBlockType
+            sortingBlock:(YapDatabaseViewSortingBlock)srtBlock
+        sortingBlockType:(YapDatabaseViewBlockType)srtBlockType
+              versionTag:(NSString *)inVersionTag
+{
+	YapDatabaseViewGrouping *grouping = [YapDatabaseViewGrouping withBlock:grpBlock blockType:grpBlockType];
+	YapDatabaseViewSorting *sorting = [YapDatabaseViewSorting withBlock:srtBlock blockType:srtBlockType];
+	
+	[self setGrouping:grouping sorting:sorting versionTag:inVersionTag];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1957,10 +1978,23 @@ static NSString *const ExtKey_query             = @"query";
 	
 	id <NSFastEnumeration> groupsToEnumerate = nil;
 	
-	if (searchResultsOptions.allowedGroups) {
-		groupsToEnumerate = searchResultsOptions.allowedGroups;
+	__unsafe_unretained YapWhitelistBlacklist *allowedGroups = searchResultsOptions.allowedGroups;
+	if (allowedGroups)
+	{
+		NSArray *allGroups = [parentViewTransaction allGroups];
+		NSMutableArray *groups = [NSMutableArray arrayWithCapacity:[allGroups count]];
+		
+		for (NSString *group in allGroups)
+		{
+			if ([allowedGroups isAllowed:group]) {
+				[groups addObject:group];
+			}
+		}
+		
+		groupsToEnumerate = groups;
 	}
-	else {
+	else
+	{
 		groupsToEnumerate = [parentViewTransaction allGroups];
 	}
 	
@@ -2149,9 +2183,9 @@ static NSString *const ExtKey_query             = @"query";
 		// Invoke the grouping block to find out if the object should be included in the view.
 		
 		NSString *group = nil;
-		NSSet *allowedCollections = viewConnection->view->options.allowedCollections;
+		YapWhitelistBlacklist *allowedCollections = viewConnection->view->options.allowedCollections;
 		
-		if (!allowedCollections || [allowedCollections containsObject:ck.collection])
+		if (!allowedCollections || [allowedCollections isAllowed:ck.collection])
 		{
 			if (groupingBlockType == YapDatabaseViewBlockTypeWithKey)
 			{

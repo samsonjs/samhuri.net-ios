@@ -1,9 +1,11 @@
 #import "YapDatabaseSecondaryIndexConnection.h"
 #import "YapDatabaseSecondaryIndexPrivate.h"
+#import "YapDatabaseStatement.h"
 
 #import "YapDatabasePrivate.h"
 #import "YapDatabaseExtensionPrivate.h"
 
+#import "YapDatabaseString.h"
 #import "YapDatabaseLogging.h"
 
 #if ! __has_feature(objc_arc)
@@ -39,7 +41,9 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		databaseConnection = inDatabaseConnection;
 		
 		queryCacheLimit = 10;
-		queryCache = [[YapCache alloc] initWithKeyClass:[NSString class] countLimit:queryCacheLimit];
+		queryCache = [[YapCache alloc] initWithCountLimit:queryCacheLimit];
+		queryCache.allowedKeyClasses = [NSSet setWithObject:[NSString class]];
+		queryCache.allowedObjectClasses = [NSSet setWithObject:[YapDatabaseStatement class]];
 	}
 	return self;
 }
@@ -114,7 +118,11 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		if (queryCacheEnabled)
 		{
 			if (queryCache == nil)
-				queryCache = [[YapCache alloc] initWithKeyClass:[NSString class] countLimit:queryCacheLimit];
+			{
+				queryCache = [[YapCache alloc] initWithCountLimit:queryCacheLimit];
+				queryCache.allowedKeyClasses = [NSSet setWithObject:[NSString class]];
+				queryCache.allowedObjectClasses = [NSSet setWithObject:[YapDatabaseStatement class]];
+			}
 		}
 		else
 		{
@@ -224,6 +232,21 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 #pragma mark Statements
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void)prepareStatement:(sqlite3_stmt **)statement withString:(NSString *)stmtString caller:(SEL)caller_cmd
+{
+	sqlite3 *db = databaseConnection->db;
+	YapDatabaseString stmt; MakeYapDatabaseString(&stmt, stmtString);
+	
+	int status = sqlite3_prepare_v2(db, stmt.str, stmt.length+1, statement, NULL);
+	if (status != SQLITE_OK)
+	{
+		YDBLogError(@"%@: Error creating prepared statement: %d %s",
+					NSStringFromSelector(caller_cmd), status, sqlite3_errmsg(db));
+	}
+	
+	FreeYapDatabaseString(&stmt);
+}
+
 - (sqlite3_stmt *)insertStatement
 {
 	sqlite3_stmt **statement = &insertStatement;
@@ -248,13 +271,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		
 		[string appendString:@");"];
 		
-		sqlite3 *db = databaseConnection->db;
-		
-		int status = sqlite3_prepare_v2(db, [string UTF8String], -1, statement, NULL);
-		if (status != SQLITE_OK)
-		{
-			YDBLogError(@"%@: Error creating prepared statement: %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
-		}
+		[self prepareStatement:statement withString:string caller:_cmd];
 	}
 	
 	return *statement;
@@ -284,13 +301,7 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 		
 		[string appendString:@");"];
 		
-		sqlite3 *db = databaseConnection->db;
-		
-		int status = sqlite3_prepare_v2(db, [string UTF8String], -1, statement, NULL);
-		if (status != SQLITE_OK)
-		{
-			YDBLogError(@"%@: Error creating prepared statement: %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
-		}
+		[self prepareStatement:statement withString:string caller:_cmd];
 	}
 	
 	return *statement;
@@ -301,16 +312,10 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	sqlite3_stmt **statement = &removeStatement;
 	if (*statement == NULL)
 	{
-		NSString *string =
-		    [NSString stringWithFormat:@"DELETE FROM \"%@\" WHERE \"rowid\" = ?;", [secondaryIndex tableName]];
+		NSString *string = [NSString stringWithFormat:
+		  @"DELETE FROM \"%@\" WHERE \"rowid\" = ?;", [secondaryIndex tableName]];
 		
-		sqlite3 *db = databaseConnection->db;
-		
-		int status = sqlite3_prepare_v2(db, [string UTF8String], -1, statement, NULL);
-		if (status != SQLITE_OK)
-		{
-			YDBLogError(@"%@: Error creating prepared statement: %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
-		}
+		[self prepareStatement:statement withString:string caller:_cmd];
 	}
 	
 	return *statement;
@@ -321,15 +326,10 @@ static const int ydbLogLevel = YDB_LOG_LEVEL_WARN;
 	sqlite3_stmt **statement = &removeAllStatement;
 	if (*statement == NULL)
 	{
-		NSString *string = [NSString stringWithFormat:@"DELETE FROM \"%@\";", [secondaryIndex tableName]];
+		NSString *string = [NSString stringWithFormat:
+		  @"DELETE FROM \"%@\";", [secondaryIndex tableName]];
 		
-		sqlite3 *db = databaseConnection->db;
-		
-		int status = sqlite3_prepare_v2(db, [string UTF8String], -1, statement, NULL);
-		if (status != SQLITE_OK)
-		{
-			YDBLogError(@"%@: Error creating prepared statement: %d %s", THIS_METHOD, status, sqlite3_errmsg(db));
-		}
+		[self prepareStatement:statement withString:string caller:_cmd];
 	}
 	
 	return *statement;

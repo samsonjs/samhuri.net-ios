@@ -43,6 +43,22 @@ static NSString *const changeset_key_changes           = @"changes";
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+@interface YapDatabaseViewGrouping ()
+
++ (instancetype)withBlock:(YapDatabaseViewGroupingBlock)block blockType:(YapDatabaseViewBlockType)blockType;
+
+@end
+
+@interface YapDatabaseViewSorting ()
+
++ (instancetype)withBlock:(YapDatabaseViewSortingBlock)block blockType:(YapDatabaseViewBlockType)blockType;
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 @interface YapDatabaseView () {
 @protected
 	
@@ -125,6 +141,8 @@ static NSString *const changeset_key_changes           = @"changes";
 
 - (NSArray *)internalChangesetKeys;
 - (NSArray *)externalChangesetKeys;
+
+- (void)prepareStatement:(sqlite3_stmt **)statement withString:(NSString *)stmtString caller:(SEL)caller_cmd;
 
 - (sqlite3_stmt *)mapTable_getPageKeyForRowidStatement;
 - (sqlite3_stmt *)mapTable_setPageKeyForRowidStatement;

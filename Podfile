@@ -7,10 +7,10 @@ pod 'Mantle'
 pod 'PromiseKit'
 pod 'YapDatabase'
 pod 'libextobjc'
+pod 'ObjectiveSugar'
 
 # target 'Blog' do
 # end
 
-target 'BlogTests' do
-  pod 'OHHTTPStubs'
-end
+# target 'BlogTests' do
+# end

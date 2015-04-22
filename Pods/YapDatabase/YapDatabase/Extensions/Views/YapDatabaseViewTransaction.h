@@ -8,16 +8,16 @@
  * Welcome to YapDatabase!
  *
  * The project page has a wealth of documentation if you have any questions.
- * https://github.com/yaptv/YapDatabase
+ * https://github.com/yapstudios/YapDatabase
  *
  * If you're new to the project you may want to check out the wiki
- * https://github.com/yaptv/YapDatabase/wiki
+ * https://github.com/yapstudios/YapDatabase/wiki
  *
  * YapDatabaseView is an extension designed to work with YapDatabase.
  * It gives you a persistent sorted "view" of a configurable subset of your data.
  *
  * For more information, please see the wiki article about Views:
- * https://github.com/yaptv/YapDatabase/wiki/Views
+ * https://github.com/yapstudios/YapDatabase/wiki/Views
  *
  * You may also wish to consult the documentation in YapDatabaseView.h for information on setting up a view.
  *
@@ -70,7 +70,14 @@
 - (NSUInteger)numberOfItemsInAllGroups;
 
 /**
+ * Returns YES if the group is empty (has zero items).
+ * Shorthand for: [[transaction ext:viewName] numberOfItemsInGroup:group] == 0
+**/
+- (BOOL)isEmptyGroup:(NSString *)group;
+
+/**
  * Returns YES if the view is empty (has zero groups).
+ * Shorthand for: [[transaction ext:viewName] numberOfItemsInAllGroups] == 0
 **/
 - (BOOL)isEmpty;
 
@@ -345,16 +352,21 @@ typedef NSComparisonResult (^YapDatabaseViewFindWithRowBlock)      \
 - (void)touchMetadataForKey:(NSString *)key inCollection:(NSString *)collection;
 
 /**
- * This method allows you to change the groupingBlock and/or sortingBlock on-the-fly.
+ * This method allows you to change the grouping and/or sorting on-the-fly.
  * 
  * Note: You must pass a different versionTag, or this method does nothing.
  * If needed, you can fetch the current versionTag via the [viewTransaction versionTag] method.
 **/
+- (void)setGrouping:(YapDatabaseViewGrouping *)grouping
+            sorting:(YapDatabaseViewSorting *)sorting
+         versionTag:(NSString *)versionTag;
+
 - (void)setGroupingBlock:(YapDatabaseViewGroupingBlock)groupingBlock
        groupingBlockType:(YapDatabaseViewBlockType)groupingBlockType
             sortingBlock:(YapDatabaseViewSortingBlock)sortingBlock
         sortingBlockType:(YapDatabaseViewBlockType)sortingBlockType
-              versionTag:(NSString *)versionTag;
+              versionTag:(NSString *)versionTag
+__attribute((deprecated("Use method setGrouping:sorting:versionTag: instead")));
 
 @end
 
@@ -433,10 +445,10 @@ typedef NSComparisonResult (^YapDatabaseViewFindWithRowBlock)      \
 - (void)enumerateKeysAndMetadataInGroup:(NSString *)group
                             withOptions:(NSEnumerationOptions)options
                                   range:(NSRange)range
+                                 filter:
+                    (BOOL (^)(NSString *collection, NSString *key))filter
                              usingBlock:
-                    (void (^)(NSString *collection, NSString *key, id metadata, NSUInteger index, BOOL *stop))block
-                             withFilter:
-                    (BOOL (^)(NSString *collection, NSString *key))filter;
+                    (void (^)(NSString *collection, NSString *key, id metadata, NSUInteger index, BOOL *stop))block;
 
 /**
  * The following methods are similar to invoking the enumerateKeysInGroup:... methods,
@@ -461,10 +473,10 @@ typedef NSComparisonResult (^YapDatabaseViewFindWithRowBlock)      \
 - (void)enumerateKeysAndObjectsInGroup:(NSString *)group
                            withOptions:(NSEnumerationOptions)options
                                  range:(NSRange)range
+                                filter:
+            (BOOL (^)(NSString *collection, NSString *key))filter
                             usingBlock:
-            (void (^)(NSString *collection, NSString *key, id object, NSUInteger index, BOOL *stop))block
-                            withFilter:
-            (BOOL (^)(NSString *collection, NSString *key))filter;
+            (void (^)(NSString *collection, NSString *key, id object, NSUInteger index, BOOL *stop))block;
 
 /**
  * The following methods are similar to invoking the enumerateKeysInGroup:... methods,
@@ -489,10 +501,10 @@ typedef NSComparisonResult (^YapDatabaseViewFindWithRowBlock)      \
 - (void)enumerateRowsInGroup:(NSString *)group
                  withOptions:(NSEnumerationOptions)options
                        range:(NSRange)range
+                      filter:
+            (BOOL (^)(NSString *collection, NSString *key))filter
                   usingBlock:
-            (void (^)(NSString *collection, NSString *key, id object, id metadata, NSUInteger index, BOOL *stop))block
-                  withFilter:
-            (BOOL (^)(NSString *collection, NSString *key))filter;
+            (void (^)(NSString *collection, NSString *key, id object, id metadata, NSUInteger index, BOOL *stop))block;
 
 @end
 

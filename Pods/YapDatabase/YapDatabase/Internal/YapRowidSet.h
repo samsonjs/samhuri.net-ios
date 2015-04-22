@@ -2,12 +2,14 @@
  * Wrapper for C++ code (std::unordered_set<int64_t>)
 **/
 
+#import <Foundation/Foundation.h>
+
 #ifndef YapDatabase_YapRowidSet_h
 #define YapDatabase_YapRowidSet_h
 
 #if defined(__cplusplus)
 extern "C" {
-#endif /* defined(__cplusplus) */
+#endif
 
 typedef struct _YapRowidSet YapRowidSet;
 
@@ -29,6 +31,6 @@ void YapRowidSetEnumerate(YapRowidSet *set, void (^block)(int64_t rowid, BOOL *s
 
 #if defined(__cplusplus)
 }
-#endif /* defined(__cplusplus) */
+#endif
 
 #endif

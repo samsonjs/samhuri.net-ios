@@ -47,8 +47,28 @@
  *                                           usingBlock:^(NSString *key, id object, BOOL *stop){
  *     ...
  * }];
-**/
+ **/
 + (instancetype)queryWithFormat:(NSString *)format, ...
+{
+    va_list arguments;
+    va_start(arguments, format);
+    id query = [self queryWithFormat:format arguments:arguments];
+    va_end(arguments);
+    return query;
+}
+
+/**
+ * Shim that allows YapDatabaseQuery to be used from Swift.
+ *
+ * Define the following somewhere in your Swift code:
+ *
+ * extension YapDatabaseQuery {
+ *     class func queryWithFormat(format: String, _ arguments: CVarArgType...) -> YapDatabaseQuery? {
+ *         return withVaList(arguments, { YapDatabaseQuery(format: format, arguments: $0) })
+ *     }
+ * }
+ **/
++ (instancetype)queryWithFormat:(NSString *)format arguments:(va_list)args
 {
 	if (format == nil) return nil;
 	
@@ -58,9 +78,13 @@
 	NSRange searchRange = NSMakeRange(0, formatLength);
 	NSRange paramRange = [format rangeOfString:@"?" options:0 range:searchRange];
 	
+	NSMutableArray *paramLocations = [NSMutableArray array];
+	
 	while (paramRange.location != NSNotFound)
 	{
 		paramCount++;
+		
+		[paramLocations addObject:@(paramRange.location)];
 		
 		searchRange.location = paramRange.location + 1;
 		searchRange.length = formatLength - searchRange.location;
@@ -74,16 +98,43 @@
 	
 	NSMutableArray *queryParameters = [NSMutableArray arrayWithCapacity:paramCount];
 	
-	va_list args;
-	va_start(args, format);
-	
 	@try
 	{
+		NSMutableDictionary *paramIndexToElementCountMap = [NSMutableDictionary dictionary];
 		for (NSUInteger i = 0; i < paramCount; i++)
 		{
 			id param = va_arg(args, id);
+			if ([param isKindOfClass:[NSArray class]])
+			{
+				paramIndexToElementCountMap[@(i)] = @([param count]);
+				[queryParameters addObjectsFromArray:param];
+			}
+			else
+			{
+				[queryParameters addObject:param];
+			}
+		}
+		
+		if (paramIndexToElementCountMap.count > 0)
+		{
+			NSUInteger unpackingOffset = 0;
+			NSString *queryString = [format copy];
+			NSRange range;
+			for (NSNumber *index in paramIndexToElementCountMap)
+			{
+				NSInteger elementCount = [paramIndexToElementCountMap[index] intValue];
+				NSMutableArray *unpackedParams = [NSMutableArray array];
+				for (NSUInteger i = 0; i < elementCount; i++)
+				{
+					[unpackedParams addObject:@"?"];
+				}
+				NSString *unpackedParamsStr = [unpackedParams componentsJoinedByString:@","];
+				range = NSMakeRange([paramLocations[[index intValue]] intValue] + unpackingOffset, 1);
+				queryString = [queryString stringByReplacingCharactersInRange:range
+																													 withString:unpackedParamsStr];
+			}
 			
-			[queryParameters addObject:param];
+			format = [queryString copy];
 		}
 	}
 	@catch (NSException *exception)
@@ -93,8 +144,6 @@
 		
 		queryParameters = nil;
 	}
-	
-	va_end(args);
 	
 	if (queryParameters || (paramCount == 0))
 	{
@@ -106,11 +155,10 @@
 	}
 }
 
-
 /**
  * Shorthand for a query with no 'WHERE' clause.
  * Equivalent to [YapDatabaseQuery queryWithFormat:@""].
-**/
+ **/
 + (instancetype)queryMatchingAll
 {
 	return [[YapDatabaseQuery alloc] initWithQueryString:@"" queryParameters:nil];

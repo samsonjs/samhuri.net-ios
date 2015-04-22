@@ -1,17 +1,18 @@
 #import <Foundation/Foundation.h>
+#import "YapWhitelistBlacklist.h"
 
 /**
  * Welcome to YapDatabase!
- * https://github.com/yaptv/YapDatabase
+ * https://github.com/yapstudios/YapDatabase
  *
  * If you're new to the project you may want to visit the wiki.
- * https://github.com/yaptv/YapDatabase/wiki
+ * https://github.com/yapstudios/YapDatabase/wiki
  *
  * The YapDatabaseRelationship extension allow you to create relationships between objects,
  * and configure automatic deletion rules.
  *
  * For tons of information about this extension, see the wiki article:
- * https://github.com/yaptv/YapDatabase/wiki/Relationships
+ * https://github.com/yapstudios/YapDatabase/wiki/Relationships
 **/
 
 typedef NSData* (^YapDatabaseRelationshipFilePathEncryptor)(NSString *dstFilePath);
@@ -56,7 +57,7 @@ typedef id (^YapDatabaseRelationshipFilePathDecryptor)(NSData *data);
  *
  * The default value is nil.
 **/
-@property (nonatomic, copy, readwrite) NSSet *allowedCollections;
+@property (nonatomic, strong, readwrite) YapWhitelistBlacklist *allowedCollections;
 
 /**
  * The relationship extension allows you to create relationships between objects in the database & files on disk.

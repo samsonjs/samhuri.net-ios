@@ -312,18 +312,22 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 		}
 	};
 	
-	__unsafe_unretained NSSet *allowedCollections = relationshipConnection->relationship->options->allowedCollections;
+	__unsafe_unretained YapWhitelistBlacklist *allowedCollections =
+	    relationshipConnection->relationship->options->allowedCollections;
 	
 	if (allowedCollections)
 	{
-		for (NSString *collection in allowedCollections)
-		{
-			[databaseTransaction _enumerateKeysAndObjectsInCollection:collection usingBlock:
-			    ^(int64_t rowid, NSString *key, id object, BOOL *stop)
+		[databaseTransaction enumerateCollectionsUsingBlock:^(NSString *collection, BOOL *outerStop) {
+			
+			if ([allowedCollections isAllowed:collection])
 			{
-				ProcessRow(rowid, collection, key, object);
-			}];
-		}
+				[databaseTransaction _enumerateKeysAndObjectsInCollection:collection usingBlock:
+				    ^(int64_t rowid, NSString *key, id object, BOOL *innerStop)
+				{
+					ProcessRow(rowid, collection, key, object);
+				}];
+			}
+		}];
 	}
 	else
 	{
@@ -2374,7 +2378,8 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 								[databaseRwTransaction replaceObject:updatedDestinationNode
 								                              forKey:edge->destinationKey
 								                        inCollection:edge->destinationCollection
-								                           withRowid:edge->destinationRowid];
+								                           withRowid:edge->destinationRowid
+								                    serializedObject:nil];
 							}
 						}
 					}
@@ -2433,7 +2438,8 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 								[databaseRwTransaction replaceObject:updatedSourceNode
 								                              forKey:edge->sourceKey
 								                        inCollection:edge->sourceCollection
-								                           withRowid:edge->sourceRowid];
+								                           withRowid:edge->sourceRowid
+								                    serializedObject:nil];
 							}
 						}
 					}
@@ -2749,7 +2755,8 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 								[databaseRwTransaction replaceObject:updatedDstNode
 								                              forKey:edge->destinationKey
 								                        inCollection:edge->destinationCollection
-								                           withRowid:edge->destinationRowid];
+								                           withRowid:edge->destinationRowid
+								                    serializedObject:nil];
 							}
 						}
 					}
@@ -2835,7 +2842,8 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 							[databaseRwTransaction replaceObject:updatedSrcNode
 							                              forKey:edge->sourceKey
 							                        inCollection:edge->sourceCollection
-							                           withRowid:edge->sourceRowid];
+							                           withRowid:edge->sourceRowid
+							                    serializedObject:nil];
 						}
 					}
 				}
@@ -2895,7 +2903,7 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 /**
  * This method is only called if within a readwrite transaction.
 **/
-- (void)commitTransaction
+- (void)didCommitTransaction
 {
 	YDBLogAutoTrace();
 	
@@ -2943,7 +2951,7 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 /**
  * This method is only called if within a readwrite transaction.
 **/
-- (void)rollbackTransaction
+- (void)didRollbackTransaction
 {
 	YDBLogAutoTrace();
 	
@@ -2983,7 +2991,7 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 	if (options->disableYapDatabaseRelationshipNodeProtocol) {
 		return;
 	}
-	if (options->allowedCollections && ![options->allowedCollections containsObject:collectionKey.collection]) {
+	if (options->allowedCollections && ![options->allowedCollections isAllowed:collectionKey.collection]) {
 		return;
 	}
 	
@@ -3086,7 +3094,7 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 	if (options->disableYapDatabaseRelationshipNodeProtocol) {
 		return;
 	}
-	if (options->allowedCollections && ![options->allowedCollections containsObject:collectionKey.collection]) {
+	if (options->allowedCollections && ![options->allowedCollections isAllowed:collectionKey.collection]) {
 		return;
 	}
 	
@@ -3144,7 +3152,7 @@ NS_INLINE BOOL EdgeMatchesDestination(YapDatabaseRelationshipEdge *edge, int64_t
 	if (options->disableYapDatabaseRelationshipNodeProtocol) {
 		return;
 	}
-	if (options->allowedCollections && ![options->allowedCollections containsObject:collectionKey.collection]) {
+	if (options->allowedCollections && ![options->allowedCollections isAllowed:collectionKey.collection]) {
 		return;
 	}
 	
