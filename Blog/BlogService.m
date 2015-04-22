@@ -92,7 +92,7 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 - (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link {
     NSDictionary *fields = @{
             @"id"    : draftID,
-            @"title" : title,
+            @"title" : title ?: [NSNull null],
             @"body"  : body,
             @"link"  : link ?: [NSNull null],
     };
@@ -109,7 +109,7 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 
 - (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
     NSDictionary *fields = @{
-            @"title" : title,
+            @"title" : title ?: [NSNull null],
             @"body"  : body,
             @"link"  : link ?: [NSNull null],
     };

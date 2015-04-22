@@ -36,7 +36,7 @@
     CGPoint scrollOffset = CGPointZero;
     if (self.post) {
         // FIXME: date, status (draft, published)
-        title = self.post.title ?: @"Untitled";
+        title = self.post.title.length ? self.post.title : @"Untitled";
         text = self.post.body;
         // TODO: restore scroll offset for this post ... user defaults?
     }
@@ -67,20 +67,44 @@
 }
 
 - (PMKPromise *)savePostBody {
-    if (!self.post || !self.textView) { return [PMKPromise promiseWithValue:nil]; }
-
-    Post *newPost = [self.post copyWithBody:self.textView.text];
-    if (![self.post isEqual:newPost])
-    {
-        self.post = newPost;
-        return [self.blogController requestUpdatePostWithPath:self.post.path title:self.post.title body:self.post.body link:self.post.url.absoluteString]
-        .then(^(Post *post) {
-            NSLog(@"saved post at path %@", self.post.path);
-        }).catch(^(NSError *error) {
-            NSLog(@"Error saving post at path %@: %@ %@", self.post.path, error.localizedDescription, error.userInfo);
-        });
+    NSString *body = self.textView.text;
+    if (!self.post || !body.length) {
+        return [PMKPromise promiseWithValue:nil];
     }
-    return [PMKPromise promiseWithValue:self.post];
+
+    Post *newPost = [self.post copyWithBody:body];
+    if ([newPost isEqual:self.post]) {
+        return [PMKPromise promiseWithValue:self.post];
+    }
+
+    self.post = newPost;
+    NSString *path = self.post.path;
+    PMKPromise *savePromise;
+    NSString *verb;
+    if (self.post.new) {
+        verb = @"create";
+        savePromise = [self.blogController requestCreateDraft:self.post];
+    }
+    else {
+        verb = @"update";
+        savePromise = [self.blogController requestUpdatePost:self.post];
+    }
+    return savePromise.then(^(Post *post) {
+        NSLog(@"%@ post at path %@", verb, path);
+
+        // TODO: something better than this
+        // update our post because "new" may have changed, which is essential to correct operation
+        self.post = post;
+        [self configureView];
+        if (self.postUpdatedBlock) {
+            self.postUpdatedBlock(self.post);
+        }
+
+        return post;
+    }).catch(^(NSError *error) {
+        NSLog(@"Falied to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
+        return error;
+    });
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

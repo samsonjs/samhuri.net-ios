@@ -18,7 +18,6 @@
 @interface PostsViewController ()
 
 @property (strong, nonatomic) NSMutableArray *posts;
-@property (strong, nonatomic) EditorViewController *editorViewController;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *publishButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (weak, nonatomic) UILabel *titleLabel;
@@ -72,8 +71,8 @@
     }];
 }
 
-    self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
 - (void)setupBlogStatusTimer {
+    self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
 }
 
 - (void)teardownBlogStatusTimer {
@@ -84,7 +83,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     UINavigationController *detailNavController = self.splitViewController.viewControllers.lastObject;
-    self.editorViewController = (EditorViewController *)detailNavController.topViewController;
 }
 
 - (void)updateStatusLabel:(NSString *)blogStatus {
@@ -98,8 +96,7 @@
 }
 
 - (void)updateBlogStatus {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText,
-                                                       [self.blogStatusDate mm_relativeToNow]]];
+    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -161,10 +158,15 @@
 }
 
 - (IBAction)insertNewObject:(id)sender {
-    Post *post = [[Post alloc] initWithDictionary:@{@"draft": @(YES)} error:nil];
+    NSString *title = [UIPasteboard generalPasteboard].string;
+    NSURL *url = [UIPasteboard generalPasteboard].URL;
+    // TODO: image, anything else interesting
+    Post *post = [Post newDraftWithTitle:title body:nil url:url];
     [self.posts insertObject:post atIndex:0];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
+    [self performSegueWithIdentifier:@"showDetail" sender:sender];
 }
 
 - (IBAction)publish:(id)sender {
@@ -182,6 +184,16 @@
         [controller setPost:post];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+        controller.postUpdatedBlock = ^(Post *post) {
+            NSUInteger row = [self.posts indexOfObjectPassingTest:^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
+                return [p.objectID isEqualToString:post.objectID];
+            }];
+            if (row != NSNotFound) {
+                [self.posts replaceObjectAtIndex:row withObject:post];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        };
     }
 }
 
@@ -200,7 +212,7 @@
 
     Post *post = self.posts[indexPath.row];
     // FIXME: unique title
-    NSString *title = post.title ?: @"Untitled";
+    NSString *title = post.title.length ? post.title : @"Untitled";
     NSString *date = post.draft ? @"Draft" : post.formattedDate;
     [cell configureWithTitle:title date:date];
     return cell;

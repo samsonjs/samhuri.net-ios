@@ -41,56 +41,56 @@
     }];
 }
 
++ (instancetype)newDraftWithTitle:(NSString *)title body:(NSString *)body url:(NSURL *)url {
+    NSDictionary *fields = @{
+            @"new"   : @(YES),
+            @"draft" : @(YES),
+            @"title" : title ?: @"",
+            @"body"  : body ?: @"",
+            @"url"   : url ?: [NSNull null],
+    };
+    return [[self alloc] initWithDictionary:fields error:nil];
+}
+
 - (id)copyWithZone:(NSZone *)zone {
     return self;
 }
 
 - (instancetype)copyWithBody:(NSString *)body {
-    return [[Post alloc] initWithDictionary:@{@"objectID": self.objectID ?: [NSNull null],
-                                              @"slug": self.slug ?: [NSNull null],
-                                              @"author": self.author ?: [NSNull null],
-                                              @"title": self.title ?: [NSNull null],
-                                              @"date": self.date ?: [NSNull null],
-                                              @"body": body ?: [NSNull null],
-                                              @"path": self.path ?: [NSNull null],
-                                              @"url": self.url ?: [NSNull null],
-                                              @"draft": @(self.draft),
-                                              } error:nil];
+    return [self copyWithTitle:self.title body:body url:self.url];
 }
 
 - (instancetype)copyWithTitle:(NSString *)title {
-    return [[Post alloc] initWithDictionary:@{@"objectID": self.objectID ?: [NSNull null],
-                                              @"slug": self.slug ?: [NSNull null],
-                                              @"author": self.author ?: [NSNull null],
-                                              @"title": title ?: [NSNull null],
-                                              @"date": self.date ?: [NSNull null],
-                                              @"body": self.body ?: [NSNull null],
-                                              @"path": self.path ?: [NSNull null],
-                                              @"url": self.url ?: [NSNull null],
-                                              @"draft": @(self.draft),
-                                              } error:nil];
+    return [self copyWithTitle:title body:self.body url:self.url];
 }
 
 - (instancetype)copyWithURL:(NSURL *)url {
-    return [[Post alloc] initWithDictionary:@{@"objectID": self.objectID ?: [NSNull null],
-                                              @"slug": self.slug ?: [NSNull null],
-                                              @"author": self.author ?: [NSNull null],
-                                              @"title": self.title ?: [NSNull null],
-                                              @"date": self.date ?: [NSNull null],
-                                              @"body": self.body ?: [NSNull null],
-                                              @"path": self.path ?: [NSNull null],
-                                              @"url": url ?: [NSNull null],
-                                              @"draft": @(self.draft),
-                                              } error:nil];
+    return [self copyWithTitle:self.title body:self.body url:url];
+}
+
+- (instancetype)copyWithTitle:(NSString *)title body:(NSString *)body url:(NSURL *)url {
+    return [[Post alloc] initWithDictionary:@{
+            @"objectID" : self.objectID ?: [NSNull null],
+            @"slug"     : self.slug ?: [NSNull null],
+            @"author"   : self.author ?: [NSNull null],
+            @"title"    : title ?: [NSNull null],
+            @"date"     : self.date ?: [NSNull null],
+            @"body"     : body ?: [NSNull null],
+            @"path"     : self.path ?: [NSNull null],
+            @"url"      : url ?: [NSNull null],
+            @"draft"    : @(self.draft),
+            @"new"      : @(self.new),
+    }                                 error:nil];
 }
 
 - (BOOL)isEqualToPost:(Post *)other {
     return [self.objectID isEqualToString:other.objectID]
             && [self.path isEqualToString:other.path]
-            && [self.title isEqualToString:other.title]
-            && [self.body isEqualToString:other.body]
+            && ((!self.title && !other.title) || [self.title isEqual:other.title])
+            && ((!self.body && !other.body) || [self.body isEqual:other.body])
             && self.draft == other.draft
             && ((!self.url && !other.url) || [self.url isEqual:other.url]);
+    // include "new" here too?
 }
 
 - (BOOL)isEqual:(id)object {
@@ -154,7 +154,7 @@
         }
         else {
             NSAssert(self.slug && self.date, @"slug and date are required");
-            NSString *paddedMonth = [self paddedMonthForDate:self.date];
+            NSString *paddedMonth = [self paddedMonthForDate:self.time];
             _path = [NSString stringWithFormat:@"/posts/%ld/%@/%@", (long)self.time.mm_year, paddedMonth, self.slug];
         }
     }

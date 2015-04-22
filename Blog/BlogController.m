@@ -100,24 +100,20 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     }
 }
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link {
-    Post *post = [[Post alloc] initWithDictionary:@{@"objectID": draftID ?: [NSNull null],
-                                                    @"title": title ?: [NSNull null],
-                                                    @"body": body ?: [NSNull null],
-                                                    @"link": link ?: [NSNull null],
-                                                    @"draft": @YES,
-                                                    } error:nil];
-    return [_service requestCreateDraftWithID:draftID title:title body:body link:link].then(^(Post *post) {
+- (PMKPromise *)requestCreateDraft:(Post *)draft {
+    return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body
+                                         link:draft.url.absoluteString].then(^(Post *post) {
         [_store addDraft:post];
         return post;
     });
 }
 
-- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
-    return [_service requestUpdatePostWithPath:path title:title body:body link:link].then(^(Post *post) {
-        [_store savePost:post];
-        return post;
-    });
+- (PMKPromise *)requestUpdatePost:(Post *)post {
+    return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString]
+            .then(^(Post *post) {
+                [_store savePost:post];
+                return post;
+            });
 }
 
 - (PMKPromise *)requestPublishDraftWithPath:(NSString *)path {

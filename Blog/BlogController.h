@@ -21,6 +21,7 @@ extern NSString *BlogPostDeletedNotification;
 @class PMKPromise;
 @class ModelStore;
 @class BlogService;
+@class Post;
 
 @interface BlogController : NSObject
 
@@ -36,8 +37,8 @@ extern NSString *BlogPostDeletedNotification;
 - (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache;
 - (PMKPromise *)requestPostWithPath:(NSString *)path;
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link;
-- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link;
+- (PMKPromise *)requestCreateDraft:(Post *)draft;
+- (PMKPromise *)requestUpdatePost:(Post *)post;
 - (PMKPromise *)requestPublishDraftWithPath:(NSString *)path;
 - (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path;
 - (PMKPromise *)requestDeletePostWithPath:(NSString *)path;

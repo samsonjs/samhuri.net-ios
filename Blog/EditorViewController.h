@@ -15,5 +15,6 @@
 
 @property (strong, nonatomic) BlogController *blogController;
 @property (strong, nonatomic) Post *post;
+@property (copy, nonatomic) void (^postUpdatedBlock)(Post *post);
 
 @end
