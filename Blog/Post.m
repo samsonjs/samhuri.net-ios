@@ -27,6 +27,11 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
             @"objectID" : @"id",
+            @"slug"     : @"slug",
+            @"author"   : @"author",
+            @"title"    : @"title",
+            @"date"     : @"date",
+            @"body"     : @"body",
             @"path"     : @"url",
             @"url"      : @"link",
             @"time"     : @"", // ignore
@@ -34,9 +39,9 @@
 }
 
 + (NSValueTransformer *)urlJSONTransformer {
-    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^NSURL *(NSString *str) {
+    return [MTLValueTransformer transformerUsingForwardBlock:^NSURL *(NSString *str, BOOL *success, NSError **error) {
         return [NSURL URLWithString:str];
-    } reverseBlock:^NSString *(NSURL *url) {
+    } reverseBlock:^NSString *(NSURL *url, BOOL *success, NSError **error) {
         return [url absoluteString];
     }];
 }
