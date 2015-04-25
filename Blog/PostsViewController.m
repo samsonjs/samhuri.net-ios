@@ -47,6 +47,7 @@ static const NSUInteger SectionPublished = 1;
     }
 
     [self setupTitleView];
+    self.refreshControl.tintColor = [UIColor whiteColor];
 }
 
 - (void)setupTitleView {
