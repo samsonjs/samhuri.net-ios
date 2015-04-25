@@ -85,7 +85,7 @@
             @"url"      : url ?: [NSNull null],
             @"draft"    : @(self.draft),
             @"new"      : @(self.new),
-    }                                 error:nil];
+    } error:nil];
 }
 
 - (BOOL)isEqualToPost:(Post *)other {

@@ -48,7 +48,7 @@
                             </toolbar>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wrG-1y-ZY3">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="492"/>
-                                <color key="backgroundColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -116,6 +116,43 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="709" y="129"/>
+        </scene>
+        <!--Change Title View Controller-->
+        <scene sceneID="j4l-wz-jyJ">
+            <objects>
+                <viewController storyboardIdentifier="Change Title View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="iGU-Zs-0by" customClass="ChangeTitleViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TvQ-ee-aa5"/>
+                        <viewControllerLayoutGuide type="bottom" id="UG3-LY-P0T"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="B66-2b-lYL">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G2v-XU-V16">
+                                <rect key="frame" x="16" y="285" width="568" height="30"/>
+                                <color key="backgroundColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="iGU-Zs-0by" id="22s-mb-pJM"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="G2v-XU-V16" secondAttribute="centerX" id="1bq-IE-HrD"/>
+                            <constraint firstItem="G2v-XU-V16" firstAttribute="width" secondItem="B66-2b-lYL" secondAttribute="width" constant="-32" id="7ms-ZC-kzo"/>
+                            <constraint firstAttribute="centerY" secondItem="G2v-XU-V16" secondAttribute="centerY" id="Jnq-JZ-918"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="titleField" destination="G2v-XU-V16" id="jgw-Ix-HzP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wDc-x2-2jN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="709" y="884"/>
         </scene>
         <!--Preview-->
         <scene sceneID="MEA-t1-FD6">

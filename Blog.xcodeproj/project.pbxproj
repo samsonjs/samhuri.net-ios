@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */; };
 		1BCFCC637C63C780248D685E /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCB5C36F301B2B93F8069 /* PostCell.m */; };
 		1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */; };
 		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
@@ -49,6 +50,8 @@
 		1BCFCB18C8C8304D67E6462E /* PostCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollection.h; sourceTree = "<group>"; };
 		1BCFCB5C36F301B2B93F8069 /* PostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCell.m; sourceTree = "<group>"; };
 		1BCFCCF30594E0E2DCC32116 /* PostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCell.h; sourceTree = "<group>"; };
+		1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeTitleViewController.h; sourceTree = "<group>"; };
+		1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeTitleViewController.m; sourceTree = "<group>"; };
 		1BCFCFA1E7D4AFDA984693E1 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
 		7B5C4BD919F2606900667D48 /* Blog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blog.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +167,8 @@
 				1BCFCCF30594E0E2DCC32116 /* PostCell.h */,
 				1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */,
 				1BCFCB18C8C8304D67E6462E /* PostCollection.h */,
+				1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */,
+				1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -428,6 +433,7 @@
 				1BCFCC637C63C780248D685E /* PostCell.m in Sources */,
 				1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */,
 				1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */,
+				1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

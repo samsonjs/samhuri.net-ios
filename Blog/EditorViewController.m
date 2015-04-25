@@ -11,8 +11,9 @@
 #import "BlogController.h"
 #import "Post.h"
 #import "PreviewViewController.h"
+#import "ChangeTitleViewController.h"
 
-@interface EditorViewController () <UITextViewDelegate>
+@interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UILabel *titleView;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
@@ -57,6 +58,7 @@
 
 - (void)configureTitleView {
     self.titleView.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
+    [self.titleView sizeToFit];
 }
 
 - (void)viewDidLoad {
@@ -147,6 +149,38 @@
 
 - (void)updatePostURL:(NSURL *)url {
     self.modifiedPost = [self.modifiedPost copyWithURL:url];
+}
+
+- (IBAction)presentChangeTitle:(id)sender {
+    if (self.presentedViewController) {
+        return;
+    }
+
+    ChangeTitleViewController *changeTitleViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Change Title View Controller"];
+    changeTitleViewController.modalPresentationStyle = UIModalPresentationPopover;
+    changeTitleViewController.preferredContentSize = CGSizeMake(320, 60);
+    changeTitleViewController.articleTitle = self.modifiedPost.title;
+    UIPopoverPresentationController *presentationController = changeTitleViewController.popoverPresentationController;
+    presentationController.delegate = self;
+    presentationController.sourceView = self.view;
+    presentationController.sourceRect = CGRectMake(CGRectGetWidth(self.view.bounds) / 2, 0, 1, 1);
+    presentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    changeTitleViewController.dismissBlock = ^{
+        NSString *title = changeTitleViewController.articleTitle;
+        [self updatePostTitle:title];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    };
+    [self presentViewController:changeTitleViewController animated:YES completion:nil];
+}
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
+    return UIModalPresentationNone;
+}
+
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController {
+    ChangeTitleViewController *changeTitleViewController = (ChangeTitleViewController *)popoverPresentationController.presentedViewController;
+    NSString *title = changeTitleViewController.articleTitle;
+    [self updatePostTitle:title];
 }
 
 @end
