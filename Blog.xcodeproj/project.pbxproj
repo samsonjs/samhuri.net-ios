@@ -7,10 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1BCFC07F224F7BB568C1EE92 /* MuseoSans-500.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCB89F8C8583AE061757E /* MuseoSans-500.otf */; };
+		1BCFC349E4959199EB3872DA /* MuseoSans-300-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */; };
+		1BCFC56B50FFDC7782B79B7C /* MuseoSans-500-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCF38F59820D581E057A3 /* MuseoSans-500-Italic.otf */; };
+		1BCFC681892C7A6DF96DB65E /* MuseoSans-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */; };
+		1BCFCA0CE51B511304182C62 /* MuseoSans-300.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCEC8D56D29C6C3AE4380 /* MuseoSans-300.otf */; };
+		1BCFCB7B50DAE4885AE55B80 /* MuseoSans-100.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */; };
 		1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */; };
 		1BCFCC637C63C780248D685E /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCB5C36F301B2B93F8069 /* PostCell.m */; };
+		1BCFCD747F327FC361469D49 /* MuseoSans-100-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */; };
 		1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */; };
+		1BCFCE976D6638781FBA9942 /* MuseoSans-700.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */; };
+		1BCFCF2DAA6DDF2445F02F5A /* MuseoSans-900-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */; };
 		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
+		1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */; };
 		30089596C2F733D451A454E8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1613DC56A86AFA7E50460A37 /* libPods.a */; };
 		7B4070531AE46BC9000C2E43 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B5C4BDF19F2606900667D48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BDE19F2606900667D48 /* main.m */; };
@@ -47,11 +57,21 @@
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollection.m; sourceTree = "<group>"; };
+		1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900.otf"; sourceTree = "<group>"; };
+		1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-700.otf"; sourceTree = "<group>"; };
+		1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCB18C8C8304D67E6462E /* PostCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollection.h; sourceTree = "<group>"; };
 		1BCFCB5C36F301B2B93F8069 /* PostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCell.m; sourceTree = "<group>"; };
+		1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-100-Italic.otf"; sourceTree = "<group>"; };
+		1BCFCB89F8C8583AE061757E /* MuseoSans-500.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-500.otf"; sourceTree = "<group>"; };
+		1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-100.otf"; sourceTree = "<group>"; };
 		1BCFCCF30594E0E2DCC32116 /* PostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCell.h; sourceTree = "<group>"; };
+		1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-300-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeTitleViewController.h; sourceTree = "<group>"; };
+		1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-700-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeTitleViewController.m; sourceTree = "<group>"; };
+		1BCFCEC8D56D29C6C3AE4380 /* MuseoSans-300.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-300.otf"; sourceTree = "<group>"; };
+		1BCFCF38F59820D581E057A3 /* MuseoSans-500-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-500-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCFA1E7D4AFDA984693E1 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
 		7B5C4BD919F2606900667D48 /* Blog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blog.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +145,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		1BCFC29A0845EAB04BFDAD67 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */,
+				1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */,
+				1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */,
+				1BCFCEC8D56D29C6C3AE4380 /* MuseoSans-300.otf */,
+				1BCFCF38F59820D581E057A3 /* MuseoSans-500-Italic.otf */,
+				1BCFCB89F8C8583AE061757E /* MuseoSans-500.otf */,
+				1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */,
+				1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */,
+				1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */,
+				1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		7B5C4BD019F2606900667D48 = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +206,7 @@
 				1BCFCB18C8C8304D67E6462E /* PostCollection.h */,
 				1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */,
 				1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */,
+				1BCFC29A0845EAB04BFDAD67 /* Fonts */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -337,6 +375,16 @@
 				7B5C4BF019F2606900667D48 /* LaunchScreen.xib in Resources */,
 				7B5C4BED19F2606900667D48 /* Images.xcassets in Resources */,
 				7B4070531AE46BC9000C2E43 /* auth.json in Resources */,
+				1BCFCD747F327FC361469D49 /* MuseoSans-100-Italic.otf in Resources */,
+				1BCFCB7B50DAE4885AE55B80 /* MuseoSans-100.otf in Resources */,
+				1BCFC349E4959199EB3872DA /* MuseoSans-300-Italic.otf in Resources */,
+				1BCFCA0CE51B511304182C62 /* MuseoSans-300.otf in Resources */,
+				1BCFC56B50FFDC7782B79B7C /* MuseoSans-500-Italic.otf in Resources */,
+				1BCFC07F224F7BB568C1EE92 /* MuseoSans-500.otf in Resources */,
+				1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */,
+				1BCFCE976D6638781FBA9942 /* MuseoSans-700.otf in Resources */,
+				1BCFCF2DAA6DDF2445F02F5A /* MuseoSans-900-Italic.otf in Resources */,
+				1BCFC681892C7A6DF96DB65E /* MuseoSans-900.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

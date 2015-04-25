@@ -57,7 +57,7 @@ static const NSUInteger SectionPublished = 1;
     recognizer.numberOfTapsRequired = 2;
     [titleView addGestureRecognizer:recognizer];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    titleLabel.font = [UIFont fontWithName:@"MuseoSans-300" size:16];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];

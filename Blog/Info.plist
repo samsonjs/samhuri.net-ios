@@ -57,5 +57,18 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>MuseoSans-100-Italic.otf</string>
+		<string>MuseoSans-100.otf</string>
+		<string>MuseoSans-300-Italic.otf</string>
+		<string>MuseoSans-300.otf</string>
+		<string>MuseoSans-500-Italic.otf</string>
+		<string>MuseoSans-500.otf</string>
+		<string>MuseoSans-700-Italic.otf</string>
+		<string>MuseoSans-700.otf</string>
+		<string>MuseoSans-900-Italic.otf</string>
+		<string>MuseoSans-900.otf</string>
+	</array>
 </dict>
 </plist>
