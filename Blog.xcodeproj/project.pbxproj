@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1BCFCC637C63C780248D685E /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCB5C36F301B2B93F8069 /* PostCell.m */; };
 		1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */; };
+		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
 		30089596C2F733D451A454E8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1613DC56A86AFA7E50460A37 /* libPods.a */; };
 		7B4070531AE46BC9000C2E43 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B5C4BDF19F2606900667D48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BDE19F2606900667D48 /* main.m */; };
@@ -44,6 +45,8 @@
 /* Begin PBXFileReference section */
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollection.m; sourceTree = "<group>"; };
+		1BCFCB18C8C8304D67E6462E /* PostCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollection.h; sourceTree = "<group>"; };
 		1BCFCB5C36F301B2B93F8069 /* PostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCell.m; sourceTree = "<group>"; };
 		1BCFCCF30594E0E2DCC32116 /* PostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCell.h; sourceTree = "<group>"; };
 		1BCFCFA1E7D4AFDA984693E1 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
@@ -159,6 +162,8 @@
 				7B5C4BDC19F2606900667D48 /* Supporting Files */,
 				1BCFCB5C36F301B2B93F8069 /* PostCell.m */,
 				1BCFCCF30594E0E2DCC32116 /* PostCell.h */,
+				1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */,
+				1BCFCB18C8C8304D67E6462E /* PostCollection.h */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -422,6 +427,7 @@
 				7B9E644F1A23129B0072FF42 /* BlogStatus.m in Sources */,
 				1BCFCC637C63C780248D685E /* PostCell.m in Sources */,
 				1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */,
+				1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

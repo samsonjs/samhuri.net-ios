@@ -14,8 +14,11 @@
 
 @interface EditorViewController () <UITextViewDelegate>
 
+@property (nonatomic, weak) IBOutlet UILabel *titleView;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
+@property (strong, nonatomic) Post *modifiedPost;
+@property (strong, nonatomic) PMKPromise *savePromise;
 
 @end
 
@@ -26,28 +29,34 @@
 - (void)setPost:(id)newPost {
     if (_post != newPost) {
         _post = newPost;
+        self.modifiedPost = newPost;
         [self configureView];
     }
 }
 
 - (void)configureView {
     NSString *title = nil;
-    NSString *text = nil;
+    NSString *body = nil;
     CGPoint scrollOffset = CGPointZero;
-    if (self.post) {
+    Post *post = self.modifiedPost;
+    if (post) {
         // FIXME: date, status (draft, published)
-        title = self.post.title.length ? self.post.title : @"Untitled";
-        text = self.post.body;
+        body = post.body;
         // TODO: restore scroll offset for this post ... user defaults?
     }
-    self.navigationItem.title = title;
-    self.textView.text = text;
+    [self configureTitleView];
+    self.textView.text = body;
     self.textView.contentOffset = scrollOffset;
+    // TODO: url
 
-    BOOL toolbarEnabled = self.post != nil;
+    BOOL toolbarEnabled = post != nil;
     [self.toolbar.items enumerateObjectsUsingBlock:^(UIBarButtonItem *item, NSUInteger idx, BOOL *stop) {
         item.enabled = toolbarEnabled;
     }];
+}
+
+- (void)configureTitleView {
+    self.titleView.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
 }
 
 - (void)viewDidLoad {
@@ -57,63 +66,87 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(savePostBody) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(savePost) name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self savePostBody];
+    [self savePost];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-}
-
-- (PMKPromise *)savePostBody {
-    NSString *body = self.textView.text;
-    if (!self.post || !body.length) {
-        return [PMKPromise promiseWithValue:nil];
-    }
-
-    Post *newPost = [self.post copyWithBody:body];
-    if ([newPost isEqual:self.post]) {
-        return [PMKPromise promiseWithValue:self.post];
-    }
-
-    self.post = newPost;
-    NSString *path = self.post.path;
-    PMKPromise *savePromise;
-    NSString *verb;
-    if (self.post.new) {
-        verb = @"create";
-        savePromise = [self.blogController requestCreateDraft:self.post];
-    }
-    else {
-        verb = @"update";
-        savePromise = [self.blogController requestUpdatePost:self.post];
-    }
-    return savePromise.then(^(Post *post) {
-        NSLog(@"%@ post at path %@", verb, path);
-
-        // TODO: something better than this
-        // update our post because "new" may have changed, which is essential to correct operation
-        self.post = post;
-        [self configureView];
-        if (self.postUpdatedBlock) {
-            self.postUpdatedBlock(self.post);
-        }
-
-        return post;
-    }).catch(^(NSError *error) {
-        NSLog(@"Falied to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
-        return error;
-    });
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     [super prepareForSegue:segue sender:sender];
     if ([segue.identifier isEqualToString:@"showPreview"]) {
         PreviewViewController *previewViewController = segue.destinationViewController;
-        previewViewController.promise = [self savePostBody];
-        previewViewController.initialRequest = [self.blogController previewRequestWithPath:self.post.path];
+        previewViewController.promise = [self savePost];
+        previewViewController.initialRequest = [self.blogController previewRequestWithPath:self.modifiedPost.path];
+        return;
     }
+}
+
+- (PMKPromise *)savePost {
+    if (self.savePromise) {
+        return self.savePromise;
+    }
+
+    // TODO: persist on disk before going to the network
+    NSAssert(self.post, @"post is required");
+    [self updatePostBody];
+    if (!self.post.new && [self.modifiedPost isEqualToPost:self.post]) {
+        return [PMKPromise promiseWithValue:self.post];
+    }
+
+    Post *newPost = self.modifiedPost;
+    NSString *path = newPost.path;
+    PMKPromise *savePromise;
+    NSString *verb;
+    if (newPost.new) {
+        verb = @"create";
+        savePromise = [self.blogController requestCreateDraft:newPost];
+    }
+    else {
+        verb = @"update";
+        savePromise = [self.blogController requestUpdatePost:newPost];
+    }
+    self.savePromise = savePromise;
+    return savePromise.then(^{
+        NSLog(@"%@ post at path %@", verb, path);
+
+        // TODO: something better than this
+        // update our post because "new" may have changed, which is essential to correct operation
+        if ([self.modifiedPost isEqualToPost:newPost]) {
+            self.post = newPost;
+        }
+        else {
+            Post *modified = self.modifiedPost;
+            self.post = newPost;
+            self.modifiedPost = modified;
+            [self configureView];
+        }
+        if (self.postUpdatedBlock) {
+            self.postUpdatedBlock(self.post);
+        }
+        return newPost;
+    }).catch(^(NSError *error) {
+        NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
+        return error;
+    }).finally(^{
+        self.savePromise = nil;
+    });
+}
+
+- (void)updatePostBody {
+    self.modifiedPost = [self.modifiedPost copyWithBody:self.textView.text];
+}
+
+- (void)updatePostTitle:(NSString *)title {
+    self.modifiedPost = [self.modifiedPost copyWithTitle:title];
+    [self configureTitleView];
+}
+
+- (void)updatePostURL:(NSURL *)url {
+    self.modifiedPost = [self.modifiedPost copyWithURL:url];
 }
 
 @end

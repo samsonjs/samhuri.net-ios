@@ -81,10 +81,7 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
 }
 
 - (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache {
-    return [PMKPromise when:@[[self requestDraftsWithCaching:useCache], [self requestPublishedPostsWithCaching:useCache]]]
-            .then(^(NSArray *results) {
-                return [results.firstObject arrayByAddingObjectsFromArray:results.lastObject];
-            });
+    return [PMKPromise when:@[[self requestDraftsWithCaching:useCache], [self requestPublishedPostsWithCaching:useCache]]];
 }
 
 - (PMKPromise *)requestPostWithPath:(NSString *)path {
@@ -110,7 +107,7 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
 
 - (PMKPromise *)requestUpdatePost:(Post *)post {
     return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString]
-            .then(^(Post *post) {
+            .then(^{
                 [_store savePost:post];
                 return post;
             });

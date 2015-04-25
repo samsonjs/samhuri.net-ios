@@ -14,10 +14,14 @@
 #import "PostCell.h"
 #import "BlogStatus.h"
 #import "NSDate+marshmallows.h"
+#import "UIColor+Hex.h"
+#import "PostCollection.h"
 
 @interface PostsViewController ()
 
-@property (strong, nonatomic) NSMutableArray *posts;
+@property (strong, nonatomic) NSArray *postCollections;
+@property (strong, readonly, nonatomic) NSMutableArray *drafts;
+@property (strong, readonly, nonatomic) NSMutableArray *posts;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *publishButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (weak, nonatomic) UILabel *titleLabel;
@@ -28,7 +32,12 @@
 
 @end
 
+static const NSUInteger SectionDrafts = 0;
+static const NSUInteger SectionPublished = 1;
+
 @implementation PostsViewController
+
+@dynamic drafts, posts;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -103,7 +112,7 @@
     [super viewWillAppear:animated];
     [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
-    if (!self.posts) {
+    if (!self.postCollections) {
         [self requestPostsWithCaching:YES];
     }
 }
@@ -145,11 +154,30 @@
 }
 
 - (PMKPromise *)requestPostsWithCaching:(BOOL)useCache {
-    return [self.blogController requestAllPostsWithCaching:useCache].then(^(NSArray *posts) {
-        self.posts = [posts mutableCopy];
+    return [self.blogController requestAllPostsWithCaching:useCache].then(^(NSArray *results) {
+        self.postCollections = @[
+                [PostCollection postCollectionWithTitle:@"Drafts" posts:results.firstObject],
+                [PostCollection postCollectionWithTitle:@"Published" posts:results.lastObject],
+        ];
         [self.tableView reloadData];
-        return posts;
+        return results;
     });
+}
+
+- (PostCollection *)postCollectionForSection:(NSInteger)section {
+    return self.postCollections[section];
+}
+
+- (Post *)postForIndexPath:(NSIndexPath *)indexPath {
+    return [self postCollectionForSection:indexPath.section].posts[indexPath.row];
+}
+
+- (NSMutableArray *)drafts {
+    return [self postCollectionForSection:SectionDrafts].posts;
+}
+
+- (NSMutableArray *)posts {
+    return [self postCollectionForSection:SectionPublished].posts;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -162,8 +190,8 @@
     NSURL *url = [UIPasteboard generalPasteboard].URL;
     // TODO: image, anything else interesting
     Post *post = [Post newDraftWithTitle:title body:nil url:url];
-    [self.posts insertObject:post atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.drafts insertObject:post atIndex:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:SectionDrafts];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
     [self performSegueWithIdentifier:@"showDetail" sender:sender];
@@ -178,19 +206,26 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Post *post = self.posts[indexPath.row];
+        Post *post = [self postForIndexPath:indexPath];
         EditorViewController *controller = (EditorViewController *)[[segue destinationViewController] topViewController];
         controller.blogController = self.blogController;
-        [controller setPost:post];
+        controller.post = post;
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
         controller.postUpdatedBlock = ^(Post *post) {
-            NSUInteger row = [self.posts indexOfObjectPassingTest:^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
-                return [p.objectID isEqualToString:post.objectID];
-            }];
+            BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
+                        return [p.objectID isEqualToString:post.objectID];
+                    };
+            NSUInteger section = SectionDrafts;
+            NSUInteger row = [self.drafts indexOfObjectPassingTest:isThisPost];
+            if (row == NSNotFound) {
+                section = SectionPublished;
+                row = [self.posts indexOfObjectPassingTest:isThisPost];
+            }
             if (row != NSNotFound) {
-                [self.posts replaceObjectAtIndex:row withObject:post];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                PostCollection *collection = [self postCollectionForSection:section];
+                [collection.posts replaceObjectAtIndex:row withObject:post];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         };
@@ -200,20 +235,31 @@
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return self.postCollections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.posts.count;
+    return [self postCollectionForSection:section].posts.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [self postCollectionForSection:section].title;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return [super tableView:tableView viewForHeaderInSection:section];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+    UITableViewHeaderFooterView *headerView = [view isKindOfClass:[UITableViewHeaderFooterView class]] ? (UITableViewHeaderFooterView *)view : nil;
+    headerView.textLabel.textColor = [UIColor mm_colorFromInteger:0xF7F7F7];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    Post *post = self.posts[indexPath.row];
-    // FIXME: unique title
+    Post *post = [self postForIndexPath:indexPath];
     NSString *title = post.title.length ? post.title : @"Untitled";
-    NSString *date = post.draft ? @"Draft" : post.formattedDate;
+    NSString *date = post.draft ? @"" : post.formattedDate;
     [cell configureWithTitle:title date:date];
     return cell;
 }
@@ -225,7 +271,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.posts removeObjectAtIndex:indexPath.row];
+        PostCollection *collection = [self postCollectionForSection:indexPath.section];
+        [collection.posts removeObjectAtIndex:indexPath.row];
         // TODO: delete from server
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
