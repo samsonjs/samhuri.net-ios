@@ -103,14 +103,16 @@
 
 #pragma mark - UISplitViewDelegate methods
 
-- (BOOL)    splitViewController:(UISplitViewController *)splitViewController
-collapseSecondaryViewController:(UIViewController *)secondaryViewController
-      ontoPrimaryViewController:(UIViewController *)primaryViewController {
+id safeCast(id obj, __unsafe_unretained Class class) {
+    return [obj isKindOfClass:class] ? obj : nil;
+}
+
+- (BOOL) splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]]
-                                                   ? (UINavigationController *)secondaryViewController : nil;
-    if ([navigationController
-            .topViewController isKindOfClass:[EditorViewController class]] && ([(EditorViewController *)navigationController
-            .topViewController post] == nil)) {
+                                                   ? (UINavigationController *)secondaryViewController
+                                                   : nil;
+    EditorViewController *editorViewController = navigationController.topViewController ? safeCast(navigationController.topViewController, [EditorViewController class]) : nil;
+    if (!editorViewController.post) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
         return YES;
     }
