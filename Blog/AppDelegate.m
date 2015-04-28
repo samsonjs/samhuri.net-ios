@@ -14,6 +14,7 @@
 #import "ModelStore.h"
 #import "JSONHTTPClient.h"
 #import "BlogController.h"
+#import "Functions.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
@@ -77,7 +78,7 @@
     }
     NSLog(@"[WARNING] No auth.json found. Blog will be read-only.");
     return nil;
-};
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -102,10 +103,6 @@
 }
 
 #pragma mark - UISplitViewDelegate methods
-
-id safeCast(id obj, __unsafe_unretained Class class) {
-    return [obj isKindOfClass:class] ? obj : nil;
-}
 
 - (BOOL) splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]]

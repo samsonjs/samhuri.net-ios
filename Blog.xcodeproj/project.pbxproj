@@ -23,6 +23,7 @@
 		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
 		1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */; };
 		30089596C2F733D451A454E8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1613DC56A86AFA7E50460A37 /* libPods.a */; };
+		7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B43501AED5BA500BAC4E2 /* Functions.m */; };
 		7B4070531AE46BC9000C2E43 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B5C4BDF19F2606900667D48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BDE19F2606900667D48 /* main.m */; };
 		7B5C4BE219F2606900667D48 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BE119F2606900667D48 /* AppDelegate.m */; };
@@ -77,6 +78,8 @@
 		216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.debug.xcconfig"; sourceTree = "<group>"; };
 		52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.release.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.release.xcconfig"; sourceTree = "<group>"; };
 		7160E151335CBA3861FBD44D /* libPods-Blog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Blog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B2B434F1AED5BA500BAC4E2 /* Functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Functions.h; sourceTree = "<group>"; };
+		7B2B43501AED5BA500BAC4E2 /* Functions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Functions.m; sourceTree = "<group>"; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
 		7B5C4BD919F2606900667D48 /* Blog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5C4BDD19F2606900667D48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -214,6 +217,8 @@
 				1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */,
 				1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */,
 				1BCFC29A0845EAB04BFDAD67 /* Fonts */,
+				7B2B434F1AED5BA500BAC4E2 /* Functions.h */,
+				7B2B43501AED5BA500BAC4E2 /* Functions.m */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -482,6 +487,7 @@
 				7B9E64421A22F3840072FF42 /* BlogService.m in Sources */,
 				7B5C4BDF19F2606900667D48 /* main.m in Sources */,
 				7BF029331A27117200E42EDE /* ModelStore.m in Sources */,
+				7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */,
 				7BF029381A280CB200E42EDE /* BlogController.m in Sources */,
 				7B5C4BE819F2606900667D48 /* EditorViewController.m in Sources */,
 				7BE3A0351AE461E700E45CCB /* PreviewViewController.m in Sources */,
