@@ -58,7 +58,7 @@
                                 <color key="barTintColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </toolbar>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wrG-1y-ZY3">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="492"/>
+                                <rect key="frame" x="0.0" y="25" width="600" height="467"/>
                                 <color key="backgroundColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -68,36 +68,36 @@
                                     <outlet property="delegate" destination="JEX-9P-axG" id="vKD-HY-lGQ"/>
                                 </connections>
                             </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="http://samhuri.net" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UkA-he-S6k">
+                                <rect key="frame" x="16" y="4" width="568" height="17"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.7953414352" green="0.0" blue="0.013255690590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="wrG-1y-ZY3" secondAttribute="centerY" id="8IO-mb-1kq"/>
+                            <constraint firstItem="UkA-he-S6k" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leadingMargin" id="1qg-MA-LsX"/>
                             <constraint firstAttribute="width" secondItem="wrG-1y-ZY3" secondAttribute="width" id="8hl-Ab-ACB"/>
                             <constraint firstItem="YUD-Xe-6Cc" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="DLQ-Z3-h8m"/>
                             <constraint firstAttribute="centerX" secondItem="wrG-1y-ZY3" secondAttribute="centerX" id="FEY-jO-Mjl"/>
+                            <constraint firstItem="UkA-he-S6k" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="4" id="IFr-2C-sgA"/>
                             <constraint firstAttribute="centerX" secondItem="YUD-Xe-6Cc" secondAttribute="centerX" id="JTh-pp-5hr"/>
-                            <constraint firstAttribute="height" secondItem="wrG-1y-ZY3" secondAttribute="height" id="ORx-N8-ZLB"/>
-                            <constraint firstItem="SYR-Wa-9uf" firstAttribute="top" secondItem="wrG-1y-ZY3" secondAttribute="top" id="VlL-zs-EVE"/>
-                            <constraint firstAttribute="height" secondItem="YUD-Xe-6Cc" secondAttribute="height" id="dwI-2s-ERv"/>
-                            <constraint firstAttribute="height" secondItem="wrG-1y-ZY3" secondAttribute="height" id="ecu-u5-SXU"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="UkA-he-S6k" secondAttribute="trailing" id="cre-bi-Ah8"/>
                             <constraint firstItem="YUD-Xe-6Cc" firstAttribute="top" secondItem="wrG-1y-ZY3" secondAttribute="bottom" id="iTL-zi-eKI"/>
                             <constraint firstAttribute="width" secondItem="YUD-Xe-6Cc" secondAttribute="width" id="n19-6i-zpg"/>
-                            <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="tUU-ig-gJV"/>
+                            <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="25" id="tUU-ig-gJV"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="8IO-mb-1kq"/>
-                                <exclude reference="ORx-N8-ZLB"/>
-                                <exclude reference="ecu-u5-SXU"/>
-                                <exclude reference="VlL-zs-EVE"/>
-                                <exclude reference="dwI-2s-ERv"/>
-                            </mask>
-                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Article Title" id="mOI-FS-AaM">
-                        <barButtonItem key="backBarButtonItem" title=" " id="g7z-xe-9m6"/>
+                        <barButtonItem key="backBarButtonItem" title=" " id="KtM-fR-xtg"/>
+                        <barButtonItem key="rightBarButtonItem" title="Link" id="tGf-LU-fFC">
+                            <connections>
+                                <action selector="presentLinkActionSheet:" destination="JEX-9P-axG" id="fuj-e9-dVF"/>
+                            </connections>
+                        </barButtonItem>
                         <connections>
                             <outlet property="titleView" destination="udr-9h-BhX" id="t9J-lg-ow1"/>
                         </connections>
@@ -107,6 +107,7 @@
                         <outlet property="linkLabel" destination="UkA-he-S6k" id="Czh-uA-7KF"/>
                         <outlet property="publishBarButtonItem" destination="qEb-VA-ueB" id="biG-Yd-W5Z"/>
                         <outlet property="textView" destination="wrG-1y-ZY3" id="lvo-lm-t7Z"/>
+                        <outlet property="textViewTopConstraint" destination="tUU-ig-gJV" id="Wzj-Rc-kuM"/>
                         <outlet property="titleView" destination="udr-9h-BhX" id="fju-wx-M92"/>
                         <outlet property="toolbar" destination="YUD-Xe-6Cc" id="SIv-cT-WDD"/>
                     </connections>
