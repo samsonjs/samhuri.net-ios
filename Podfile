@@ -3,14 +3,14 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'Mantle'
-pod 'PromiseKit'
-pod 'YapDatabase'
-pod 'libextobjc'
-pod 'ObjectiveSugar'
+target :Blog do
+  pod 'Mantle'
+  pod 'PromiseKit'
+  pod 'YapDatabase'
+  pod 'libextobjc'
+  pod 'ObjectiveSugar'
+end
 
-# target 'Blog' do
-# end
-
-# target 'BlogTests' do
-# end
+target :BlogTests do
+  link_with :Blog
+end

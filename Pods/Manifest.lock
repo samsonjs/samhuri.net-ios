@@ -50,39 +50,39 @@ PODS:
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
   - OMGHTTPURLRQ/UserAgent (2.1)
-  - PromiseKit (1.5.1):
-    - PromiseKit/CALayer (= 1.5.1)
-    - PromiseKit/NSNotificationCenter (= 1.5.1)
-    - PromiseKit/NSURLConnection (= 1.5.1)
-    - PromiseKit/Pause (= 1.5.1)
-    - PromiseKit/UIActionSheet (= 1.5.1)
-    - PromiseKit/UIAlertView (= 1.5.1)
-    - PromiseKit/UIView (= 1.5.1)
-    - PromiseKit/UIViewController (= 1.5.1)
-    - PromiseKit/Until (= 1.5.1)
-    - PromiseKit/When (= 1.5.1)
-  - PromiseKit/CALayer (1.5.1):
+  - PromiseKit (1.5.2):
+    - PromiseKit/CALayer (= 1.5.2)
+    - PromiseKit/NSNotificationCenter (= 1.5.2)
+    - PromiseKit/NSURLConnection (= 1.5.2)
+    - PromiseKit/Pause (= 1.5.2)
+    - PromiseKit/UIActionSheet (= 1.5.2)
+    - PromiseKit/UIAlertView (= 1.5.2)
+    - PromiseKit/UIView (= 1.5.2)
+    - PromiseKit/UIViewController (= 1.5.2)
+    - PromiseKit/Until (= 1.5.2)
+    - PromiseKit/When (= 1.5.2)
+  - PromiseKit/CALayer (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/NSNotificationCenter (1.5.1):
+  - PromiseKit/NSNotificationCenter (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/NSURLConnection (1.5.1):
+  - PromiseKit/NSURLConnection (1.5.2):
     - OMGHTTPURLRQ
     - PromiseKit/Promise
-  - PromiseKit/Pause (1.5.1):
+  - PromiseKit/Pause (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/Promise (1.5.1)
-  - PromiseKit/UIActionSheet (1.5.1):
+  - PromiseKit/Promise (1.5.2)
+  - PromiseKit/UIActionSheet (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/UIAlertView (1.5.1):
+  - PromiseKit/UIAlertView (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/UIView (1.5.1):
+  - PromiseKit/UIView (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/UIViewController (1.5.1):
+  - PromiseKit/UIViewController (1.5.2):
     - PromiseKit/Promise
-  - PromiseKit/Until (1.5.1):
+  - PromiseKit/Until (1.5.2):
     - PromiseKit/Promise
     - PromiseKit/When
-  - PromiseKit/When (1.5.1):
+  - PromiseKit/When (1.5.2):
     - PromiseKit/Promise
   - YapDatabase (2.6.1):
     - YapDatabase/standard (= 2.6.1)
@@ -104,7 +104,7 @@ SPEC CHECKSUMS:
   Mantle: 17de73ef929db2234d76fde2aacfb89ab11c61e8
   ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
   OMGHTTPURLRQ: f8c515dfd2f57a5d74c710978f600231f52afec5
-  PromiseKit: b1145ebb1dd0780566952689191ea31466198ee8
+  PromiseKit: b333c1baae651ed1fdfb4f6f4ef18d7ca118931e
   YapDatabase: 13566c87dc9226a0f15d755edba08e8ad94cac9f
 
-COCOAPODS: 0.37.0.beta.1
+COCOAPODS: 0.36.4

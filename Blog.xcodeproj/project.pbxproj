@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AE178AE4B6EEE2C498E629B /* libPods-Blog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7160E151335CBA3861FBD44D /* libPods-Blog.a */; };
 		1BCFC07F224F7BB568C1EE92 /* MuseoSans-500.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCB89F8C8583AE061757E /* MuseoSans-500.otf */; };
 		1BCFC349E4959199EB3872DA /* MuseoSans-300-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */; };
 		1BCFC56B50FFDC7782B79B7C /* MuseoSans-500-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCF38F59820D581E057A3 /* MuseoSans-500-Italic.otf */; };
@@ -73,6 +74,9 @@
 		1BCFCEC8D56D29C6C3AE4380 /* MuseoSans-300.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-300.otf"; sourceTree = "<group>"; };
 		1BCFCF38F59820D581E057A3 /* MuseoSans-500-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-500-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCFA1E7D4AFDA984693E1 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.debug.xcconfig"; sourceTree = "<group>"; };
+		52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.release.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.release.xcconfig"; sourceTree = "<group>"; };
+		7160E151335CBA3861FBD44D /* libPods-Blog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Blog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
 		7B5C4BD919F2606900667D48 /* Blog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5C4BDD19F2606900667D48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -120,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30089596C2F733D451A454E8 /* libPods.a in Frameworks */,
+				1AE178AE4B6EEE2C498E629B /* libPods-Blog.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +146,8 @@
 				A2EB178BEF4356711B2710AE /* Pods.release.xcconfig */,
 				DAA4009DDF4B3F5BEEF9CC4C /* Pods-BlogTests.debug.xcconfig */,
 				AB1234AC662F1A1B7BD87AB0 /* Pods-BlogTests.release.xcconfig */,
+				216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */,
+				52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -282,6 +289,7 @@
 			children = (
 				1613DC56A86AFA7E50460A37 /* libPods.a */,
 				9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */,
+				7160E151335CBA3861FBD44D /* libPods-Blog.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -455,7 +463,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Blog/Pods-Blog-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -603,7 +611,7 @@
 		};
 		7B5C4C0019F2606900667D48 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D1F0F9D6D1DB6188AF81A066 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -616,7 +624,7 @@
 		};
 		7B5C4C0119F2606900667D48 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2EB178BEF4356711B2710AE /* Pods.release.xcconfig */;
+			baseConfigurationReference = 52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -628,7 +636,6 @@
 		};
 		7B5C4C0319F2606900667D48 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DAA4009DDF4B3F5BEEF9CC4C /* Pods-BlogTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -648,7 +655,6 @@
 		};
 		7B5C4C0419F2606900667D48 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB1234AC662F1A1B7BD87AB0 /* Pods-BlogTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
