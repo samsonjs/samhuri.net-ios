@@ -104,7 +104,7 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
 }
 
 - (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path {
-    return [self.client post:[self urlFor:@"%@/unpublish", path] headers:nil];
+    return [self.client post:[self urlFor:@"%@/unpublish", path] headers:nil].then([self decodePostBlock]);
 }
 
 - (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
