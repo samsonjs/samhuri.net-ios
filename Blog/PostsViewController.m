@@ -90,11 +90,6 @@ static const NSUInteger SectionPublished = 1;
     self.blogStatusTimer = nil;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    UINavigationController *detailNavController = self.splitViewController.viewControllers.lastObject;
-}
-
 - (void)updateStatusLabel:(NSString *)blogStatus {
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:blogStatus]) {
         self.statusLabel.text = blogStatus;
