@@ -18,6 +18,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *titleView;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *publishBarButtonItem;
 @property (strong, nonatomic) Post *modifiedPost;
 @property (strong, nonatomic) PMKPromise *savePromise;
 
@@ -54,6 +55,7 @@
     [self.toolbar.items enumerateObjectsUsingBlock:^(UIBarButtonItem *item, NSUInteger idx, BOOL *stop) {
         item.enabled = toolbarEnabled;
     }];
+    self.publishBarButtonItem.title = self.modifiedPost.draft ? @"Publish" : @"Unpublish";
 }
 
 - (void)configureTitleView {
@@ -149,6 +151,28 @@
 
 - (void)updatePostURL:(NSURL *)url {
     self.modifiedPost = [self.modifiedPost copyWithURL:url];
+}
+
+- (IBAction)publishOrUnpublish:(id)sender {
+    // TODO: prevent changes while publishing
+    [self savePost].then(^{
+        PMKPromise *promise = nil;
+        Post *post = self.modifiedPost;
+        if (post.draft) {
+            promise = [self.blogController requestPublishDraftWithPath:post.path];
+        }
+        else {
+            promise = [self.blogController requestUnpublishPostWithPath:post.path];
+        }
+        promise.then(^(Post *post) {
+            self.post = post;
+            self.modifiedPost = post;
+            [self configureView];
+            if (self.postUpdatedBlock) {
+                self.postUpdatedBlock(post);
+            }
+        });
+    });
 }
 
 - (IBAction)presentChangeTitle:(id)sender {
