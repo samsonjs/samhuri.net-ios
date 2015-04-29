@@ -18,7 +18,9 @@
 @property (nonatomic, weak) IBOutlet UILabel *titleView;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *textViewTopConstraint;
-@property (nonatomic, weak) IBOutlet UILabel *linkLabel;
+@property (nonatomic, weak) IBOutlet UIView *linkView;
+@property (nonatomic, weak) IBOutlet UIButton *linkButton;
+@property (nonatomic, weak) IBOutlet UIButton *removeLinkButton;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *publishBarButtonItem;
 @property (strong, nonatomic) Post *modifiedPost;
@@ -52,20 +54,22 @@
 
 - (void)configureLinkView {
     NSURL *url = self.modifiedPost.url;
-    if (url) {
-        self.linkLabel.text = url.absoluteString;
-        self.linkLabel.alpha = 0;
-        [UIView animateWithDuration:0.3 animations:^{
-            self.linkLabel.alpha = 1;
-            self.textViewTopConstraint.constant = CGRectGetMaxY(self.linkLabel.frame) + 4;
-        }];
+    if (url || [self pasteboardHasLink]) {
+        NSString *title = url ? url.absoluteString : @"Add Link from Pasteboard";
+        [self.linkButton setTitle:title forState:UIControlStateNormal];
+        self.removeLinkButton.hidden = !url;
+        if (self.textViewTopConstraint.constant <= FLT_EPSILON) {
+            self.linkView.alpha = 0;
+            [UIView animateWithDuration:0.3 animations:^{
+                self.linkView.alpha = 1;
+                self.textViewTopConstraint.constant = CGRectGetMaxY(self.linkView.frame);
+            }];
+        }
     }
-    else {
+    else if (self.textViewTopConstraint.constant > FLT_EPSILON) {
         [UIView animateWithDuration:0.3 animations:^{
-            self.linkLabel.alpha = 0;
+            self.linkView.alpha = 0;
             self.textViewTopConstraint.constant = 0;
-        } completion:^(BOOL finished) {
-            self.linkLabel.text = nil;
         }];
     }
 }
@@ -99,6 +103,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(savePost) name:UIApplicationWillResignActiveNotification object:nil];
+    if ([self pasteboardHasLink]) {
+        [self configureLinkView];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -257,51 +264,22 @@
 
 #pragma mark - Link management
 
-- (IBAction)presentLinkActionSheet:(id)sender {
-    if (self.presentedViewController) {
-        return;
-    }
-
+- (IBAction)tappedLinkButton:(id)sender {
     NSURL *currentURL = self.modifiedPost.url;
-
-    // If nothing to add or remove, then don't present the action sheet.
-    if (!currentURL && ![self pasteboardHasLink]) {
-        [self showAlertWithTitle:@"No Link Found" message:@"Copy a link to the pasteboard to add it."];
-        return;
-    }
-
-    UIAlertController *menuController = [UIAlertController alertControllerWithTitle:nil message:currentURL.absoluteString preferredStyle:UIAlertControllerStyleActionSheet];
-
-    // Cancel
-    [menuController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }]];
-
-    // Add/Replace from Pasteboard
-    NSString *addVerb = self.modifiedPost.link ? @"Replace" : @"Add";
-    if ([self pasteboardHasLink]) {
-        NSString *title = [NSString stringWithFormat:@"%@ from Pasteboard", addVerb];
-        __weak __typeof__(self) welf = self;
-        [menuController addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            __typeof__(self) self = welf;
-            [self dismissViewControllerAnimated:YES completion:^{
-                [self addLinkFromPasteboard];
-            }];
-        }]];
-    }
-
-    // Remove Link
     if (currentURL) {
-        __weak __typeof__(self) welf = self;
-        [menuController addAction:[UIAlertAction actionWithTitle:@"Remove Link" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            __typeof__(self) self = welf;
-            [self dismissViewControllerAnimated:YES completion:^{
-                [self updatePostURL:nil];
-            }];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"TODO" message:@"show a web browser" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
         }]];
+        [self presentViewController:alertController animated:YES completion:nil];
     }
+    else {
+        [self addLinkFromPasteboard];
+    }
+}
 
-    [self presentViewController:menuController animated:YES completion:nil];
+- (IBAction)removeLink:(id)sender {
+    [self updatePostURL:nil];
 }
 
 - (BOOL)pasteboardHasLink {
