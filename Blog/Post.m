@@ -31,6 +31,7 @@
             @"author"   : @"author",
             @"title"    : @"title",
             @"date"     : @"date",
+            @"draft"    : @"draft",
             @"body"     : @"body",
             @"path"     : @"url",
             @"url"      : @"link",
