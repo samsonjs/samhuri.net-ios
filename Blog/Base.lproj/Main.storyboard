@@ -141,9 +141,6 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Article Title" id="mOI-FS-AaM">
                         <barButtonItem key="backBarButtonItem" title=" " id="KtM-fR-xtg"/>
-                        <connections>
-                            <outlet property="titleView" destination="udr-9h-BhX" id="t9J-lg-ow1"/>
-                        </connections>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
@@ -153,26 +150,10 @@
                         <outlet property="removeLinkButton" destination="81X-Pe-PFV" id="Rx0-IH-fzp"/>
                         <outlet property="textView" destination="wrG-1y-ZY3" id="lvo-lm-t7Z"/>
                         <outlet property="textViewTopConstraint" destination="tUU-ig-gJV" id="Wzj-Rc-kuM"/>
-                        <outlet property="titleView" destination="udr-9h-BhX" id="fju-wx-M92"/>
                         <outlet property="toolbar" destination="YUD-Xe-6Cc" id="SIv-cT-WDD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
-                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Article Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="udr-9h-BhX">
-                    <rect key="frame" x="0.0" y="0.0" width="42" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
-                    <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <nil key="highlightedColor"/>
-                    <connections>
-                        <outletCollection property="gestureRecognizers" destination="Q2W-ie-6Yt" appends="YES" id="tLA-f1-v4Z"/>
-                    </connections>
-                </label>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="Q2W-ie-6Yt">
-                    <connections>
-                        <action selector="presentChangeTitle:" destination="JEX-9P-axG" id="WUd-1z-k2N"/>
-                    </connections>
-                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="709" y="129"/>
         </scene>

@@ -15,7 +15,9 @@
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
-@property (nonatomic, weak) IBOutlet UILabel *titleView;
+@property (nonatomic, weak) UIView *titleView;
+@property (nonatomic, weak) UILabel *titleLabel;
+@property (nonatomic, weak) UILabel *statusLabel;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *textViewTopConstraint;
 @property (nonatomic, weak) IBOutlet UIView *linkView;
@@ -23,12 +25,50 @@
 @property (nonatomic, weak) IBOutlet UIButton *removeLinkButton;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *publishBarButtonItem;
-@property (strong, nonatomic) Post *modifiedPost;
-@property (strong, nonatomic) PMKPromise *savePromise;
+@property (nonatomic, strong) Post *modifiedPost;
+@property (nonatomic, readonly, assign, getter=isDirty) BOOL dirty;
+@property (nonatomic, strong) PMKPromise *savePromise;
 
 @end
 
 @implementation EditorViewController
+
+- (void)setupTitleView {
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 275, 44)];
+    titleView.userInteractionEnabled = YES;
+    UILongPressGestureRecognizer *gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(presentChangeTitle:)];
+    [titleView addGestureRecognizer:gestureRecognizer];
+    self.navigationItem.titleView = titleView;
+    self.titleView = titleView;
+
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.text = self.navigationItem.title;
+    [titleLabel sizeToFit];
+    [titleView addSubview:titleLabel];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:titleView attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterY multiplier:1 constant:-8]];
+    self.titleLabel = titleLabel;
+
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    subtitleLabel.font = [UIFont systemFontOfSize:11];
+    subtitleLabel.textColor = [UIColor whiteColor];
+    [titleView addSubview:subtitleLabel];
+    self.statusLabel = subtitleLabel;
+
+    [self.view setNeedsLayout];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [UIView animateWithDuration:0.3 animations:^{
+        CGFloat width = CGRectGetWidth(self.titleView.bounds);
+        self.statusLabel.center = CGPointMake(width / 2, CGRectGetMaxY(self.titleLabel.frame) + 6 + (CGRectGetHeight(self.statusLabel.bounds) / 2));
+    }];
+}
 
 #pragma mark - Managing the detail item
 
@@ -48,8 +88,21 @@
 }
 
 - (void)configureTitleView {
-    self.titleView.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
-    [self.titleView sizeToFit];
+    self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
+    [self.titleLabel sizeToFit];
+    NSString *statusText = [self statusText];
+    if (self.statusLabel && ![self.statusLabel.text isEqualToString:statusText]) {
+        self.statusLabel.text = statusText;
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.statusLabel sizeToFit];
+        }];
+        [self.view setNeedsLayout];
+    }
+}
+
+- (NSString *)statusText;
+{
+    return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
 }
 
 - (void)configureLinkView {
@@ -97,6 +150,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupTitleView];
     [self configureView];
 }
 
@@ -122,6 +176,11 @@
         previewViewController.initialRequest = [self.blogController previewRequestWithPath:self.modifiedPost.path];
         return;
     }
+}
+
+- (BOOL)isDirty;
+{
+    return self.modifiedPost.new || ![self.modifiedPost isEqualToPost:self.post];
 }
 
 - (PMKPromise *)savePost {
