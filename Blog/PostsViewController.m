@@ -280,11 +280,15 @@ static const NSUInteger SectionPublished = 1;
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         PostCollection *collection = [self postCollectionForSection:indexPath.section];
-        [collection.posts removeObjectAtIndex:indexPath.row];
-        // TODO: delete from server
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        Post *post = [self postForIndexPath:indexPath];
+        // TODO: activity indicator
+        [self.blogController requestDeletePostWithPath:post.path].then(^{
+            [collection.posts removeObjectAtIndex:indexPath.row];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        });
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // TODO: determine when this is called and see if we actually need it
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
