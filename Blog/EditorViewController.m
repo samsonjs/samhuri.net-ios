@@ -166,6 +166,8 @@
     [super viewWillAppear:animated];
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     if ([self pasteboardHasLink]) {
         [self configureLinkView];
     }
@@ -175,6 +177,8 @@
     [super viewWillDisappear:animated];
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [self savePost];
 }
 
@@ -193,7 +197,27 @@
 - (void)applicationWillResignActive:(NSNotification *)note {
     [self savePost];
 }
+
+- (void)keyboardWillShow:(NSNotification *)note {
+    [self showHideKeyboardButton];
+}
+
+- (void)keyboardWillHide:(NSNotification *)note {
+    [self hideHideKeyboardButton];
+}
+
 #pragma mark -
+
+- (void)showHideKeyboardButton;
+{
+    UIBarButtonItem *hideKeyboardItem = [[UIBarButtonItem alloc] initWithTitle:@"^^" style:UIBarButtonItemStylePlain target:self.textView action:@selector(resignFirstResponder)];
+    self.navigationItem.rightBarButtonItem = hideKeyboardItem;
+}
+
+- (void)hideHideKeyboardButton;
+{
+    self.navigationItem.rightBarButtonItem = nil;
+}
 
 - (BOOL)isDirty;
 {
