@@ -194,7 +194,19 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (IBAction)publish:(id)sender {
-    NSLog(@"publish");
+    // TODO: activity indicator, maybe show an action sheet to select Staging or Production?
+    self.publishButton.enabled = NO;
+    [self.blogController requestPublishToStagingEnvironment].then(^{
+        [self requestStatusWithoutCaching];
+    }).catch(^(NSError *error) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }).finally(^{
+        self.publishButton.enabled = YES;
+    });
 }
 
 #pragma mark - Segues

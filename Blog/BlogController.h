@@ -43,4 +43,7 @@ extern NSString *BlogPostDeletedNotification;
 - (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path;
 - (PMKPromise *)requestDeletePostWithPath:(NSString *)path;
 
+- (PMKPromise *)requestPublishToStagingEnvironment;
+- (PMKPromise *)requestPublishToProductionEnvironment;
+
 @end

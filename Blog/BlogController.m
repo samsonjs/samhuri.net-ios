@@ -137,4 +137,12 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
     });
 }
 
+- (PMKPromise *)requestPublishToStagingEnvironment {
+    return [_service requestPublishEnvironment:@"staging"];
+}
+
+- (PMKPromise *)requestPublishToProductionEnvironment {
+    return [_service requestPublishEnvironment:@"production"];
+}
+
 @end
