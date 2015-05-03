@@ -110,7 +110,7 @@ NSString *const JSONHTTPClientErrorDomain = @"JSONHTTPClientErrorDomain";
         [request setValue:headers[key] forHTTPHeaderField:key];
     }
     if (data) {
-        [request setValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-Length"];
+        [request setValue:[NSString stringWithFormat:@"%@", @([data length])] forHTTPHeaderField:@"Content-Length"];
         [request setHTTPBody:data];
     }
     return request;
