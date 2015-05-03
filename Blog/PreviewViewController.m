@@ -38,6 +38,39 @@
     [self.webView loadHTMLString:@"<!doctype html><html><head><title></title></head><body></body></html>" baseURL:nil];
 }
 
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.initialRequest forKey:@"initialRequest"];
+    [coder encodeObject:self.webView.request.URL forKey:@"webView.request.URL"];
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSURL *url = [coder decodeObjectForKey:@"webView.request.URL"];
+    if (url) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+    }
+    else {
+        self.initialRequest = [coder decodeObjectForKey:@"initialRequest"];
+    }
+    [super decodeRestorableStateWithCoder:coder];
+}
+
 #pragma mark - UIWebViewDelegate methods
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    if ([webView.request.URL isEqual:self.initialRequest.URL]) {
+        self.initialRequest = nil;
+    }
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+    __weak __typeof__(self) welf = self;
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        __typeof__(self) self = welf;
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
 
 @end

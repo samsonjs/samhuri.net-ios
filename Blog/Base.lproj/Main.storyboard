@@ -32,7 +32,7 @@
         <!--Editor-->
         <scene sceneID="yUG-lL-AsK">
             <objects>
-                <viewController storyboardIdentifier="Detail View Controller" title="Editor" useStoryboardIdentifierAsRestorationIdentifier="YES" id="JEX-9P-axG" customClass="EditorViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Editor View Controller" title="Editor" useStoryboardIdentifierAsRestorationIdentifier="YES" id="JEX-9P-axG" customClass="EditorViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="SYR-Wa-9uf"/>
                         <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
@@ -120,7 +120,7 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wrG-1y-ZY3">
                                 <rect key="frame" x="0.0" y="30" width="600" height="462"/>
                                 <color key="backgroundColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <mutableString key="text">The latest technology I've been learning is Palm's SDK for webOS,
+                                <string key="text">The latest technology I've been learning is Palm's SDK for webOS,
 Mojo. My first impression is that it's a great platform and
 Palm could do a great job of 2.0 if they cut down on some of the
 verbosity of gluing together the UI. I have learned to like
@@ -154,7 +154,7 @@ support for Emacs](http://www.emacswiki.org/emacs/MojoSdk)
 which provided a great base to get
 started with. There are wrappers around (all?) of the Palm SDK
 commands but it needed a bit of work to make it just do what I
-wanted with as little input and thought as possible.</mutableString>
+wanted with as little input and thought as possible.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="MuseoSans-300" family="Museo Sans" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -293,7 +293,7 @@ wanted with as little input and thought as possible.</mutableString>
         <!--Posts-->
         <scene sceneID="smW-Zh-WAh">
             <objects>
-                <tableViewController storyboardIdentifier="Master View Controller" title="Posts" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7bK-jq-Zjz" customClass="PostsViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Posts View Controller" title="Posts" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7bK-jq-Zjz" customClass="PostsViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

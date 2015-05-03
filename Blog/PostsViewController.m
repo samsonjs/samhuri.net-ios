@@ -217,7 +217,7 @@ static const NSUInteger SectionPublished = 1;
         Post *post = [self postForIndexPath:indexPath];
         EditorViewController *controller = (EditorViewController *)[[segue destinationViewController] topViewController];
         controller.blogController = self.blogController;
-        controller.post = post;
+        [controller configureWithPost:post];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
         controller.postUpdatedBlock = ^(Post *post) {
@@ -238,6 +238,26 @@ static const NSUInteger SectionPublished = 1;
             }
         };
     }
+}
+
+#pragma mark - State restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
+    NSLog(@"%@ encode restorable state with coder %@", self, coder);
+    [coder encodeObject:self.postCollections forKey:@"postCollections"];
+    [coder encodeObject:self.blogStatusDate forKey:@"blogStatusDate"];
+    [coder encodeObject:self.blogStatusText forKey:@"blogStatusText"];
+    [coder encodeCGPoint:self.tableView.contentOffset forKey:@"tableView.contentOffset"];
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"%@ decode restorable state with coder %@", self, coder);
+    self.postCollections = [coder decodeObjectForKey:@"postCollections"];
+    self.blogStatusDate = [coder decodeObjectForKey:@"blogStatusDate"];
+    self.blogStatusText = [coder decodeObjectForKey:@"blogStatusText"];
+    self.tableView.contentOffset = [coder decodeCGPointForKey:@"tableView.contentOffset"];
+    [super decodeRestorableStateWithCoder:coder];
 }
 
 #pragma mark - Table View

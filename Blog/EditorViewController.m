@@ -73,10 +73,13 @@
 
 #pragma mark - Managing the detail item
 
-- (void)setPost:(id)newPost {
-    if (_post != newPost) {
-        _post = newPost;
-        self.modifiedPost = newPost;
+- (void)configureWithPost:(Post *)post {
+    if (self.modifiedPost && ![self.modifiedPost isEqualToPost:self.post]) {
+        NSLog(@"WARNING: clobbering unsaved changes to %@", self.modifiedPost);
+    }
+    if (![post isEqual:self.post]) {
+        self.post = post;
+        self.modifiedPost = post;
         [self configureView];
     }
 }
@@ -206,6 +209,20 @@
     [self hideHideKeyboardButton];
 }
 
+#pragma mark - State restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.post forKey:@"post"];
+    [coder encodeObject:self.modifiedPost forKey:@"modifiedPost"];
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
+    self.post = [coder decodeObjectForKey:@"post"];
+    self.modifiedPost = [coder decodeObjectForKey:@"modifiedPost"];
+    [super decodeRestorableStateWithCoder:coder];
+}
+
 #pragma mark -
 
 - (void)showHideKeyboardButton;
@@ -263,15 +280,7 @@
 
         // TODO: something better than this
         // update our post because "new" may have changed, which is essential to correct operation
-        if ([self.modifiedPost isEqualToPost:newPost]) {
-            self.post = newPost;
-        }
-        else {
-            Post *modified = self.modifiedPost;
-            self.post = newPost;
-            self.modifiedPost = modified;
-            [self configureView];
-        }
+        self.post = newPost;
         if (self.postUpdatedBlock) {
             self.postUpdatedBlock(self.post);
         }

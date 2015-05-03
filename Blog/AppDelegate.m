@@ -102,6 +102,27 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder {
+    // TODO: version
+    NSLog(@"should restore state with coder %@", coder);
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder {
+    // TODO: version
+    NSLog(@"should save application state with coder %@", coder);
+    return YES;
+}
+
+- (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"will encode restorable state with coder %@", coder);
+}
+
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"did decode restorable state with coder %@", coder);
+}
+
+
 #pragma mark - UISplitViewDelegate methods
 
 - (BOOL) splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
@@ -117,7 +138,5 @@
         return NO;
     }
 }
-
-#pragma mark - AppObjectDelegate methods
 
 @end

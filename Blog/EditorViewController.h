@@ -17,4 +17,6 @@
 @property (strong, nonatomic) Post *post;
 @property (copy, nonatomic) void (^postUpdatedBlock)(Post *post);
 
+- (void)configureWithPost:(Post *)post;
+
 @end

@@ -19,4 +19,18 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _title = [coder decodeObjectForKey:@"title"];
+        _posts = [coder decodeObjectForKey:@"posts"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.title forKey:@"title"];
+    [coder encodeObject:self.posts forKey:@"posts"];
+}
+
 @end

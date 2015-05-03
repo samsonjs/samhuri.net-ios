@@ -4,7 +4,7 @@
 //
 @import Foundation;
 
-@interface PostCollection : NSObject
+@interface PostCollection : NSObject <NSCoding>
 
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSMutableArray *posts;
