@@ -9,6 +9,7 @@ target :Blog do
   pod 'YapDatabase'
   pod 'libextobjc'
   pod 'ObjectiveSugar'
+  pod 'dyci'
 end
 
 target :BlogTests do
