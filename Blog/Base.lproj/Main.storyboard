@@ -49,6 +49,12 @@
                                             <action selector="publishOrUnpublish:" destination="JEX-9P-axG" id="Vxe-Fp-IDn"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gv8-wH-bFT"/>
+                                    <barButtonItem systemItem="save" id="7iR-uF-xqE">
+                                        <connections>
+                                            <action selector="save:" destination="JEX-9P-axG" id="gnN-zi-lxN"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="dZ8-jR-S40"/>
                                     <barButtonItem title="Preview" id="uGx-Jy-rOz">
                                         <connections>
@@ -148,6 +154,7 @@
                         <outlet property="linkView" destination="D5w-s5-7oj" id="iRD-md-Gea"/>
                         <outlet property="publishBarButtonItem" destination="qEb-VA-ueB" id="biG-Yd-W5Z"/>
                         <outlet property="removeLinkButton" destination="81X-Pe-PFV" id="Rx0-IH-fzp"/>
+                        <outlet property="saveBarButtonItem" destination="7iR-uF-xqE" id="8A5-PY-EuS"/>
                         <outlet property="textView" destination="wrG-1y-ZY3" id="lvo-lm-t7Z"/>
                         <outlet property="textViewTopConstraint" destination="tUU-ig-gJV" id="Wzj-Rc-kuM"/>
                         <outlet property="toolbar" destination="YUD-Xe-6Cc" id="SIv-cT-WDD"/>

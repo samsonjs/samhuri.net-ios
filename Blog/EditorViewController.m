@@ -25,6 +25,7 @@
 @property (nonatomic, weak) IBOutlet UIButton *removeLinkButton;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *publishBarButtonItem;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *saveBarButtonItem;
 @property (nonatomic, strong) Post *modifiedPost;
 @property (nonatomic, readonly, assign, getter=isDirty) BOOL dirty;
 @property (nonatomic, strong) PMKPromise *savePromise;
@@ -146,6 +147,13 @@
         item.enabled = toolbarEnabled;
     }];
     self.publishBarButtonItem.title = self.modifiedPost.draft ? @"Publish" : @"Unpublish";
+    [self configureSaveButton];
+}
+
+- (void)configureSaveButton {
+    self.saveBarButtonItem.enabled = self.dirty;
+    self.saveBarButtonItem.title = self.dirty ? @"Save" : nil;
+    [self.toolbar setItems:self.toolbar.items animated:YES];
 }
 
 - (void)viewDidLoad {
@@ -156,7 +164,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(savePost) name:UIApplicationWillResignActiveNotification object:nil];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     if ([self pasteboardHasLink]) {
         [self configureLinkView];
     }
@@ -164,7 +173,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [self savePost];
 }
 
@@ -177,6 +187,13 @@
         return;
     }
 }
+
+#pragma mark - Notification handlers
+
+- (void)applicationWillResignActive:(NSNotification *)note {
+    [self savePost];
+}
+#pragma mark -
 
 - (BOOL)isDirty;
 {
@@ -208,6 +225,15 @@
         savePromise = [self.blogController requestUpdatePost:newPost];
     }
     self.savePromise = savePromise;
+
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    [indicatorView startAnimating];
+    UIBarButtonItem *indicatorItem = [[UIBarButtonItem alloc] initWithCustomView:indicatorView];
+    NSMutableArray *items = [self.toolbar.items mutableCopy];
+    UIBarButtonItem *saveItem = self.saveBarButtonItem; // get a strong reference since the property is weak and we're removing it
+    [items replaceObjectAtIndex:[items indexOfObject:saveItem] withObject:indicatorItem];
+    [self.toolbar setItems:items animated:NO];
+
     return savePromise.then(^{
         NSLog(@"%@ post at path %@", verb, path);
 
@@ -231,11 +257,14 @@
         return error;
     }).finally(^{
         self.savePromise = nil;
+        [items replaceObjectAtIndex:[items indexOfObject:indicatorItem] withObject:saveItem];
+        [self.toolbar setItems:items animated:NO];
     });
 }
 
 - (void)updatePostBody {
     self.modifiedPost = [self.modifiedPost copyWithBody:self.textView.text];
+    [self configureSaveButton];
 }
 
 - (void)updatePostTitle:(NSString *)title {
@@ -268,6 +297,10 @@
             }
         });
     });
+}
+
+- (IBAction)save:(id)sender {
+    [self savePost];
 }
 
 - (IBAction)presentChangeTitle:(id)sender {
@@ -353,6 +386,12 @@
     else {
         [self showAlertWithTitle:@"Error" message:@"No link found on pasteboard"];
     }
+}
+
+#pragma mark - UITextViewDelegate methods
+
+- (void)textViewDidChange:(UITextView *)textView {
+    [self updatePostBody];
 }
 
 @end
