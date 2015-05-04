@@ -185,6 +185,8 @@
     NSAssert(self.blogController, @"blogController is required");
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(configureLinkView) name:UIPasteboardChangedNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(postDeleted:) name:DraftRemovedNotification object:nil];
@@ -196,6 +198,8 @@
     [super viewWillDisappear:animated];
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [notificationCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [notificationCenter removeObserver:self name:UIPasteboardChangedNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
@@ -220,6 +224,12 @@
 - (void)applicationWillResignActive:(NSNotification *)note {
     if (self.post) {
         [self savePost];
+    }
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)note {
+    if (self.post) {
+        [self configureView];
     }
 }
 
