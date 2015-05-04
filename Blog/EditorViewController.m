@@ -253,6 +253,8 @@
         return [PMKPromise promiseWithValue:self.post];
     }
 
+    self.textView.editable = NO;
+
     Post *newPost = self.modifiedPost;
     NSString *path = newPost.path;
     PMKPromise *savePromise;
@@ -288,6 +290,7 @@
         NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
         return error;
     }).finally(^{
+        self.textView.editable = YES;
         self.savePromise = nil;
         [items replaceObjectAtIndex:[items indexOfObject:indicatorItem] withObject:saveItem];
         [self.toolbar setItems:items animated:NO];
