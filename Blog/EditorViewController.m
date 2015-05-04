@@ -84,6 +84,10 @@
     }
 }
 
+- (void)updateOnClassInjection {
+    [self configureView];
+}
+
 - (void)configureView {
     [self configureTitleView];
     [self configureLinkView];

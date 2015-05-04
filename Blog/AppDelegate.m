@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
+#import <dyci/SFDynamicCodeInjection.h>
 #import "AppDelegate.h"
 #import "PostsViewController.h"
 #import "EditorViewController.h"
@@ -23,12 +24,25 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self configureCodeInjection];
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
     [self setupBlogController];
     return YES;
+}
+
+- (void)configureCodeInjection {
+    __block BOOL codeInjectionEnabled = NO;
+    [[[NSProcessInfo processInfo] arguments] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isEqual:@"EnableCodeInjection"]) {
+            codeInjectionEnabled = YES;
+        }
+    }];
+    if (!codeInjectionEnabled) {
+        [NSClassFromString(@"SFDynamicCodeInjection") performSelector:@selector(disable)];
+    }
 }
 
 - (PostsViewController *)postsViewController {
