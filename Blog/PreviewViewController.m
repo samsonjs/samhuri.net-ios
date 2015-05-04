@@ -21,9 +21,12 @@
 
     if (self.initialRequest) {
         if (self.promise) {
+            __weak __typeof__(self) welf = self;
             self.promise.then(^{
+                __typeof__(self) self = welf;
                 [self.webView loadRequest:self.initialRequest];
             }).finally(^{
+                __typeof__(self) self = welf;
                 self.promise = nil;
             });
         }

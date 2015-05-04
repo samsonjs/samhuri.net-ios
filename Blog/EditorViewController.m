@@ -277,7 +277,9 @@
     [items replaceObjectAtIndex:[items indexOfObject:saveItem] withObject:indicatorItem];
     [self.toolbar setItems:items animated:NO];
 
+    __weak __typeof__(self) welf = self;
     return savePromise.then(^{
+        __typeof__(self) self = welf;
         NSLog(@"%@ post at path %@", verb, path);
 
         // update our post because "new" may have changed, which is essential to correct operation
@@ -290,6 +292,7 @@
         NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
         return error;
     }).finally(^{
+        __typeof__(self) self = welf;
         self.textView.editable = YES;
         self.savePromise = nil;
         [items replaceObjectAtIndex:[items indexOfObject:indicatorItem] withObject:saveItem];
@@ -314,7 +317,9 @@
 
 - (IBAction)publishOrUnpublish:(id)sender {
     // TODO: prevent changes while publishing
+    __weak __typeof__(self) welf = self;
     [self savePost].then(^{
+        __typeof__(self) self = welf;
         PMKPromise *promise = nil;
         Post *post = self.modifiedPost;
         if (post.draft) {
@@ -395,7 +400,9 @@
     NSURL *currentURL = self.modifiedPost.url;
     if (currentURL) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"TODO" message:@"show a web browser" preferredStyle:UIAlertControllerStyleAlert];
+        __weak __typeof__(self) welf = self;
         [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            __typeof__(self) self = welf;
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
         [self presentViewController:alertController animated:YES completion:nil];

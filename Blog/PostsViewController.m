@@ -200,7 +200,9 @@ static const NSUInteger SectionPublished = 1;
         [self requestStatusWithoutCaching];
     }).catch(^(NSError *error) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+        __weak __typeof__(self) welf = self;
         [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            __typeof__(self) self = welf;
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
         [self presentViewController:alertController animated:YES completion:nil];
@@ -220,7 +222,9 @@ static const NSUInteger SectionPublished = 1;
         [controller configureWithPost:post];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+        __weak __typeof__(self) welf = self;
         controller.postUpdatedBlock = ^(Post *post) {
+            __typeof__(self) self = welf;
             BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
                         return [p.objectID isEqualToString:post.objectID];
                     };
