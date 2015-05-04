@@ -208,21 +208,41 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (IBAction)publish:(id)sender {
-    // TODO: activity indicator, maybe show an action sheet to select Staging or Production?
-    self.publishButton.enabled = NO;
-    [self.blogController requestPublishToStagingEnvironment].then(^{
-        [self requestStatusWithoutCaching];
-    }).catch(^(NSError *error) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-        __weak __typeof__(self) welf = self;
-        [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            __typeof__(self) self = welf;
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }]];
-        [self presentViewController:alertController animated:YES completion:nil];
-    }).finally(^{
-        self.publishButton.enabled = YES;
-    });
+    // TODO: activity indicator
+    __weak __typeof__(self) welf = self;
+    void (^publish)(PMKPromise *) = ^(PMKPromise *promise) {
+        self.publishButton.enabled = NO;
+        __typeof__(self) self = welf;
+        promise.then(^{
+            [self requestStatusWithoutCaching];
+        }).catch(^(NSError *error) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+            __weak __typeof__(self) welf = self;
+            [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                __typeof__(self) self = welf;
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }]];
+            [self presentViewController:alertController animated:YES completion:nil];
+        }).finally(^{
+            self.publishButton.enabled = YES;
+        });
+    };
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Publish" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Production" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        __typeof__(self) self = welf;
+        [self dismissViewControllerAnimated:YES completion:nil];
+        publish([self.blogController requestPublishToProductionEnvironment]);
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Staging" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        __typeof__(self) self = welf;
+        [self dismissViewControllerAnimated:YES completion:nil];
+        publish([self.blogController requestPublishToStagingEnvironment]);
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        __typeof__(self) self = welf;
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)postUpdated:(NSNotification *)note {
