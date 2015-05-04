@@ -13,6 +13,9 @@
 #import "PreviewViewController.h"
 #import "ChangeTitleViewController.h"
 #import "ModelStore.h"
+#import "UIImage+FontAwesome.h"
+#import "NSString+FontAwesome.h"
+#import "UIColor+Hex.h"
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
@@ -22,6 +25,7 @@
 @property (nonatomic, weak) IBOutlet UITextView *textView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *textViewTopConstraint;
 @property (nonatomic, weak) IBOutlet UIView *linkView;
+@property (nonatomic, weak) IBOutlet UIButton *linkIconButton;
 @property (nonatomic, weak) IBOutlet UIButton *linkButton;
 @property (nonatomic, weak) IBOutlet UIButton *removeLinkButton;
 @property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
@@ -168,6 +172,12 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     [self setupTitleView];
+    [self setupFontAwesomeIcons];
+}
+
+- (void)setupFontAwesomeIcons {
+    [self.linkIconButton setTitle:[NSString fontAwesomeIconStringForEnum:FALink] forState:UIControlStateNormal];
+    [self.removeLinkButton setTitle:[NSString fontAwesomeIconStringForEnum:FATimesCircle] forState:UIControlStateNormal];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -253,7 +263,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (void)showHideKeyboardButton;
 {
-    UIImage *image = [UIImage imageNamed:@"HideKeyboard"];
+    UIImage *image = [UIImage imageWithIcon:@"fa-chevron-up" backgroundColor:[UIColor clearColor] iconColor:[UIColor mm_colorFromInteger:0xAA0000] fontSize:20];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     [button setImage:image forState:UIControlStateNormal];

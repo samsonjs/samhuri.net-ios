@@ -17,6 +17,7 @@
 #import "UIColor+Hex.h"
 #import "PostCollection.h"
 #import "ModelStore.h"
+#import "UIImage+FontAwesome.h"
 
 @interface PostsViewController ()
 
@@ -48,6 +49,7 @@ static const NSUInteger SectionPublished = 1;
     }
 
     [self setupTitleView];
+    [self setupFontAwesomeIcons];
     self.refreshControl.tintColor = [UIColor whiteColor];
 }
 
@@ -71,6 +73,15 @@ static const NSUInteger SectionPublished = 1;
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
     [self.view setNeedsLayout];
+}
+
+- (void)setupFontAwesomeIcons {
+    UIImage *image = [UIImage imageWithIcon:@"fa-rss" backgroundColor:[UIColor clearColor] iconColor:[UIColor mm_colorFromInteger:0xAA0000] fontSize:20];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setImage:image forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(publish:) forControlEvents:UIControlEventTouchUpInside];
+    button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.publishButton.customView = button;
 }
 
 - (void)viewDidLayoutSubviews {
