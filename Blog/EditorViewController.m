@@ -12,6 +12,7 @@
 #import "Post.h"
 #import "PreviewViewController.h"
 #import "ChangeTitleViewController.h"
+#import "ModelStore.h"
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
@@ -74,7 +75,7 @@
 #pragma mark - Managing the detail item
 
 - (void)configureWithPost:(Post *)post {
-    if (![post isEqual:self.post]) {
+    if (!(post && [post isEqual:self.post])) {
         self.post = post;
         self.modifiedPost = post;
         [self configureView];
@@ -93,6 +94,12 @@
 }
 
 - (void)configureTitleView {
+    if (!self.post) {
+        self.titleLabel.text = nil;
+        self.statusLabel.text = nil;
+        return;
+    }
+
     self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
     NSString *statusText = [self statusText];
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:statusText]) {
@@ -111,7 +118,7 @@
 
 - (void)configureLinkView {
     NSURL *url = self.modifiedPost.url;
-    if (url || [self pasteboardHasLink]) {
+    if (self.post && url || [self pasteboardHasLink]) {
         NSString *title = url ? url.absoluteString : @"Add Link from Pasteboard";
         [self.linkButton setTitle:title forState:UIControlStateNormal];
         self.removeLinkButton.hidden = !url;
@@ -136,7 +143,6 @@
     CGPoint scrollOffset = CGPointZero;
     Post *post = self.modifiedPost;
     if (post) {
-        // FIXME: date, status (draft, published)
         body = post.body;
         // TODO: restore scroll offset for this post ... user defaults?
     }
@@ -166,10 +172,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    NSAssert(self.blogController, @"blogController is required");
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(postDeleted:) name:DraftRemovedNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(postDeleted:) name:PublishedPostRemovedNotification object:nil];
     [self configureView];
 }
 
@@ -179,6 +188,8 @@
     [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
+    [notificationCenter removeObserver:self name:PublishedPostRemovedNotification object:nil];
     [self savePost];
 }
 
@@ -206,6 +217,13 @@
 
 - (void)keyboardWillHide:(NSNotification *)note {
     [self hideHideKeyboardButton];
+}
+
+- (void)postDeleted:(NSNotification *)note {
+    NSString *path = note.userInfo[PostPathUserInfoKey];
+    if ([path isEqualToString:self.post.path]) {
+        [self configureWithPost:nil];
+    }
 }
 
 #pragma mark - State restoration
@@ -247,7 +265,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (BOOL)isDirty;
 {
-    return self.modifiedPost.new || ![self.modifiedPost isEqualToPost:self.post];
+    return self.post && (self.modifiedPost.new || ![self.modifiedPost isEqualToPost:self.post]);
 }
 
 - (PMKPromise *)savePost {
@@ -293,9 +311,6 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
         // update our post because "new" may have changed, which is essential to correct operation
         [self configureWithPost:newPost];
-        if (self.postUpdatedBlock) {
-            self.postUpdatedBlock(self.post);
-        }
         return newPost;
     }).catch(^(NSError *error) {
         NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
@@ -332,18 +347,15 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
         PMKPromise *promise = nil;
         Post *post = self.modifiedPost;
         if (post.draft) {
-            promise = [self.blogController requestPublishDraftWithPath:post.path];
+            promise = [self.blogController requestPublishDraft:post];
         }
         else {
-            promise = [self.blogController requestUnpublishPostWithPath:post.path];
+            promise = [self.blogController requestUnpublishPost:post];
         }
         promise.then(^(Post *post) {
             self.post = post;
             self.modifiedPost = post;
             [self configureView];
-            if (self.postUpdatedBlock) {
-                self.postUpdatedBlock(post);
-            }
         });
     });
 }

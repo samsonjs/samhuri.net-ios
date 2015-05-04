@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *const PostUpdatedNotification;
+extern NSString *const DraftRemovedNotification;
+extern NSString *const DraftAddedNotification;
+extern NSString *const PublishedPostAddedNotification;
+extern NSString *const PublishedPostRemovedNotification;
+extern NSString *const PostUserInfoKey;
+extern NSString *const PostPathUserInfoKey;
+
 @class PMKPromise;
 @class YapDatabaseConnection;
 @class BlogStatus;
@@ -31,7 +39,7 @@
 - (PMKPromise *)addDraft:(Post *)post;
 - (PMKPromise *)addPublishedPost:(Post *)post;
 
-- (PMKPromise *)removeDraftWithPath:(NSString *)path;
-- (PMKPromise *)removePostWithPath:(NSString *)path;
+- (PMKPromise *)removeDraft:(Post *)post;
+- (PMKPromise *)removePost:(Post *)post;
 
 @end

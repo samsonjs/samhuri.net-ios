@@ -16,6 +16,7 @@
 #import "NSDate+marshmallows.h"
 #import "UIColor+Hex.h"
 #import "PostCollection.h"
+#import "ModelStore.h"
 
 @interface PostsViewController ()
 
@@ -106,6 +107,7 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postUpdated:) name:PostUpdatedNotification object:nil];
     [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
     if (!self.postCollections) {
@@ -115,6 +117,7 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PostUpdatedNotification object:nil];
     [self teardownBlogStatusTimer];
 }
 
@@ -211,6 +214,25 @@ static const NSUInteger SectionPublished = 1;
     });
 }
 
+- (void)postUpdated:(NSNotification *)note {
+    Post *post = note.userInfo[PostUserInfoKey];
+    BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
+        return [p.objectID isEqualToString:post.objectID];
+    };
+    NSUInteger section = SectionDrafts;
+    NSUInteger row = [self.drafts indexOfObjectPassingTest:isThisPost];
+    if (row == NSNotFound) {
+        section = SectionPublished;
+        row = [self.publishedPosts indexOfObjectPassingTest:isThisPost];
+    }
+    if (row != NSNotFound) {
+        PostCollection *collection = [self postCollectionForSection:section];
+        [collection.posts replaceObjectAtIndex:row withObject:post];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -222,25 +244,6 @@ static const NSUInteger SectionPublished = 1;
         [controller configureWithPost:post];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
-        __weak __typeof__(self) welf = self;
-        controller.postUpdatedBlock = ^(Post *post) {
-            __typeof__(self) self = welf;
-            BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
-                        return [p.objectID isEqualToString:post.objectID];
-                    };
-            NSUInteger section = SectionDrafts;
-            NSUInteger row = [self.drafts indexOfObjectPassingTest:isThisPost];
-            if (row == NSNotFound) {
-                section = SectionPublished;
-                row = [self.publishedPosts indexOfObjectPassingTest:isThisPost];
-            }
-            if (row != NSNotFound) {
-                PostCollection *collection = [self postCollectionForSection:section];
-                [collection.posts replaceObjectAtIndex:row withObject:post];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-        };
     }
 }
 
@@ -308,7 +311,7 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
         PostCollection *collection = [self postCollectionForSection:indexPath.section];
         Post *post = [self postForIndexPath:indexPath];
         // TODO: activity indicator
-        [self.blogController requestDeletePostWithPath:post.path].then(^{
+        [self.blogController requestDeletePost:post].then(^{
             [collection.posts removeObjectAtIndex:indexPath.row];
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         });

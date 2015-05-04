@@ -13,6 +13,14 @@
 #import "Post.h"
 #import "NSArray+ObjectiveSugar.h"
 
+NSString *const PostUpdatedNotification = @"PostUpdatedNotification";
+NSString *const DraftRemovedNotification = @"DraftRemovedNotification";
+NSString *const DraftAddedNotification = @"DraftAddedNotification";
+NSString *const PublishedPostAddedNotification = @"PublishedPostAddedNotification";
+NSString *const PublishedPostRemovedNotification = @"PublishedPostRemovedNotification";
+NSString *const PostUserInfoKey = @"PostUserInfoKey";
+NSString *const PostPathUserInfoKey = @"PostPathUserInfoKey";
+
 @implementation ModelStore {
     YapDatabaseConnection *_connection;
 }
@@ -43,11 +51,16 @@
 - (PMKPromise *)saveBlogStatus:(BlogStatus *)blogStatus {
     return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-            [transaction setObject:blogStatus forKey:@"status" inCollection:@"BlogStatus" withMetadata:@{@"timestamp": @([NSDate date].timeIntervalSince1970)}];
+            [transaction setObject:blogStatus forKey:@"status" inCollection:@"BlogStatus" withMetadata:@{@"timestamp" : @([NSDate date].timeIntervalSince1970)}];
         } completionBlock:^{
             fulfill(blogStatus);
         }];
     }];
+}
+
+- (void)postPostUpdatedNotificationForPost:(Post *)post {
+    NSDictionary *info = @{PostPathUserInfoKey : post.path, PostUserInfoKey : post};
+    [[NSNotificationCenter defaultCenter] postNotificationName:PostUpdatedNotification object:self userInfo:info];
 }
 
 - (Post *)postWithPath:(NSString *)path {
@@ -63,6 +76,7 @@
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
             [transaction setObject:post forKey:post.path inCollection:@"Post"];
         } completionBlock:^{
+            [self postPostUpdatedNotificationForPost:post];
             fulfill(post);
         }];
     }];
@@ -111,21 +125,25 @@
                 [transaction setObject:postPaths forKey:@"drafts" inCollection:@"PostCollection"];
             }
         } completionBlock:^{
+            NSDictionary *info = @{PostPathUserInfoKey : post.path, PostUserInfoKey : post};
+            [[NSNotificationCenter defaultCenter] postNotificationName:DraftAddedNotification object:self userInfo:info];
             fulfill(post);
         }];
     }];
 }
 
-- (PMKPromise *)removeDraftWithPath:(NSString *)path {
+- (PMKPromise *)removeDraft:(Post *)post {
     return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
             NSMutableArray *postPaths = [[transaction objectForKey:@"drafts" inCollection:@"PostCollection"] mutableCopy];
-            if ([postPaths containsObject:path]) {
-                [postPaths removeObject:path];
+            if ([postPaths containsObject:post.path]) {
+                [postPaths removeObject:post.path];
                 [transaction setObject:postPaths forKey:@"drafts" inCollection:@"PostCollection"];
             }
         } completionBlock:^{
-            fulfill(path);
+            NSDictionary *info = @{PostPathUserInfoKey : post.path, PostUserInfoKey : post};
+            [[NSNotificationCenter defaultCenter] postNotificationName:DraftRemovedNotification object:self userInfo:info];
+            fulfill(post);
         }];
     }];
 }
@@ -174,21 +192,25 @@
                 [transaction setObject:postPaths forKey:@"published" inCollection:@"PostCollection"];
             }
         } completionBlock:^{
+            NSDictionary *info = @{PostPathUserInfoKey : post.path, PostUserInfoKey : post};
+            [[NSNotificationCenter defaultCenter] postNotificationName:PublishedPostAddedNotification object:self userInfo:info];
             fulfill(post);
         }];
     }];
 }
 
-- (PMKPromise *)removePostWithPath:(NSString *)path {
+- (PMKPromise *)removePost:(Post *)post {
     return [PMKPromise new:^(PMKPromiseFulfiller fulfill, PMKPromiseRejecter reject) {
         [_connection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
             NSMutableArray *postPaths = [[transaction objectForKey:@"published" inCollection:@"PostCollection"] mutableCopy];
-            if ([postPaths containsObject:path]) {
-                [postPaths removeObject:path];
+            if ([postPaths containsObject:post.path]) {
+                [postPaths removeObject:post.path];
                 [transaction setObject:postPaths forKey:@"published" inCollection:@"PostCollection"];
             }
         } completionBlock:^{
-            fulfill(path);
+            NSDictionary *info = @{PostPathUserInfoKey : post.path, PostUserInfoKey : post};
+            [[NSNotificationCenter defaultCenter] postNotificationName:PublishedPostRemovedNotification object:self userInfo:info];
+            fulfill(post);
         }];
     }];
 }

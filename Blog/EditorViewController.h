@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong) BlogController *blogController;
 @property (nonatomic, strong) Post *post;
-@property (nonatomic, copy) void (^postUpdatedBlock)(Post *post);
 
 - (void)configureWithPost:(Post *)post;
 

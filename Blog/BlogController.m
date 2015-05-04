@@ -13,16 +13,6 @@
 #import "BlogStatus.h"
 #import "Post.h"
 
-NSString *BlogStatusChangedNotification = @"BlogStatusChangedNotification";
-NSString *BlogDraftsChangedNotification = @"BlogDraftsChangedNotification";
-NSString *BlogDraftAddedNotification = @"BlogDraftAddedNotification";
-NSString *BlogDraftRemovedNotification = @"BlogDraftRemovedNotification";
-NSString *BlogPublishedPostsChangedNotification = @"BlogPublishedPostsChangedNotification";
-NSString *BlogPublishedPostAddedNotification = @"BlogPostAddedNotification";
-NSString *BlogPublishedPostRemovedNotification = @"BlogPostRemovedNotification";
-NSString *BlogPostChangedNotification = @"BlogPostChangedNotification";
-NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
-
 @implementation BlogController {
     BlogService *_service;
     ModelStore *_store;
@@ -113,26 +103,26 @@ NSString *BlogPostDeletedNotification = @"BlogPostDeletedNotification";
             });
 }
 
-- (PMKPromise *)requestPublishDraftWithPath:(NSString *)path {
-    return [_service requestPublishDraftWithPath:path].then(^(Post *post) {
-        [_store removeDraftWithPath:path];
+- (PMKPromise *)requestPublishDraft:(Post *)post {
+    return [_service requestPublishDraftWithPath:post.path].then(^(Post *post) {
+        [_store removeDraft:post];
         [_store addPublishedPost:post];
         return post;
     });
 }
 
-- (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path {
-    return [_service requestUnpublishPostWithPath:path].then(^(Post *post) {
-        [_store removePostWithPath:path];
+- (PMKPromise *)requestUnpublishPost:(Post *)post {
+    return [_service requestUnpublishPostWithPath:post.path].then(^(Post *post) {
+        [_store removePost:post];
         [_store addDraft:post];
         return post;
     });
 }
 
-- (PMKPromise *)requestDeletePostWithPath:(NSString *)path {
-    return [_service requestDeletePostWithPath:path].then(^(id _) {
-        [_store removePostWithPath:path];
-        [_store removeDraftWithPath:path];
+- (PMKPromise *)requestDeletePost:(Post *)post {
+    return [_service requestDeletePostWithPath:post.path].then(^(id _) {
+        [_store removePost:post];
+        [_store removeDraft:post];
         return _;
     });
 }

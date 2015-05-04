@@ -8,16 +8,6 @@
 
 @import Foundation;
 
-extern NSString *BlogStatusChangedNotification;
-extern NSString *BlogDraftsChangedNotification;
-extern NSString *BlogDraftAddedNotification;
-extern NSString *BlogDraftRemovedNotification;
-extern NSString *BlogPublishedPostsChangedNotification;
-extern NSString *BlogPublishedPostAddedNotification;
-extern NSString *BlogPublishedPostRemovedNotification;
-extern NSString *BlogPostChangedNotification;
-extern NSString *BlogPostDeletedNotification;
-
 @class PMKPromise;
 @class ModelStore;
 @class BlogService;
@@ -39,9 +29,9 @@ extern NSString *BlogPostDeletedNotification;
 
 - (PMKPromise *)requestCreateDraft:(Post *)draft;
 - (PMKPromise *)requestUpdatePost:(Post *)post;
-- (PMKPromise *)requestPublishDraftWithPath:(NSString *)path;
-- (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path;
-- (PMKPromise *)requestDeletePostWithPath:(NSString *)path;
+- (PMKPromise *)requestPublishDraft:(Post *)post;
+- (PMKPromise *)requestUnpublishPost:(Post *)post;
+- (PMKPromise *)requestDeletePost:(Post *)post;
 
 - (PMKPromise *)requestPublishToStagingEnvironment;
 - (PMKPromise *)requestPublishToProductionEnvironment;
