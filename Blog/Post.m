@@ -63,18 +63,22 @@
 }
 
 - (instancetype)copyWithBody:(NSString *)body {
-    return [self copyWithTitle:self.title body:body url:self.url];
+    return [self copyWithTitle:self.title body:body url:self.url new:self.new];
 }
 
 - (instancetype)copyWithTitle:(NSString *)title {
-    return [self copyWithTitle:title body:self.body url:self.url];
+    return [self copyWithTitle:title body:self.body url:self.url new:self.new];
 }
 
 - (instancetype)copyWithURL:(NSURL *)url {
-    return [self copyWithTitle:self.title body:self.body url:url];
+    return [self copyWithTitle:self.title body:self.body url:url new:self.new];
 }
 
-- (instancetype)copyWithTitle:(NSString *)title body:(NSString *)body url:(NSURL *)url {
+- (instancetype)copyWithNew:(BOOL)isNew {
+    return [self copyWithTitle:self.title body:self.body url:self.url new:isNew];
+}
+
+- (instancetype)copyWithTitle:(NSString *)title body:(NSString *)body url:(NSURL *)url new:(BOOL)isNew {
     return [[Post alloc] initWithDictionary:@{
             @"objectID" : self.objectID ?: [NSNull null],
             @"slug"     : self.slug ?: [NSNull null],
@@ -85,7 +89,7 @@
             @"path"     : self.path ?: [NSNull null],
             @"url"      : url ?: [NSNull null],
             @"draft"    : @(self.draft),
-            @"new"      : @(self.new),
+            @"new"      : @(isNew),
     } error:nil];
 }
 

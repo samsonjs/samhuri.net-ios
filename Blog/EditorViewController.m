@@ -74,9 +74,6 @@
 #pragma mark - Managing the detail item
 
 - (void)configureWithPost:(Post *)post {
-    if (self.modifiedPost && ![self.modifiedPost isEqualToPost:self.post]) {
-        NSLog(@"WARNING: clobbering unsaved changes to %@", self.modifiedPost);
-    }
     if (![post isEqual:self.post]) {
         self.post = post;
         self.modifiedPost = post;

@@ -29,6 +29,7 @@
 - (instancetype)copyWithBody:(NSString *)body;
 - (instancetype)copyWithTitle:(NSString *)title;
 - (instancetype)copyWithURL:(NSURL *)url;
+- (instancetype)copyWithNew:(BOOL)isNew;
 - (BOOL)isEqualToPost:(Post *)other;
 
 @end
