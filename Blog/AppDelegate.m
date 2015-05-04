@@ -19,21 +19,28 @@
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
+@property (nonatomic, readonly, strong) BlogController *blogController;
+@property (nonatomic, readonly, strong) PostsViewController *postsViewController;
+@property (nonatomic, readonly, strong) EditorViewController *editorViewController;
+
 @end
 
 @implementation AppDelegate
 
+@synthesize blogController = _blogController;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [self configureCodeInjection];
+    [self setupCodeInjection];
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
-    [self setupBlogController];
+    self.postsViewController.blogController = self.blogController;
+    self.editorViewController.blogController = self.blogController;
     return YES;
 }
 
-- (void)configureCodeInjection {
+- (void)setupCodeInjection {
     __block BOOL codeInjectionEnabled = NO;
     [[[NSProcessInfo processInfo] arguments] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
         if ([obj isEqual:@"EnableCodeInjection"]) {
@@ -45,6 +52,16 @@
     }
 }
 
+- (BlogController *)blogController {
+    if (!_blogController) {
+        NSString *cachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
+        NSString *dbPath = [cachesPath stringByAppendingPathComponent:@"blog.sqlite"];
+        ModelStore *store = [self newModelStoreWithPath:dbPath];
+        _blogController = [self newBlogControllerWithModelStore:store rootURL:@"http://ocean.samhuri.net:6706/"];
+    }
+    return _blogController;
+}
+
 - (PostsViewController *)postsViewController {
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
@@ -52,13 +69,12 @@
     return postsViewController;
 }
 
-- (void)setupBlogController {
-    NSString *cachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
-    NSString *dbPath = [cachesPath stringByAppendingPathComponent:@"blog.sqlite"];
-    ModelStore *store = [self newModelStoreWithPath:dbPath];
-    BlogController *blogController = [self newBlogControllerWithModelStore:store rootURL:@"http://ocean.samhuri.net:6706/"];
-
-    [self postsViewController].blogController = blogController;
+- (EditorViewController *)editorViewController {
+    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
+    navigationController = navigationController.viewControllers.lastObject;
+    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
+    return editorViewController;
 }
 
 - (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {
