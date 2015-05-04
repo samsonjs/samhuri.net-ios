@@ -94,7 +94,6 @@
 
 - (void)configureTitleView {
     self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
-    [self.titleLabel sizeToFit];
     NSString *statusText = [self statusText];
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:statusText]) {
         self.statusLabel.text = statusText;
@@ -200,7 +199,9 @@
 }
 
 - (void)keyboardWillShow:(NSNotification *)note {
-    [self showHideKeyboardButton];
+    if (self.textView.isFirstResponder) {
+        [self showHideKeyboardButton];
+    }
 }
 
 - (void)keyboardWillHide:(NSNotification *)note {
@@ -233,7 +234,12 @@ static NSString *const StateRestorationTextViewContentOffsetKey = @"textView.con
 
 - (void)showHideKeyboardButton;
 {
-    UIBarButtonItem *hideKeyboardItem = [[UIBarButtonItem alloc] initWithTitle:@"^^" style:UIBarButtonItemStylePlain target:self.textView action:@selector(resignFirstResponder)];
+    UIImage *image = [UIImage imageNamed:@"HideKeyboard"];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    [button setImage:image forState:UIControlStateNormal];
+    [button addTarget:self.textView action:@selector(resignFirstResponder) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *hideKeyboardItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = hideKeyboardItem;
 }
 
