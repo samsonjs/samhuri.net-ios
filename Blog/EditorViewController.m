@@ -212,13 +212,11 @@
 
 static NSString *const StateRestorationPostKey = @"post";
 static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
-static NSString *const StateRestorationTextViewContentOffsetKey = @"textView.contentOffset";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
     NSLog(@"%@ encode restorable state with coder %@", self, coder);
     [coder encodeObject:self.post forKey:StateRestorationPostKey];
     [coder encodeObject:self.modifiedPost forKey:StateRestorationModifiedPostKey];
-    [coder encodeCGPoint:self.textView.contentOffset forKey:StateRestorationTextViewContentOffsetKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
@@ -226,7 +224,6 @@ static NSString *const StateRestorationTextViewContentOffsetKey = @"textView.con
     NSLog(@"%@ decode restorable state with coder %@", self, coder);
     self.post = [coder decodeObjectForKey:StateRestorationPostKey];
     self.modifiedPost = [coder decodeObjectForKey:StateRestorationModifiedPostKey];
-    self.textView.contentOffset = [coder decodeCGPointForKey:StateRestorationTextViewContentOffsetKey];
     [super decodeRestorableStateWithCoder:coder];
 }
 

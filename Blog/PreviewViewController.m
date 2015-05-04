@@ -19,6 +19,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    // UIWebView restores its request so we just have to reload it
+    if (!self.initialRequest && self.webView.request) {
+        [self.webView reload];
+        return;
+    }
+
     if (self.initialRequest) {
         if (self.promise) {
             __weak __typeof__(self) welf = self;
@@ -29,38 +35,16 @@
                 __typeof__(self) self = welf;
                 self.promise = nil;
             });
+            return;
         }
-        else {
-            [self.webView loadRequest:self.initialRequest];
-        }
+        [self.webView loadRequest:self.initialRequest];
+        return;
     }
 }
 
 - (void)setInitialRequest:(NSURLRequest *)initialRequest {
     _initialRequest = initialRequest;
     [self.webView loadHTMLString:@"<!doctype html><html><head><title></title></head><body></body></html>" baseURL:nil];
-}
-
-#pragma mark - State restoration
-
-static NSString *const StateRestorationInitialRequestKey = @"initialRequest";
-static NSString *const StateRestorationWebViewRequestURLKey = @"webView.request.URL";
-
-- (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.initialRequest forKey:StateRestorationInitialRequestKey];
-    [coder encodeObject:self.webView.request.URL forKey:StateRestorationWebViewRequestURLKey];
-    [super encodeRestorableStateWithCoder:coder];
-}
-
-- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSURL *url = [coder decodeObjectForKey:StateRestorationWebViewRequestURLKey];
-    if (url) {
-        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-    }
-    else {
-        self.initialRequest = [coder decodeObjectForKey:StateRestorationInitialRequestKey];
-    }
-    [super decodeRestorableStateWithCoder:coder];
 }
 
 #pragma mark - UIWebViewDelegate methods

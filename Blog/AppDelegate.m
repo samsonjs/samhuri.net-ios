@@ -72,9 +72,12 @@
 - (EditorViewController *)editorViewController {
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    navigationController = navigationController.viewControllers.lastObject;
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
+    if (navigationController.viewControllers.count > 1) {
+        navigationController = navigationController.viewControllers.lastObject;
+        EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
+        return editorViewController;
+    }
+    return nil;
 }
 
 - (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {

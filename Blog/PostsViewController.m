@@ -249,14 +249,12 @@ static const NSUInteger SectionPublished = 1;
 static NSString *const StateRestorationPostCollectionsKey = @"postCollections";
 static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
 static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
-static NSString *const StateRestorationTabelViewContentOffsetKey = @"tableView.contentOffset";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
     NSLog(@"%@ encode restorable state with coder %@", self, coder);
     [coder encodeObject:self.postCollections forKey:StateRestorationPostCollectionsKey];
     [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
     [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
-    [coder encodeCGPoint:self.tableView.contentOffset forKey:StateRestorationTabelViewContentOffsetKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
@@ -265,7 +263,6 @@ static NSString *const StateRestorationTabelViewContentOffsetKey = @"tableView.c
     self.postCollections = [coder decodeObjectForKey:StateRestorationPostCollectionsKey];
     self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
     self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
-    self.tableView.contentOffset = [coder decodeCGPointForKey:StateRestorationTabelViewContentOffsetKey];
     [super decodeRestorableStateWithCoder:coder];
 }
 
