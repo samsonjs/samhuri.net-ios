@@ -278,9 +278,8 @@
     return savePromise.then(^{
         NSLog(@"%@ post at path %@", verb, path);
 
-        // TODO: something better than this
         // update our post because "new" may have changed, which is essential to correct operation
-        self.post = newPost;
+        [self configureWithPost:newPost];
         if (self.postUpdatedBlock) {
             self.postUpdatedBlock(self.post);
         }
