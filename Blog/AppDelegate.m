@@ -21,7 +21,8 @@
 
 @property (nonatomic, readonly, strong) BlogController *blogController;
 @property (nonatomic, readonly, strong) PostsViewController *postsViewController;
-@property (nonatomic, readonly, strong) EditorViewController *editorViewController;
+@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPhone;
+@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPad;
 
 @end
 
@@ -36,7 +37,8 @@
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
     self.postsViewController.blogController = self.blogController;
-    self.editorViewController.blogController = self.blogController;
+    self.editorViewControllerForPhone.blogController = self.blogController;
+    self.editorViewControllerForPad.blogController = self.blogController;
     return YES;
 }
 
@@ -69,15 +71,21 @@
     return postsViewController;
 }
 
-- (EditorViewController *)editorViewController {
+- (EditorViewController *)editorViewControllerForPhone {
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
     if (navigationController.viewControllers.count > 1) {
         navigationController = navigationController.viewControllers.lastObject;
-        EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-        return editorViewController;
     }
-    return nil;
+    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
+    return editorViewController;
+}
+
+- (EditorViewController *)editorViewControllerForPad {
+    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
+    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
+    return editorViewController;
 }
 
 - (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {

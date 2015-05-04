@@ -118,7 +118,7 @@
 
 - (void)configureLinkView {
     NSURL *url = self.modifiedPost.url;
-    if (self.post && url || [self pasteboardHasLink]) {
+    if (self.post && (url || [self pasteboardHasLink])) {
         NSString *title = url ? url.absoluteString : @"Add Link from Pasteboard";
         [self.linkButton setTitle:title forState:UIControlStateNormal];
         self.removeLinkButton.hidden = !url;
@@ -190,7 +190,9 @@
     [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
     [notificationCenter removeObserver:self name:PublishedPostRemovedNotification object:nil];
-    [self savePost];
+    if (self.post) {
+        [self savePost];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -206,7 +208,9 @@
 #pragma mark - Notification handlers
 
 - (void)applicationWillResignActive:(NSNotification *)note {
-    [self savePost];
+    if (self.post) {
+        [self savePost];
+    }
 }
 
 - (void)keyboardWillShow:(NSNotification *)note {
