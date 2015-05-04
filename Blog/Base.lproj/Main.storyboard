@@ -50,7 +50,7 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="gv8-wH-bFT"/>
-                                    <barButtonItem systemItem="save" id="7iR-uF-xqE">
+                                    <barButtonItem title="Save" id="7iR-uF-xqE">
                                         <connections>
                                             <action selector="save:" destination="JEX-9P-axG" id="gnN-zi-lxN"/>
                                         </connections>
