@@ -246,21 +246,26 @@ static const NSUInteger SectionPublished = 1;
 
 #pragma mark - State restoration
 
+static NSString *const StateRestorationPostCollectionsKey = @"postCollections";
+static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
+static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
+static NSString *const StateRestorationTabelViewContentOffsetKey = @"tableView.contentOffset";
+
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
     NSLog(@"%@ encode restorable state with coder %@", self, coder);
-    [coder encodeObject:self.postCollections forKey:@"postCollections"];
-    [coder encodeObject:self.blogStatusDate forKey:@"blogStatusDate"];
-    [coder encodeObject:self.blogStatusText forKey:@"blogStatusText"];
-    [coder encodeCGPoint:self.tableView.contentOffset forKey:@"tableView.contentOffset"];
+    [coder encodeObject:self.postCollections forKey:StateRestorationPostCollectionsKey];
+    [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
+    [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
+    [coder encodeCGPoint:self.tableView.contentOffset forKey:StateRestorationTabelViewContentOffsetKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
     NSLog(@"%@ decode restorable state with coder %@", self, coder);
-    self.postCollections = [coder decodeObjectForKey:@"postCollections"];
-    self.blogStatusDate = [coder decodeObjectForKey:@"blogStatusDate"];
-    self.blogStatusText = [coder decodeObjectForKey:@"blogStatusText"];
-    self.tableView.contentOffset = [coder decodeCGPointForKey:@"tableView.contentOffset"];
+    self.postCollections = [coder decodeObjectForKey:StateRestorationPostCollectionsKey];
+    self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
+    self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
+    self.tableView.contentOffset = [coder decodeCGPointForKey:StateRestorationTabelViewContentOffsetKey];
     [super decodeRestorableStateWithCoder:coder];
 }
 

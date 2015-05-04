@@ -19,18 +19,21 @@
     return self;
 }
 
+static NSString *const PostsKey = @"posts";
+static NSString *const TitleKey = @"title";
+
 - (id)initWithCoder:(NSCoder *)coder {
     self = [super init];
     if (self) {
-        _title = [coder decodeObjectForKey:@"title"];
-        _posts = [coder decodeObjectForKey:@"posts"];
+        _title = [coder decodeObjectForKey:TitleKey];
+        _posts = [coder decodeObjectForKey:PostsKey];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.title forKey:@"title"];
-    [coder encodeObject:self.posts forKey:@"posts"];
+    [coder encodeObject:self.title forKey:TitleKey];
+    [coder encodeObject:self.posts forKey:PostsKey];
 }
 
 @end

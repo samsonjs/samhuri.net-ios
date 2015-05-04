@@ -41,19 +41,24 @@
     [self.webView loadHTMLString:@"<!doctype html><html><head><title></title></head><body></body></html>" baseURL:nil];
 }
 
+#pragma mark - State restoration
+
+static NSString *const StateRestorationInitialRequestKey = @"initialRequest";
+static NSString *const StateRestorationWebViewRequestURLKey = @"webView.request.URL";
+
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.initialRequest forKey:@"initialRequest"];
-    [coder encodeObject:self.webView.request.URL forKey:@"webView.request.URL"];
+    [coder encodeObject:self.initialRequest forKey:StateRestorationInitialRequestKey];
+    [coder encodeObject:self.webView.request.URL forKey:StateRestorationWebViewRequestURLKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSURL *url = [coder decodeObjectForKey:@"webView.request.URL"];
+    NSURL *url = [coder decodeObjectForKey:StateRestorationWebViewRequestURLKey];
     if (url) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
     }
     else {
-        self.initialRequest = [coder decodeObjectForKey:@"initialRequest"];
+        self.initialRequest = [coder decodeObjectForKey:StateRestorationInitialRequestKey];
     }
     [super decodeRestorableStateWithCoder:coder];
 }
