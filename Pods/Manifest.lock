@@ -7,6 +7,7 @@ PODS:
   - dyci (0.1.5.6):
     - dyci/Injections (= 0.1.5.6)
   - dyci/Injections (0.1.5.6)
+  - FontAwesome+iOS (0.0.1)
   - libextobjc (0.4.1):
     - libextobjc/EXTADT (= 0.4.1)
     - libextobjc/EXTConcreteProtocol (= 0.4.1)
@@ -96,15 +97,26 @@ PODS:
 
 DEPENDENCIES:
   - dyci
+  - FontAwesome+iOS (from `https://github.com/alexdrone/ios-fontawesome.git`)
   - libextobjc
   - Mantle
   - ObjectiveSugar
   - PromiseKit
   - YapDatabase
 
+EXTERNAL SOURCES:
+  FontAwesome+iOS:
+    :git: https://github.com/alexdrone/ios-fontawesome.git
+
+CHECKOUT OPTIONS:
+  FontAwesome+iOS:
+    :commit: 432e193b5a776d7283ec4f0e7b238eee46787153
+    :git: https://github.com/alexdrone/ios-fontawesome.git
+
 SPEC CHECKSUMS:
   CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
   dyci: 099c2e6dc98abb8f21b370cabbf1443ff700608a
+  FontAwesome+iOS: c6d3bbd2856b9633028d316d56133d45fb6a6cb0
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
   Mantle: 17de73ef929db2234d76fde2aacfb89ab11c61e8
   ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
@@ -112,4 +124,4 @@ SPEC CHECKSUMS:
   PromiseKit: b333c1baae651ed1fdfb4f6f4ef18d7ca118931e
   YapDatabase: 13566c87dc9226a0f15d755edba08e8ad94cac9f
 
-COCOAPODS: 0.37.0.rc.2
+COCOAPODS: 0.37.0

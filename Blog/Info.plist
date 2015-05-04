@@ -59,6 +59,7 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
+		<string>FontAwesome.otf</string>
 		<string>MuseoSans-100-Italic.otf</string>
 		<string>MuseoSans-100.otf</string>
 		<string>MuseoSans-300-Italic.otf</string>

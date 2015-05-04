@@ -32,6 +32,7 @@
 		7B5C4BED19F2606900667D48 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5C4BEC19F2606900667D48 /* Images.xcassets */; };
 		7B5C4BF019F2606900667D48 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B5C4BEE19F2606900667D48 /* LaunchScreen.xib */; };
 		7B5C4BFC19F2606900667D48 /* BlogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BFB19F2606900667D48 /* BlogTests.m */; };
+		7B8D2E051AF7447F002030CD /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7B8D2E041AF7447F002030CD /* FontAwesome.otf */; };
 		7B9E64281A227BFE0072FF42 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64271A227BFE0072FF42 /* Post.m */; };
 		7B9E642D1A227FA20072FF42 /* NSDate+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642A1A227FA20072FF42 /* NSDate+marshmallows.m */; };
 		7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642C1A227FA20072FF42 /* NSString+marshmallows.m */; };
@@ -95,6 +96,7 @@
 		7B5C4BF519F2606900667D48 /* BlogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5C4BFA19F2606900667D48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7B5C4BFB19F2606900667D48 /* BlogTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlogTests.m; sourceTree = "<group>"; };
+		7B8D2E041AF7447F002030CD /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
 		7B9E64261A227BFE0072FF42 /* Post.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		7B9E64271A227BFE0072FF42 /* Post.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post.m; sourceTree = "<group>"; };
 		7B9E64291A227FA20072FF42 /* NSDate+marshmallows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+marshmallows.h"; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 		1BCFC29A0845EAB04BFDAD67 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				7B8D2E041AF7447F002030CD /* FontAwesome.otf */,
 				1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */,
 				1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */,
 				1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */,
@@ -393,6 +396,7 @@
 				1BCFC56B50FFDC7782B79B7C /* MuseoSans-500-Italic.otf in Resources */,
 				1BCFC07F224F7BB568C1EE92 /* MuseoSans-500.otf in Resources */,
 				1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */,
+				7B8D2E051AF7447F002030CD /* FontAwesome.otf in Resources */,
 				1BCFCE976D6638781FBA9942 /* MuseoSans-700.otf in Resources */,
 				1BCFCF2DAA6DDF2445F02F5A /* MuseoSans-900-Italic.otf in Resources */,
 				1BCFC681892C7A6DF96DB65E /* MuseoSans-900.otf in Resources */,

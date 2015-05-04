@@ -10,6 +10,7 @@ target :Blog do
   pod 'libextobjc'
   pod 'ObjectiveSugar'
   pod 'dyci'
+  pod 'FontAwesome+iOS', :git => 'https://github.com/alexdrone/ios-fontawesome.git'
 end
 
 target :BlogTests do
