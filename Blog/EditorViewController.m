@@ -424,13 +424,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 - (IBAction)tappedLinkButton:(id)sender {
     NSURL *currentURL = self.modifiedPost.url;
     if (currentURL) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"TODO" message:@"show a web browser" preferredStyle:UIAlertControllerStyleAlert];
-        __weak __typeof__(self) welf = self;
-        [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            __typeof__(self) self = welf;
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }]];
-        [self presentViewController:alertController animated:YES completion:nil];
+        [[UIApplication sharedApplication] openURL:currentURL];
     }
     else {
         [self addLinkFromPasteboard];
