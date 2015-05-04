@@ -19,16 +19,16 @@
 
 @interface PostsViewController ()
 
-@property (strong, nonatomic) NSArray *postCollections;
-@property (strong, readonly, nonatomic) NSMutableArray *drafts;
-@property (strong, readonly, nonatomic) NSMutableArray *posts;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *publishButton;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
-@property (weak, nonatomic) UILabel *titleLabel;
-@property (weak, nonatomic) UILabel *statusLabel;
-@property (copy, nonatomic) NSString *blogStatusText;
-@property (strong, nonatomic) NSDate *blogStatusDate;
-@property (strong, nonatomic) NSTimer *blogStatusTimer;
+@property (nonatomic, strong) NSArray *postCollections;
+@property (nonatomic, readonly, strong) NSMutableArray *drafts;
+@property (nonatomic, readonly, strong) NSMutableArray *publishedPosts;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *publishButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *addButton;
+@property (nonatomic, weak) UILabel *titleLabel;
+@property (nonatomic, weak) UILabel *statusLabel;
+@property (nonatomic, copy) NSString *blogStatusText;
+@property (nonatomic, strong) NSDate *blogStatusDate;
+@property (nonatomic, strong) NSTimer *blogStatusTimer;
 
 @end
 
@@ -37,7 +37,7 @@ static const NSUInteger SectionPublished = 1;
 
 @implementation PostsViewController
 
-@dynamic drafts, posts;
+@dynamic drafts, publishedPosts;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -172,7 +172,7 @@ static const NSUInteger SectionPublished = 1;
     return [self postCollectionForSection:SectionDrafts].posts;
 }
 
-- (NSMutableArray *)posts {
+- (NSMutableArray *)publishedPosts {
     return [self postCollectionForSection:SectionPublished].posts;
 }
 
@@ -232,7 +232,7 @@ static const NSUInteger SectionPublished = 1;
             NSUInteger row = [self.drafts indexOfObjectPassingTest:isThisPost];
             if (row == NSNotFound) {
                 section = SectionPublished;
-                row = [self.posts indexOfObjectPassingTest:isThisPost];
+                row = [self.publishedPosts indexOfObjectPassingTest:isThisPost];
             }
             if (row != NSNotFound) {
                 PostCollection *collection = [self postCollectionForSection:section];

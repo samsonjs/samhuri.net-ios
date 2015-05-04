@@ -12,7 +12,7 @@
 
 @interface PostsViewController : UITableViewController
 
-@property (strong, nonatomic) BlogController *blogController;
+@property (nonatomic, strong) BlogController *blogController;
 
 @end
 

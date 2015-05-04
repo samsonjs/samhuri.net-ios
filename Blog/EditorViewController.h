@@ -13,9 +13,9 @@
 
 @interface EditorViewController : UIViewController
 
-@property (strong, nonatomic) BlogController *blogController;
-@property (strong, nonatomic) Post *post;
-@property (copy, nonatomic) void (^postUpdatedBlock)(Post *post);
+@property (nonatomic, strong) BlogController *blogController;
+@property (nonatomic, strong) Post *post;
+@property (nonatomic, copy) void (^postUpdatedBlock)(Post *post);
 
 - (void)configureWithPost:(Post *)post;
 
