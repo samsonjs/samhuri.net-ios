@@ -160,10 +160,9 @@
     [self.toolbar setItems:self.toolbar.items animated:YES];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)awakeFromNib {
+    [super awakeFromNib];
     [self setupTitleView];
-    [self configureView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -172,9 +171,7 @@
     [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    if ([self pasteboardHasLink]) {
-        [self configureLinkView];
-    }
+    [self configureView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
