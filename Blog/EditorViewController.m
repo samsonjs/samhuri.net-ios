@@ -19,11 +19,9 @@
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
-@property (nonatomic, weak) UIView *titleView;
-@property (nonatomic, weak) UILabel *titleLabel;
-@property (nonatomic, weak) UILabel *statusLabel;
+@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
 @property (nonatomic, weak) IBOutlet UITextView *textView;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *textViewTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *titleLabelTopConstraint;
 @property (nonatomic, weak) IBOutlet UIView *linkView;
 @property (nonatomic, weak) IBOutlet UIButton *linkIconButton;
 @property (nonatomic, weak) IBOutlet UIButton *linkButton;
@@ -39,145 +37,9 @@
 
 @implementation EditorViewController
 
-- (void)setupTitleView {
-    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 275, 44)];
-    titleView.userInteractionEnabled = YES;
-    UILongPressGestureRecognizer *gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(presentChangeTitle:)];
-    [titleView addGestureRecognizer:gestureRecognizer];
-    self.navigationItem.titleView = titleView;
-    self.titleView = titleView;
-
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    titleLabel.font = [UIFont boldSystemFontOfSize:16];
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.text = self.navigationItem.title;
-    [titleLabel sizeToFit];
-    [titleView addSubview:titleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:titleView attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterY multiplier:1 constant:-8]];
-    self.titleLabel = titleLabel;
-
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    subtitleLabel.font = [UIFont systemFontOfSize:11];
-    subtitleLabel.textColor = [UIColor whiteColor];
-    [titleView addSubview:subtitleLabel];
-    self.statusLabel = subtitleLabel;
-
-    [self.view setNeedsLayout];
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [UIView animateWithDuration:0.3 animations:^{
-        CGFloat width = CGRectGetWidth(self.titleView.bounds);
-        self.statusLabel.center = CGPointMake(width / 2, CGRectGetMaxY(self.titleLabel.frame) + 6 + (CGRectGetHeight(self.statusLabel.bounds) / 2));
-    }];
-}
-
-#pragma mark - Managing the detail item
-
-- (void)configureWithPost:(Post *)post {
-    if (!(post && [post isEqual:self.post])) {
-        self.post = post;
-        self.modifiedPost = post;
-        [self configureView];
-    }
-}
-
-- (void)updateOnClassInjection {
-    [self configureView];
-}
-
-- (void)configureView {
-    [self configureTitleView];
-    [self configureLinkView];
-    [self configureBodyView];
-    [self configureToolbar];
-}
-
-- (void)configureTitleView {
-    if (!self.post) {
-        self.titleLabel.text = nil;
-        self.statusLabel.text = nil;
-        return;
-    }
-
-    self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
-    NSString *statusText = [self statusText];
-    if (self.statusLabel && ![self.statusLabel.text isEqualToString:statusText]) {
-        self.statusLabel.text = statusText;
-        [UIView animateWithDuration:0.3 animations:^{
-            [self.statusLabel sizeToFit];
-        }];
-        [self.view setNeedsLayout];
-    }
-}
-
-- (NSString *)statusText;
-{
-    return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
-}
-
-- (void)configureLinkView {
-    NSURL *url = self.modifiedPost.url;
-    if (self.post && (url || [self pasteboardHasLink])) {
-        NSString *title = url ? url.absoluteString : @"Add Link from Pasteboard";
-        [self.linkButton setTitle:title forState:UIControlStateNormal];
-        self.removeLinkButton.hidden = !url;
-        if (self.textViewTopConstraint.constant <= FLT_EPSILON) {
-            self.linkView.alpha = 0;
-            [UIView animateWithDuration:0.3 animations:^{
-                self.linkView.alpha = 1;
-                self.textViewTopConstraint.constant = CGRectGetMaxY(self.linkView.frame);
-            }];
-        }
-    }
-    else if (self.textViewTopConstraint.constant > FLT_EPSILON) {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.linkView.alpha = 0;
-            self.textViewTopConstraint.constant = 0;
-        }];
-    }
-}
-
-- (void)configureBodyView {
-    NSString *body = nil;
-    CGPoint scrollOffset = CGPointZero;
-    Post *post = self.modifiedPost;
-    if (post) {
-        body = post.body;
-        // TODO: restore scroll offset for this post ... user defaults?
-    }
-    self.textView.text = body;
-    self.textView.contentOffset = scrollOffset;
-}
-
-- (void)configureToolbar {
-    BOOL toolbarEnabled = self.modifiedPost != nil;
-    [self.toolbar.items enumerateObjectsUsingBlock:^(UIBarButtonItem *item, NSUInteger idx, BOOL *stop) {
-        item.enabled = toolbarEnabled;
-    }];
-    self.publishBarButtonItem.title = self.modifiedPost.draft ? @"Publish" : @"Unpublish";
-    [self configureSaveButton];
-}
-
-- (void)configureSaveButton {
-    self.saveBarButtonItem.enabled = self.dirty;
-    self.saveBarButtonItem.title = self.dirty ? @"Save" : nil;
-    [self.toolbar setItems:self.toolbar.items animated:YES];
-}
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    [self setupTitleView];
+- (void)viewDidLoad {
+    [super viewDidLoad];
     [self setupFontAwesomeIcons];
-}
-
-- (void)setupFontAwesomeIcons {
-    [self.linkIconButton setTitle:[NSString fontAwesomeIconStringForEnum:FALink] forState:UIControlStateNormal];
-    [self.removeLinkButton setTitle:[NSString fontAwesomeIconStringForEnum:FATimesCircle] forState:UIControlStateNormal];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -219,6 +81,99 @@
     }
 }
 
+#pragma mark - Managing the detail item
+
+- (void)configureWithPost:(Post *)post {
+    if (!(post && [post isEqual:self.post])) {
+        self.post = post;
+        self.modifiedPost = post;
+        [self configureView];
+    }
+}
+
+- (void)updateOnClassInjection {
+    [self configureView];
+}
+
+- (void)configureView {
+    [self configureTitleView];
+    [self configureLinkView];
+    [self configureBodyView];
+    [self configureToolbar];
+}
+
+- (void)configureTitleView {
+    if (!self.post) {
+        self.title = nil;
+        self.titleLabel.text = nil;
+        return;
+    }
+
+    self.title = [self statusText];
+    self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
+}
+
+- (NSString *)statusText {
+    return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
+}
+
+- (void)configureLinkView {
+    static const CGFloat TitleLabelTopMargin = 8;
+    NSURL *url = self.modifiedPost.url;
+    if (self.post && (url || [self pasteboardHasLink])) {
+        NSString *title = url ? url.absoluteString : @"Add Link from Pasteboard";
+        [self.linkButton setTitle:title forState:UIControlStateNormal];
+        self.removeLinkButton.hidden = !url;
+        const CGFloat titleLabelTop = TitleLabelTopMargin + CGRectGetMaxY(self.linkView.frame);
+        if (self.titleLabelTopConstraint.constant <= titleLabelTop) {
+            self.linkView.alpha = 1;
+            self.linkButton.alpha = 0;
+            [UIView animateWithDuration:0.3 animations:^{
+                self.linkButton.alpha = 1;
+                self.titleLabelTopConstraint.constant = titleLabelTop;
+            }];
+        }
+    }
+    else if (self.titleLabelTopConstraint.constant > TitleLabelTopMargin) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.linkView.alpha = 0;
+            self.titleLabelTopConstraint.constant = TitleLabelTopMargin;
+        }];
+    }
+}
+
+- (void)configureBodyView {
+    NSString *body = nil;
+    CGPoint scrollOffset = CGPointZero;
+    Post *post = self.modifiedPost;
+    if (post) {
+        body = post.body;
+        // TODO: restore scroll offset for this post ... user defaults?
+    }
+    self.textView.text = body;
+    self.textView.contentOffset = scrollOffset;
+}
+
+- (void)configureToolbar {
+    BOOL toolbarEnabled = self.modifiedPost != nil;
+    [self.toolbar.items enumerateObjectsUsingBlock:^(UIBarButtonItem *item, NSUInteger idx, BOOL *stop) {
+        item.enabled = toolbarEnabled;
+    }];
+    self.publishBarButtonItem.title = self.modifiedPost.draft ? @"Publish" : @"Unpublish";
+    [self configureSaveButton];
+}
+
+- (void)configureSaveButton {
+    self.saveBarButtonItem.enabled = self.dirty;
+    self.saveBarButtonItem.title = self.dirty ? @"Save" : nil;
+    [self.toolbar setItems:self.toolbar.items animated:YES];
+}
+
+- (void)setupFontAwesomeIcons {
+    [self.linkIconButton setTitle:[NSString fontAwesomeIconStringForEnum:FALink] forState:UIControlStateNormal];
+    [self.removeLinkButton setTitle:[NSString fontAwesomeIconStringForEnum:FATimesCircle] forState:UIControlStateNormal];
+}
+
 #pragma mark - Notification handlers
 
 - (void)applicationWillResignActive:(NSNotification *)note {
@@ -235,7 +190,11 @@
 
 - (void)keyboardWillShow:(NSNotification *)note {
     if (self.textView.isFirstResponder) {
-        [self showHideKeyboardButton];
+        // This notification is called inside an animation block, but we don't want animation here.
+        // Dispatch to break out of the animation.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showHideKeyboardButton];
+        });
     }
 }
 
@@ -273,7 +232,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (void)showHideKeyboardButton;
 {
-    UIImage *image = [UIImage imageWithIcon:@"fa-chevron-up" backgroundColor:[UIColor clearColor] iconColor:[UIColor mm_colorFromInteger:0xAA0000] fontSize:20];
+    UIImage *image = [UIImage imageWithIcon:@"fa-chevron-down" backgroundColor:[UIColor clearColor] iconColor:[UIColor mm_colorFromInteger:0xAA0000] fontSize:20];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     [button setImage:image forState:UIControlStateNormal];
@@ -400,7 +359,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     UIPopoverPresentationController *presentationController = changeTitleViewController.popoverPresentationController;
     presentationController.delegate = self;
     presentationController.sourceView = self.view;
-    presentationController.sourceRect = CGRectMake(CGRectGetWidth(self.view.bounds) / 2, 0, 1, 1);
+    presentationController.sourceRect = CGRectMake(CGRectGetWidth(self.view.bounds) / 2, CGRectGetMaxY(self.titleLabel.frame), 1, 1);
     presentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
     __weak __typeof__(changeTitleViewController) weakChangeTitleViewController = changeTitleViewController;
     changeTitleViewController.dismissBlock = ^{

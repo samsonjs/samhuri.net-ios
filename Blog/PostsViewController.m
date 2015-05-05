@@ -7,6 +7,7 @@
 //
 
 #import <PromiseKit/Promise.h>
+#import <ObjectiveSugar/NSArray+ObjectiveSugar.h>
 #import "PostsViewController.h"
 #import "EditorViewController.h"
 #import "Post.h"
@@ -55,24 +56,40 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)setupTitleView {
     UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+    titleView.clipsToBounds = YES;
     titleView.userInteractionEnabled = YES;
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(requestStatusWithoutCaching)];
     recognizer.numberOfTapsRequired = 2;
     [titleView addGestureRecognizer:recognizer];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     titleLabel.font = [UIFont fontWithName:@"MuseoSans-300" size:16];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
     [titleView addSubview:titleLabel];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:3]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     subtitleLabel.font = [UIFont systemFontOfSize:11];
     subtitleLabel.textColor = [UIColor whiteColor];
+    [subtitleLabel sizeToFit];
     [titleView addSubview:subtitleLabel];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-3]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
-    [self.view setNeedsLayout];
+}
+
+- (void)updateOnClassInjection {
+    [self.titleLabel.constraints each:^(NSLayoutConstraint *constraint) {
+        [constraint.secondItem removeConstraint:constraint];
+    }];
+    [self.statusLabel.constraints each:^(NSLayoutConstraint *constraint) {
+        [constraint.secondItem removeConstraint:constraint];
+    }];
+    [self setupTitleView];
 }
 
 - (void)setupFontAwesomeIcons {
@@ -84,17 +101,8 @@ static const NSUInteger SectionPublished = 1;
     self.publishButton.customView = button;
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [UIView animateWithDuration:0.3 animations:^{
-        CGFloat width = CGRectGetWidth(self.titleLabel.superview.bounds);
-        self.titleLabel.center = CGPointMake(width / 2, 3 + (CGRectGetHeight(self.titleLabel.bounds) / 2));
-        self.statusLabel.center = CGPointMake(width / 2, CGRectGetMaxY(self.titleLabel.frame) + 3 + (CGRectGetHeight(self.statusLabel.bounds) / 2));
-    }];
-}
-
 - (void)setupBlogStatusTimer {
-    self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
+    self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
 }
 
 - (void)teardownBlogStatusTimer {
@@ -102,18 +110,36 @@ static const NSUInteger SectionPublished = 1;
     self.blogStatusTimer = nil;
 }
 
-- (void)updateStatusLabel:(NSString *)blogStatus {
+- (void)updateStatusLabel:(NSString *)blogStatus animated:(BOOL)animated {
     if (self.statusLabel && ![self.statusLabel.text isEqualToString:blogStatus]) {
         self.statusLabel.text = blogStatus;
-        [UIView animateWithDuration:0.3 animations:^{
-            [self.statusLabel sizeToFit];
-        }];
-        [self.view setNeedsLayout];
+        [self.statusLabel sizeToFit];
+        UIView *titleView = self.statusLabel.superview;
+        CGFloat x = CGRectGetWidth(titleView.bounds) / 2;
+        CGFloat y = 50 + CGRectGetHeight(self.statusLabel.frame) / 2;
+        self.statusLabel.center = CGPointMake(x, y);
+        self.statusLabel.alpha = 0;
+        void (^animate)() = ^{
+            CGRect frame = self.statusLabel.frame;
+            frame.origin.y = CGRectGetMaxY(self.titleLabel.frame) + 3;
+            self.statusLabel.frame = frame;
+            self.statusLabel.alpha = 1;
+        };
+        if (animated) {
+            [UIView animateWithDuration:0.3 animations:animate];
+        }
+        else {
+            animate();
+        }
     }
 }
 
 - (void)updateBlogStatus {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]]];
+    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:NO];
+}
+
+- (void)updateBlogStatusAnimated:(BOOL)animated {
+    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:animated];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -123,6 +149,9 @@ static const NSUInteger SectionPublished = 1;
     [self requestStatusWithCaching:YES];
     if (!self.postCollections) {
         [self requestPostsWithCaching:YES];
+    }
+    if (self.tableView.indexPathForSelectedRow) {
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
 }
 
@@ -145,7 +174,7 @@ static const NSUInteger SectionPublished = 1;
 
 - (PMKPromise *)requestStatusWithCaching:(BOOL)useCache {
     [self teardownBlogStatusTimer];
-    [self updateStatusLabel:@"Checking status"];
+    [self updateStatusLabel:@"Checking status" animated:YES];
     return [self.blogController requestBlogStatusWithCaching:useCache].then(^(BlogStatus *status) {
         self.blogStatusDate = status.date;
         if (status.dirty) {
@@ -155,10 +184,10 @@ static const NSUInteger SectionPublished = 1;
             self.blogStatusText = @"Everything published";
         }
         [self setupBlogStatusTimer];
-        [self updateBlogStatus];
+        [self updateBlogStatusAnimated:YES];
         return status;
     }).catch(^(NSError *error) {
-        [self updateStatusLabel:@"Failed to check status"];
+        [self updateStatusLabel:@"Failed to check status" animated:NO];
         return error;
     });
 }

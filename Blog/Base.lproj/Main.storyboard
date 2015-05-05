@@ -6,7 +6,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <mutableArray key="FontAwesome.otf">
+        <mutableArray key="FontAwesome.ttf">
             <string>FontAwesome</string>
             <string>FontAwesome</string>
         </mutableArray>
@@ -45,29 +45,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YUD-Xe-6Cc">
-                                <rect key="frame" x="0.0" y="492" width="600" height="44"/>
-                                <items>
-                                    <barButtonItem title="Publish" id="qEb-VA-ueB">
-                                        <connections>
-                                            <action selector="publishOrUnpublish:" destination="JEX-9P-axG" id="Vxe-Fp-IDn"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gv8-wH-bFT"/>
-                                    <barButtonItem title="Save" id="7iR-uF-xqE">
-                                        <connections>
-                                            <action selector="save:" destination="JEX-9P-axG" id="gnN-zi-lxN"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="dZ8-jR-S40"/>
-                                    <barButtonItem title="Preview" id="uGx-Jy-rOz">
-                                        <connections>
-                                            <segue destination="ixd-IL-hNy" kind="show" identifier="showPreview" id="eVY-Ks-1b3"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                                <color key="barTintColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </toolbar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D5w-s5-7oj" userLabel="Link View">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="30"/>
                                 <subviews>
@@ -79,7 +56,7 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" name="FontAwesome" family="FontAwesome" pointSize="12"/>
                                         <state key="normal" title="8">
-                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleColor" red="0.85337860840740765" green="0.85337860840740765" blue="0.85337860840740765" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <variation key="default">
@@ -114,6 +91,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <color key="backgroundColor" red="0.66666666669999997" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="centerY" secondItem="ydf-ii-P8M" secondAttribute="centerY" id="0vl-tP-uea"/>
                                     <constraint firstItem="ydf-ii-P8M" firstAttribute="leading" secondItem="UEU-f2-Xco" secondAttribute="trailing" id="FNL-XF-p0M"/>
@@ -136,8 +114,24 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Using Emacs to Develop Mojo Apps for WebOS or Something Even Longer Than That" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HlE-1R-AqU" userLabel="Title Label">
+                                <rect key="frame" x="21" y="38" width="559" height="41"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="ZZP-5U-wrY" appends="YES" id="nYV-e7-uFl"/>
+                                </connections>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cwh-4G-e0V" userLabel="Separator View">
+                                <rect key="frame" x="0.0" y="87" width="600" height="1"/>
+                                <color key="backgroundColor" red="0.31372549019607843" green="0.31372549019607843" blue="0.31372549019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="zkb-Pd-Wg0"/>
+                                </constraints>
+                            </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="Editor Text View" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wrG-1y-ZY3">
-                                <rect key="frame" x="0.0" y="30" width="600" height="462"/>
+                                <rect key="frame" x="0.0" y="88" width="600" height="404"/>
                                 <color key="backgroundColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <string key="text">The latest technology I've been learning is Palm's SDK for webOS,
 Mojo. My first impression is that it's a great platform and
@@ -175,30 +169,76 @@ started with. There are wrappers around (all?) of the Palm SDK
 commands but it needed a bit of work to make it just do what I
 wanted with as little input and thought as possible.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="MuseoSans-300" family="Museo Sans" pointSize="16"/>
+                                <fontDescription key="fontDescription" name="MuseoSans-300" family="Museo Sans" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 <connections>
                                     <outlet property="delegate" destination="JEX-9P-axG" id="vKD-HY-lGQ"/>
                                 </connections>
                             </textView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YUD-Xe-6Cc">
+                                <rect key="frame" x="0.0" y="492" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem title="Publish" id="qEb-VA-ueB">
+                                        <connections>
+                                            <action selector="publishOrUnpublish:" destination="JEX-9P-axG" id="Vxe-Fp-IDn"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gv8-wH-bFT"/>
+                                    <barButtonItem title="Save" id="7iR-uF-xqE">
+                                        <connections>
+                                            <action selector="save:" destination="JEX-9P-axG" id="gnN-zi-lxN"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="dZ8-jR-S40"/>
+                                    <barButtonItem title="Preview" id="uGx-Jy-rOz">
+                                        <connections>
+                                            <segue destination="ixd-IL-hNy" kind="show" identifier="showPreview" id="eVY-Ks-1b3"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                                <color key="barTintColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </toolbar>
                         </subviews>
-                        <color key="backgroundColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.7953414352" green="0.0" blue="0.013255690590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="D5w-s5-7oj" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="0ff-4l-Opw"/>
+                            <constraint firstAttribute="centerX" secondItem="Cwh-4G-e0V" secondAttribute="centerX" id="3Hg-As-HnU"/>
+                            <constraint firstItem="Cwh-4G-e0V" firstAttribute="width" secondItem="svH-Pt-448" secondAttribute="width" id="3dn-X1-5mN"/>
+                            <constraint firstItem="HlE-1R-AqU" firstAttribute="width" relation="lessThanOrEqual" secondItem="svH-Pt-448" secondAttribute="width" constant="-16" id="4Oy-n1-WtG"/>
+                            <constraint firstItem="Cwh-4G-e0V" firstAttribute="top" secondItem="HlE-1R-AqU" secondAttribute="bottom" constant="8" id="8NU-7M-ijy"/>
                             <constraint firstAttribute="width" secondItem="wrG-1y-ZY3" secondAttribute="width" id="8hl-Ab-ACB"/>
+                            <constraint firstItem="HlE-1R-AqU" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="8" id="D1B-pF-bcv"/>
                             <constraint firstItem="YUD-Xe-6Cc" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="DLQ-Z3-h8m"/>
+                            <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="HlE-1R-AqU" secondAttribute="bottom" constant="8" id="EKu-59-ks3"/>
                             <constraint firstAttribute="centerX" secondItem="wrG-1y-ZY3" secondAttribute="centerX" id="FEY-jO-Mjl"/>
                             <constraint firstAttribute="centerX" secondItem="YUD-Xe-6Cc" secondAttribute="centerX" id="JTh-pp-5hr"/>
+                            <constraint firstItem="D5w-s5-7oj" firstAttribute="top" secondItem="HlE-1R-AqU" secondAttribute="bottom" constant="8" id="Zcn-DF-ltb"/>
+                            <constraint firstAttribute="centerX" secondItem="HlE-1R-AqU" secondAttribute="centerX" id="c3k-r8-rud"/>
+                            <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="Cwh-4G-e0V" secondAttribute="bottom" id="dSB-Um-tlW"/>
+                            <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="D5w-s5-7oj" secondAttribute="bottom" id="dyd-fn-rUM"/>
                             <constraint firstAttribute="trailing" secondItem="D5w-s5-7oj" secondAttribute="trailing" id="fFI-C6-DCV"/>
                             <constraint firstItem="YUD-Xe-6Cc" firstAttribute="top" secondItem="wrG-1y-ZY3" secondAttribute="bottom" id="iTL-zi-eKI"/>
                             <constraint firstItem="D5w-s5-7oj" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="lio-NE-qVt"/>
                             <constraint firstAttribute="width" secondItem="YUD-Xe-6Cc" secondAttribute="width" id="n19-6i-zpg"/>
                             <constraint firstItem="D5w-s5-7oj" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" id="t3U-SE-qJc"/>
                             <constraint firstItem="wrG-1y-ZY3" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="30" id="tUU-ig-gJV"/>
+                            <constraint firstItem="HlE-1R-AqU" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="38" id="wlt-66-WVR"/>
+                            <constraint firstItem="HlE-1R-AqU" firstAttribute="top" secondItem="D5w-s5-7oj" secondAttribute="bottom" priority="750" constant="8" id="zcA-5F-WC6"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Zcn-DF-ltb"/>
+                                <exclude reference="lio-NE-qVt"/>
+                                <exclude reference="D1B-pF-bcv"/>
+                                <exclude reference="EKu-59-ks3"/>
+                                <exclude reference="dyd-fn-rUM"/>
+                                <exclude reference="tUU-ig-gJV"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Using Emacs to Develop Mojo Apps for WebOS" id="mOI-FS-AaM">
+                    <navigationItem key="navigationItem" title="21st November, 2009" id="mOI-FS-AaM">
                         <barButtonItem key="backBarButtonItem" title=" " id="KtM-fR-xtg"/>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
@@ -210,11 +250,17 @@ wanted with as little input and thought as possible.</string>
                         <outlet property="removeLinkButton" destination="81X-Pe-PFV" id="Rx0-IH-fzp"/>
                         <outlet property="saveBarButtonItem" destination="7iR-uF-xqE" id="8A5-PY-EuS"/>
                         <outlet property="textView" destination="wrG-1y-ZY3" id="lvo-lm-t7Z"/>
-                        <outlet property="textViewTopConstraint" destination="tUU-ig-gJV" id="Wzj-Rc-kuM"/>
+                        <outlet property="titleLabel" destination="HlE-1R-AqU" id="B79-B5-tSv"/>
+                        <outlet property="titleLabelTopConstraint" destination="wlt-66-WVR" id="2m4-mP-q2B"/>
                         <outlet property="toolbar" destination="YUD-Xe-6Cc" id="SIv-cT-WDD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="ZZP-5U-wrY">
+                    <connections>
+                        <action selector="presentChangeTitle:" destination="JEX-9P-axG" id="svR-zn-yTo"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="709" y="129"/>
         </scene>
@@ -235,7 +281,7 @@ wanted with as little input and thought as possible.</string>
                                 <color key="backgroundColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="iGU-Zs-0by" id="22s-mb-pJM"/>
                                 </connections>
