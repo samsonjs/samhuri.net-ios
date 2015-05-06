@@ -11,7 +11,7 @@
 #import "PostsViewController.h"
 #import "EditorViewController.h"
 #import "BlogService.h"
-#import "YapDatabase.h"
+#import <YapDatabase/YapDatabase.h>
 #import "ModelStore.h"
 #import "JSONHTTPClient.h"
 #import "BlogController.h"

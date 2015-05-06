@@ -3,6 +3,13 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
+target :'samhuri.net' do
+    pod 'Mantle'
+    pod 'PromiseKit'
+    pod 'YapDatabase'
+    pod 'ObjectiveSugar'
+end
+
 target :Blog do
   pod 'Mantle'
   pod 'PromiseKit'

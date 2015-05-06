@@ -22,6 +22,17 @@
 		1BCFCF2DAA6DDF2445F02F5A /* MuseoSans-900-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */; };
 		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
 		1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */; };
+		7B08B3ED1AF9CAD300435579 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B08B3EC1AF9CAD300435579 /* ShareViewController.m */; };
+		7B08B3EF1AF9CAD300435579 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */; };
+		7B08B3F21AF9CAD300435579 /* samhuri.net.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 7B08B3E71AF9CAD300435579 /* samhuri.net.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7B08B3F71AF9CBBD00435579 /* NSDate+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642A1A227FA20072FF42 /* NSDate+marshmallows.m */; };
+		7B08B3F81AF9CBBD00435579 /* NSString+marshmallows.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E642C1A227FA20072FF42 /* NSString+marshmallows.m */; };
+		7B08B3F91AF9CBC500435579 /* BlogStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644E1A23129B0072FF42 /* BlogStatus.m */; };
+		7B08B3FA1AF9CBC500435579 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64271A227BFE0072FF42 /* Post.m */; };
+		7B08B3FB1AF9CBC500435579 /* BlogService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64411A22F3840072FF42 /* BlogService.m */; };
+		7B08B3FC1AF9CBC500435579 /* JSONHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */; };
+		7B08B3FD1AF9CBC500435579 /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
+		7B08B3FE1AF9CBC500435579 /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
 		7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B43501AED5BA500BAC4E2 /* Functions.m */; };
 		7B4070531AE46BC9000C2E43 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B5C4BDF19F2606900667D48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BDE19F2606900667D48 /* main.m */; };
@@ -42,10 +53,18 @@
 		7BE3A0351AE461E700E45CCB /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE3A0341AE461E700E45CCB /* PreviewViewController.m */; };
 		7BF029331A27117200E42EDE /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
 		7BF029381A280CB200E42EDE /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
+		848D1BC47C9F03BB91A24EB4 /* libPods-samhuri.net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D351844AAA829A65456E283E /* libPods-samhuri.net.a */; };
 		B8B8958B2AA40812EFE04FEF /* libPods-BlogTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7B08B3F01AF9CAD300435579 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B5C4BD119F2606900667D48 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7B08B3E61AF9CAD300435579;
+			remoteInfo = samhuri.net;
+		};
 		7B5C4BF619F2606900667D48 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B5C4BD119F2606900667D48 /* Project object */;
@@ -54,6 +73,20 @@
 			remoteInfo = Blog;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7B08B3F61AF9CAD300435579 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				7B08B3F21AF9CAD300435579 /* samhuri.net.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +111,11 @@
 		216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.debug.xcconfig"; sourceTree = "<group>"; };
 		52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blog.release.xcconfig"; path = "Pods/Target Support Files/Pods-Blog/Pods-Blog.release.xcconfig"; sourceTree = "<group>"; };
 		7160E151335CBA3861FBD44D /* libPods-Blog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Blog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B08B3E71AF9CAD300435579 /* samhuri.net.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = samhuri.net.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B08B3EA1AF9CAD300435579 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7B08B3EB1AF9CAD300435579 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
+		7B08B3EC1AF9CAD300435579 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
+		7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		7B2B434F1AED5BA500BAC4E2 /* Functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Functions.h; sourceTree = "<group>"; };
 		7B2B43501AED5BA500BAC4E2 /* Functions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Functions.m; sourceTree = "<group>"; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
@@ -116,13 +154,24 @@
 		7BF029361A280CB200E42EDE /* BlogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogController.h; sourceTree = "<group>"; };
 		7BF029371A280CB200E42EDE /* BlogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogController.m; sourceTree = "<group>"; };
 		9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlogTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A12E4260DF3BBC175C358446 /* Pods-samhuri.net.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samhuri.net.debug.xcconfig"; path = "Pods/Target Support Files/Pods-samhuri.net/Pods-samhuri.net.debug.xcconfig"; sourceTree = "<group>"; };
 		A2EB178BEF4356711B2710AE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		AB1234AC662F1A1B7BD87AB0 /* Pods-BlogTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlogTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BlogTests/Pods-BlogTests.release.xcconfig"; sourceTree = "<group>"; };
+		CFDE6DBDE6E23DC89D51F7EC /* Pods-samhuri.net.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samhuri.net.release.xcconfig"; path = "Pods/Target Support Files/Pods-samhuri.net/Pods-samhuri.net.release.xcconfig"; sourceTree = "<group>"; };
 		D1F0F9D6D1DB6188AF81A066 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		D351844AAA829A65456E283E /* libPods-samhuri.net.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-samhuri.net.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAA4009DDF4B3F5BEEF9CC4C /* Pods-BlogTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlogTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BlogTests/Pods-BlogTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7B08B3E41AF9CAD300435579 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				848D1BC47C9F03BB91A24EB4 /* libPods-samhuri.net.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7B5C4BD619F2606900667D48 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -151,6 +200,8 @@
 				AB1234AC662F1A1B7BD87AB0 /* Pods-BlogTests.release.xcconfig */,
 				216E09E2B9970083489FA869 /* Pods-Blog.debug.xcconfig */,
 				52D4D1E7D7915ADAD8A3C902 /* Pods-Blog.release.xcconfig */,
+				A12E4260DF3BBC175C358446 /* Pods-samhuri.net.debug.xcconfig */,
+				CFDE6DBDE6E23DC89D51F7EC /* Pods-samhuri.net.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -173,11 +224,31 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		7B08B3E81AF9CAD300435579 /* samhuri.net */ = {
+			isa = PBXGroup;
+			children = (
+				7B08B3EB1AF9CAD300435579 /* ShareViewController.h */,
+				7B08B3EC1AF9CAD300435579 /* ShareViewController.m */,
+				7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */,
+				7B08B3E91AF9CAD300435579 /* Supporting Files */,
+			);
+			path = samhuri.net;
+			sourceTree = "<group>";
+		};
+		7B08B3E91AF9CAD300435579 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7B08B3EA1AF9CAD300435579 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		7B5C4BD019F2606900667D48 = {
 			isa = PBXGroup;
 			children = (
 				7B5C4BDB19F2606900667D48 /* Blog */,
 				7B5C4BF819F2606900667D48 /* BlogTests */,
+				7B08B3E81AF9CAD300435579 /* samhuri.net */,
 				7B5C4BDA19F2606900667D48 /* Products */,
 				1A8ACE7C3A5634C63D5770EA /* Pods */,
 				F9CC479BA9A49F1EDD27B0AB /* Frameworks */,
@@ -189,6 +260,7 @@
 			children = (
 				7B5C4BD919F2606900667D48 /* Blog.app */,
 				7B5C4BF519F2606900667D48 /* BlogTests.xctest */,
+				7B08B3E71AF9CAD300435579 /* samhuri.net.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -296,6 +368,7 @@
 				1613DC56A86AFA7E50460A37 /* libPods.a */,
 				9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */,
 				7160E151335CBA3861FBD44D /* libPods-Blog.a */,
+				D351844AAA829A65456E283E /* libPods-samhuri.net.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -303,6 +376,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7B08B3E61AF9CAD300435579 /* samhuri.net */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7B08B3F51AF9CAD300435579 /* Build configuration list for PBXNativeTarget "samhuri.net" */;
+			buildPhases = (
+				8EB2525312DF0E921F82CEA8 /* Check Pods Manifest.lock */,
+				7B08B3E31AF9CAD300435579 /* Sources */,
+				7B08B3E41AF9CAD300435579 /* Frameworks */,
+				7B08B3E51AF9CAD300435579 /* Resources */,
+				061B7E8E3C5EF011C2401DB3 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = samhuri.net;
+			productName = samhuri.net;
+			productReference = 7B08B3E71AF9CAD300435579 /* samhuri.net.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7B5C4BD819F2606900667D48 /* Blog */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7B5C4BFF19F2606900667D48 /* Build configuration list for PBXNativeTarget "Blog" */;
@@ -312,10 +404,12 @@
 				7B5C4BD619F2606900667D48 /* Frameworks */,
 				7B5C4BD719F2606900667D48 /* Resources */,
 				F9882194979CEEC00C6695C2 /* Copy Pods Resources */,
+				7B08B3F61AF9CAD300435579 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7B08B3F11AF9CAD300435579 /* PBXTargetDependency */,
 			);
 			name = Blog;
 			productName = Blog;
@@ -351,6 +445,10 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Guru Logic Inc.";
 				TargetAttributes = {
+					7B08B3E61AF9CAD300435579 = {
+						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = B2W6993X5Z;
+					};
 					7B5C4BD819F2606900667D48 = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = B2W6993X5Z;
@@ -376,11 +474,20 @@
 			targets = (
 				7B5C4BD819F2606900667D48 /* Blog */,
 				7B5C4BF419F2606900667D48 /* BlogTests */,
+				7B08B3E61AF9CAD300435579 /* samhuri.net */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7B08B3E51AF9CAD300435579 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7B08B3EF1AF9CAD300435579 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7B5C4BD719F2606900667D48 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -413,6 +520,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		061B7E8E3C5EF011C2401DB3 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-samhuri.net/Pods-samhuri.net-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5869AA845D966F9B4CDB0BB9 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -429,6 +551,21 @@
 			showEnvVarsInLog = 0;
 		};
 		8A51BD8ED157654D8B96256C /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		8EB2525312DF0E921F82CEA8 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -476,6 +613,22 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7B08B3E31AF9CAD300435579 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7B08B3FC1AF9CBC500435579 /* JSONHTTPClient.m in Sources */,
+				7B08B3FA1AF9CBC500435579 /* Post.m in Sources */,
+				7B08B3F81AF9CBBD00435579 /* NSString+marshmallows.m in Sources */,
+				7B08B3FE1AF9CBC500435579 /* BlogController.m in Sources */,
+				7B08B3F71AF9CBBD00435579 /* NSDate+marshmallows.m in Sources */,
+				7B08B3FB1AF9CBC500435579 /* BlogService.m in Sources */,
+				7B08B3FD1AF9CBC500435579 /* ModelStore.m in Sources */,
+				7B08B3ED1AF9CAD300435579 /* ShareViewController.m in Sources */,
+				7B08B3F91AF9CBC500435579 /* BlogStatus.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7B5C4BD519F2606900667D48 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -512,6 +665,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7B08B3F11AF9CAD300435579 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7B08B3E61AF9CAD300435579 /* samhuri.net */;
+			targetProxy = 7B08B3F01AF9CAD300435579 /* PBXContainerItemProxy */;
+		};
 		7B5C4BF719F2606900667D48 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7B5C4BD819F2606900667D48 /* Blog */;
@@ -539,6 +697,41 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		7B08B3F31AF9CAD300435579 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A12E4260DF3BBC175C358446 /* Pods-samhuri.net.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = samhuri.net/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		7B08B3F41AF9CAD300435579 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFDE6DBDE6E23DC89D51F7EC /* Pods-samhuri.net.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = samhuri.net/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		7B5C4BFD19F2606900667D48 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -679,6 +872,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7B08B3F51AF9CAD300435579 /* Build configuration list for PBXNativeTarget "samhuri.net" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B08B3F31AF9CAD300435579 /* Debug */,
+				7B08B3F41AF9CAD300435579 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7B5C4BD419F2606900667D48 /* Build configuration list for PBXProject "Blog" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
