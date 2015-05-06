@@ -38,6 +38,15 @@
 static const NSUInteger SectionDrafts = 0;
 static const NSUInteger SectionPublished = 1;
 
+@interface TitleView : UIView @end
+@implementation TitleView
+- (void)addConstraint:(NSLayoutConstraint *)constraint {
+    if (![@"NSAutoresizingMaskLayoutConstraint" isEqualToString:NSStringFromClass([constraint class])]) {
+        [super addConstraint:constraint];
+    }
+}
+@end
+
 @implementation PostsViewController
 
 @dynamic drafts, publishedPosts;
@@ -55,7 +64,11 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)setupTitleView {
-    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+    TitleView *titleView = [[TitleView alloc] initWithFrame:CGRectZero];
+    titleView.translatesAutoresizingMaskIntoConstraints = NO;
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:250]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44]];
+    titleView.translatesAutoresizingMaskIntoConstraints = NO;
     titleView.clipsToBounds = YES;
     titleView.userInteractionEnabled = YES;
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(requestStatusWithoutCaching)];
@@ -72,14 +85,17 @@ static const NSUInteger SectionPublished = 1;
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     subtitleLabel.font = [UIFont systemFontOfSize:11];
     subtitleLabel.textColor = [UIColor whiteColor];
     [subtitleLabel sizeToFit];
     [titleView addSubview:subtitleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-3]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-6]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
+    [titleView.superview addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView.superview attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [titleView.superview addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView.superview attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
 }
 
 - (void)updateOnClassInjection {
