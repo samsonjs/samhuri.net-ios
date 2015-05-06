@@ -110,7 +110,9 @@
     }
 
     self.title = [self statusText];
-    self.titleLabel.text = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
+    NSString *prefix = self.modifiedPost.link ? @"→ " : @"";
+    NSString *title = self.modifiedPost.title.length ? self.modifiedPost.title : @"Untitled";
+    self.titleLabel.text = [NSString stringWithFormat:@"%@%@", prefix, title];
 }
 
 - (NSString *)statusText {
