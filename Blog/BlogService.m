@@ -89,12 +89,13 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return [self.client get:[self urlFor:path] headers:nil].then([self decodePostBlock]);
 }
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link {
+- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish {
     NSDictionary *fields = @{
-            @"id"    : draftID,
-            @"title" : title ?: [NSNull null],
-            @"body"  : body,
-            @"link"  : link ?: [NSNull null],
+            @"id"      : draftID,
+            @"title"   : title ?: [NSNull null],
+            @"body"    : body,
+            @"link"    : link ?: [NSNull null],
+            @"publish" : publish ? @"true" : [NSNull null],
     };
     return [self.client postJSON:[self urlFor:@"/posts/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
 }

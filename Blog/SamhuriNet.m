@@ -18,7 +18,8 @@
 @synthesize blogController = _blogController;
 
 - (NSString *)authPath {
-    NSString *authPath = [[NSBundle mainBundle] pathForResource:@"auth.json" ofType:nil];
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSString *authPath = [bundle pathForResource:@"auth.json" ofType:nil];
     return authPath;
 }
 

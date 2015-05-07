@@ -22,6 +22,7 @@
 		1BCFCF2DAA6DDF2445F02F5A /* MuseoSans-900-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */; };
 		1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */; };
 		1BCFCFF473F6CE1B00AD9556 /* MuseoSans-700-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCE2128EAD786A819C61A /* MuseoSans-700-Italic.otf */; };
+		7B010BAF1AFB3EA900351D18 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B08B3ED1AF9CAD300435579 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B08B3EC1AF9CAD300435579 /* ShareViewController.m */; };
 		7B08B3EF1AF9CAD300435579 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */; };
 		7B08B3F21AF9CAD300435579 /* samhuri.net.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 7B08B3E71AF9CAD300435579 /* samhuri.net.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -493,6 +494,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7B08B3EF1AF9CAD300435579 /* MainInterface.storyboard in Resources */,
+				7B010BAF1AFB3EA900351D18 /* auth.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

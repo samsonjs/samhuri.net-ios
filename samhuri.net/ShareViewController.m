@@ -5,8 +5,11 @@
 //  Created by Sami Samhuri on 2015-05-05.
 //  Copyright (c) 2015 Guru Logic Inc. All rights reserved.
 //
-
+#import <PromiseKit/PromiseKit.h>
 #import "ShareViewController.h"
+#import "SamhuriNet.h"
+#import "BlogController.h"
+#import "Post.h"
 
 @interface ShareViewController ()
 
@@ -19,11 +22,35 @@
     return YES;
 }
 
+- (UIView *)loadPreviewView {
+    // TODO: markdown preview ... or punt to the server
+    return [super loadPreviewView];
+}
+
 - (void)didSelectPost {
     // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-    // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+    SamhuriNet *site = [SamhuriNet new];
+    BlogController *blogController = site.blogController;
+    NSRange titleEndRange = [self.contentText rangeOfString:@"\n\n"];
+    NSString *title = titleEndRange.location == NSNotFound ? self.contentText : [self.contentText substringToIndex:titleEndRange.location];
+    NSString *body = titleEndRange.location == NSNotFound ? @"" : [self.contentText substringFromIndex:titleEndRange.location + titleEndRange.length];
+    NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
+    NSItemProvider *provider = item.attachments.firstObject;
+    [provider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
+        // TODO: image
+        Post *post = [Post newDraftWithTitle:title body:body url:url];
+        [blogController requestCreateDraft:post publishImmediately:YES].then(^{
+            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+        }).catch(^(NSError *error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:^{
+                    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                }];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
+        });
+    }];
 }
 
 - (NSArray *)configurationItems {

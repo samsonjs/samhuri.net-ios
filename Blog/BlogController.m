@@ -87,9 +87,9 @@
     }
 }
 
-- (PMKPromise *)requestCreateDraft:(Post *)draft {
+- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish {
     return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body
-                                         link:draft.url.absoluteString].then(^(Post *post) {
+                                         link:draft.url.absoluteString publish:publish].then(^(Post *post) {
         [_store addDraft:post];
         return post;
     });
