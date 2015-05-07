@@ -10,16 +10,12 @@
 #import "AppDelegate.h"
 #import "PostsViewController.h"
 #import "EditorViewController.h"
-#import "BlogService.h"
-#import <YapDatabase/YapDatabase.h>
-#import "ModelStore.h"
-#import "JSONHTTPClient.h"
-#import "BlogController.h"
+#import "SamhuriNet.h"
 #import "Functions.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
-@property (nonatomic, readonly, strong) BlogController *blogController;
+@property (nonatomic, readonly, strong) SamhuriNet *site;
 @property (nonatomic, readonly, strong) PostsViewController *postsViewController;
 @property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPhone;
 @property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPad;
@@ -28,7 +24,7 @@
 
 @implementation AppDelegate
 
-@synthesize blogController = _blogController;
+@synthesize site = _site;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupCodeInjection];
@@ -36,9 +32,9 @@
     UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     splitViewController.delegate = self;
-    self.postsViewController.blogController = self.blogController;
-    self.editorViewControllerForPhone.blogController = self.blogController;
-    self.editorViewControllerForPad.blogController = self.blogController;
+    self.postsViewController.blogController = self.site.blogController;
+    self.editorViewControllerForPhone.blogController = self.site.blogController;
+    self.editorViewControllerForPad.blogController = self.site.blogController;
     return YES;
 }
 
@@ -52,16 +48,6 @@
     if (!codeInjectionEnabled) {
         [NSClassFromString(@"SFDynamicCodeInjection") performSelector:@selector(disable)];
     }
-}
-
-- (BlogController *)blogController {
-    if (!_blogController) {
-        NSString *cachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
-        NSString *dbPath = [cachesPath stringByAppendingPathComponent:@"blog.sqlite"];
-        ModelStore *store = [self newModelStoreWithPath:dbPath];
-        _blogController = [self newBlogControllerWithModelStore:store rootURL:@"http://ocean.samhuri.net:6706/"];
-    }
-    return _blogController;
 }
 
 - (PostsViewController *)postsViewController {
@@ -88,37 +74,11 @@
     return editorViewController;
 }
 
-- (ModelStore *)newModelStoreWithPath:(NSString *)dbPath {
-    YapDatabase *database = [[YapDatabase alloc] initWithPath:dbPath];
-    YapDatabaseConnection *connection = [database newConnection];
-    ModelStore *store = [[ModelStore alloc] initWithConnection:connection];
-    return store;
-}
-
-- (BlogController *)newBlogControllerWithModelStore:(ModelStore *)store rootURL:(NSString *)rootURL {
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    JSONHTTPClient *client = [[JSONHTTPClient alloc] initWithSession:session];
-    client.defaultHeaders = [self defaultBlogHeaders];
-    BlogService *service = [[BlogService alloc] initWithRootURL:rootURL client:client];
-    BlogController *blogController = [[BlogController alloc] initWithService:service store:store];
-    return blogController;
-}
-
-- (NSDictionary *)defaultBlogHeaders {
-    NSString *authPath = [[NSBundle mainBundle] pathForResource:@"auth.json" ofType:nil];
-    if (authPath.length) {
-        NSData *data = [NSData dataWithContentsOfFile:authPath];
-        NSError *error = nil;
-        NSDictionary *auth = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if (auth) {
-            return @{@"Auth" : [NSString stringWithFormat:@"%@|%@", auth[@"username"], auth[@"password"]]};
-        }
-        NSLog(@"auth.json: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-        NSLog(@"[ERROR] Failed to parse auth.json: %@ %@", error.localizedDescription, error.userInfo);
+- (SamhuriNet *)site {
+    if (!_site) {
+        _site = [SamhuriNet new];
     }
-    NSLog(@"[WARNING] No auth.json found. Blog will be read-only.");
-    return nil;
+    return _site;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

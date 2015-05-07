@@ -33,6 +33,8 @@
 		7B08B3FC1AF9CBC500435579 /* JSONHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */; };
 		7B08B3FD1AF9CBC500435579 /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
 		7B08B3FE1AF9CBC500435579 /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
+		7B08B4011AF9D3E300435579 /* SamhuriNet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B08B4001AF9D3E300435579 /* SamhuriNet.m */; };
+		7B08B4021AF9D3EA00435579 /* SamhuriNet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B08B4001AF9D3E300435579 /* SamhuriNet.m */; };
 		7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B2B43501AED5BA500BAC4E2 /* Functions.m */; };
 		7B4070531AE46BC9000C2E43 /* auth.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B4070521AE46BC9000C2E43 /* auth.json */; };
 		7B5C4BDF19F2606900667D48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C4BDE19F2606900667D48 /* main.m */; };
@@ -116,6 +118,8 @@
 		7B08B3EB1AF9CAD300435579 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		7B08B3EC1AF9CAD300435579 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		7B08B3FF1AF9D3E300435579 /* SamhuriNet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamhuriNet.h; sourceTree = "<group>"; };
+		7B08B4001AF9D3E300435579 /* SamhuriNet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamhuriNet.m; sourceTree = "<group>"; };
 		7B2B434F1AED5BA500BAC4E2 /* Functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Functions.h; sourceTree = "<group>"; };
 		7B2B43501AED5BA500BAC4E2 /* Functions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Functions.m; sourceTree = "<group>"; };
 		7B4070521AE46BC9000C2E43 /* auth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth.json; sourceTree = "<group>"; };
@@ -358,6 +362,8 @@
 				7BF029321A27117200E42EDE /* ModelStore.m */,
 				7BF029361A280CB200E42EDE /* BlogController.h */,
 				7BF029371A280CB200E42EDE /* BlogController.m */,
+				7B08B3FF1AF9D3E300435579 /* SamhuriNet.h */,
+				7B08B4001AF9D3E300435579 /* SamhuriNet.m */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -624,6 +630,7 @@
 				7B08B3F71AF9CBBD00435579 /* NSDate+marshmallows.m in Sources */,
 				7B08B3FB1AF9CBC500435579 /* BlogService.m in Sources */,
 				7B08B3FD1AF9CBC500435579 /* ModelStore.m in Sources */,
+				7B08B4021AF9D3EA00435579 /* SamhuriNet.m in Sources */,
 				7B08B3ED1AF9CAD300435579 /* ShareViewController.m in Sources */,
 				7B08B3F91AF9CBC500435579 /* BlogStatus.m in Sources */,
 			);
@@ -637,6 +644,7 @@
 				7B5C4BE219F2606900667D48 /* AppDelegate.m in Sources */,
 				7B9E644C1A230B940072FF42 /* JSONHTTPClient.m in Sources */,
 				7B9E642D1A227FA20072FF42 /* NSDate+marshmallows.m in Sources */,
+				7B08B4011AF9D3E300435579 /* SamhuriNet.m in Sources */,
 				7B5C4BE519F2606900667D48 /* PostsViewController.m in Sources */,
 				7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */,
 				7B9E64421A22F3840072FF42 /* BlogService.m in Sources */,
