@@ -281,17 +281,17 @@ static const NSUInteger SectionPublished = 1;
 
 - (IBAction)publish:(id)sender {
     // TODO: activity indicator
-    __weak __typeof__(self) welf = self;
+    __weak typeof(self) welf = self;
     void (^publish)(PMKPromise *) = ^(PMKPromise *promise) {
         self.publishButton.enabled = NO;
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         promise.then(^{
             [self requestStatusWithoutCaching];
         }).catch(^(NSError *error) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-            __weak __typeof__(self) welf = self;
+            __weak typeof(self) welf = self;
             [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                __typeof__(self) self = welf;
+                typeof(self) self = welf;
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];
             [self presentViewController:alertController animated:YES completion:nil];
@@ -301,22 +301,22 @@ static const NSUInteger SectionPublished = 1;
     };
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Publish" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alertController addAction:[UIAlertAction actionWithTitle:@"samhuri.net" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish([self.blogController requestPublishToProductionEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"beta.samhuri.net" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish([self.blogController requestPublishToStagingEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Push to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish([self.blogController requestSync]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];

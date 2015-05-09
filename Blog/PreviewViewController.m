@@ -27,12 +27,12 @@
 
     if (self.initialRequest) {
         if (self.promise) {
-            __weak __typeof__(self) welf = self;
+            __weak typeof(self) welf = self;
             self.promise.then(^{
-                __typeof__(self) self = welf;
+                typeof(self) self = welf;
                 [self.webView loadRequest:self.initialRequest];
             }).finally(^{
-                __typeof__(self) self = welf;
+                typeof(self) self = welf;
                 self.promise = nil;
             });
             return;
@@ -57,9 +57,9 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-    __weak __typeof__(self) welf = self;
+    __weak typeof(self) welf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];

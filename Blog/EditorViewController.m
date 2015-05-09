@@ -289,9 +289,9 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     [items replaceObjectAtIndex:[items indexOfObject:saveItem] withObject:indicatorItem];
     [self.toolbar setItems:items animated:NO];
 
-    __weak __typeof__(self) welf = self;
     return savePromise.then(^{
-        __typeof__(self) self = welf;
+    __weak typeof(self) welf = self;
+        typeof(self) self = welf;
         NSLog(@"%@ post at path %@", verb, path);
 
         // update our post because "new" may have changed, which is essential to correct operation
@@ -301,7 +301,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
         NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
         return error;
     }).finally(^{
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         self.textView.editable = YES;
         self.savePromise = nil;
         [items replaceObjectAtIndex:[items indexOfObject:indicatorItem] withObject:saveItem];
@@ -327,9 +327,9 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (IBAction)publishOrUnpublish:(id)sender {
     // TODO: prevent changes while publishing
-    __weak __typeof__(self) welf = self;
+    __weak typeof(self) welf = self;
     [self savePost].then(^{
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         PMKPromise *promise = nil;
         Post *post = self.modifiedPost;
         if (post.draft) {
@@ -364,9 +364,9 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     presentationController.sourceView = self.view;
     presentationController.sourceRect = CGRectMake(CGRectGetWidth(self.view.bounds) / 2, CGRectGetMaxY(self.titleLabel.frame), 1, 1);
     presentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-    __weak __typeof__(changeTitleViewController) weakChangeTitleViewController = changeTitleViewController;
+    __weak typeof(changeTitleViewController) weakChangeTitleViewController = changeTitleViewController;
     changeTitleViewController.dismissBlock = ^{
-        __typeof__(changeTitleViewController) changeTitleViewController = weakChangeTitleViewController;
+        typeof(changeTitleViewController) changeTitleViewController = weakChangeTitleViewController;
         NSString *title = changeTitleViewController.articleTitle;
         [self updatePostTitle:title];
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -393,9 +393,9 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    __weak __typeof__(self) welf = self;
+    __weak typeof(self) welf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        __typeof__(self) self = welf;
+        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
