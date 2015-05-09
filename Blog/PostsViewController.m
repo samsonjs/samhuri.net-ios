@@ -32,6 +32,9 @@
 @property (nonatomic, copy) NSString *blogStatusText;
 @property (nonatomic, strong) NSDate *blogStatusDate;
 @property (nonatomic, strong) NSTimer *blogStatusTimer;
+@property (nonatomic, weak) NSLayoutConstraint *titleViewWidthConstraint;
+@property (nonatomic, weak) NSLayoutConstraint *titleViewHeightConstraint;
+@property (nonatomic, weak) NSLayoutConstraint *titleLabelTopConstraint;
 
 @end
 
@@ -66,8 +69,12 @@ static const NSUInteger SectionPublished = 1;
 - (void)setupTitleView {
     TitleView *titleView = [[TitleView alloc] initWithFrame:CGRectZero];
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:250]];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:44]];
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
+    [titleView addConstraint:widthConstraint];
+    self.titleViewWidthConstraint = widthConstraint;
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
+    [titleView addConstraint:heightConstraint];
+    self.titleViewHeightConstraint = heightConstraint;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
     titleView.clipsToBounds = YES;
     titleView.userInteractionEnabled = YES;
@@ -81,7 +88,9 @@ static const NSUInteger SectionPublished = 1;
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
     [titleView addSubview:titleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:3]];
+    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:23];
+    [titleView addConstraint:topConstraint];
+    self.titleLabelTopConstraint = topConstraint;
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -94,8 +103,21 @@ static const NSUInteger SectionPublished = 1;
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
-    [titleView.superview addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView.superview attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [titleView.superview addConstraint:[NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView.superview attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+}
+
+- (void)updateTitleViewConstraints;
+{
+    self.titleViewWidthConstraint.constant = CGRectGetWidth(self.view.bounds);
+    CGFloat height = CGRectGetHeight(self.navigationController.navigationBar.bounds);
+    CGFloat top = 5;
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation))
+    {
+        // status bar
+        height += 20;
+        top += 20;
+    }
+    self.titleViewHeightConstraint.constant = height;
+    self.titleLabelTopConstraint.constant = top;
 }
 
 - (void)updateOnClassInjection {
@@ -175,6 +197,11 @@ static const NSUInteger SectionPublished = 1;
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PostUpdatedNotification object:nil];
     [self teardownBlogStatusTimer];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateTitleViewConstraints];
 }
 
 - (IBAction)refresh:(id)sender {
