@@ -253,6 +253,11 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     return self.post && (self.modifiedPost.new || ![self.modifiedPost isEqualToPost:self.post]);
 }
 
+- (void)setModifiedPost:(Post *)modifiedPost {
+    _modifiedPost = modifiedPost;
+    [self configureSaveButton];
+}
+
 - (PMKPromise *)savePost {
     if (self.savePromise) {
         return self.savePromise;
@@ -267,17 +272,17 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
     self.textView.editable = NO;
 
-    Post *newPost = self.modifiedPost;
-    NSString *path = newPost.path;
+    Post *modifiedPost = self.modifiedPost;
+    NSString *path = modifiedPost.path;
     PMKPromise *savePromise;
     NSString *verb;
-    if (newPost.new) {
+    if (modifiedPost.new) {
         verb = @"create";
-        savePromise = [self.blogController requestCreateDraft:newPost publishImmediately:NO];
+        savePromise = [self.blogController requestCreateDraft:modifiedPost publishImmediately:NO];
     }
     else {
         verb = @"update";
-        savePromise = [self.blogController requestUpdatePost:newPost];
+        savePromise = [self.blogController requestUpdatePost:modifiedPost];
     }
     self.savePromise = savePromise;
 
@@ -289,14 +294,14 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     [items replaceObjectAtIndex:[items indexOfObject:saveItem] withObject:indicatorItem];
     [self.toolbar setItems:items animated:NO];
 
-    return savePromise.then(^{
     __weak typeof(self) welf = self;
+    return savePromise.then(^(Post *savedPost) {
         typeof(self) self = welf;
         NSLog(@"%@ post at path %@", verb, path);
 
         // update our post because "new" may have changed, which is essential to correct operation
-        [self configureWithPost:newPost];
-        return newPost;
+        [self configureWithPost:savedPost];
+        return savedPost;
     }).catch(^(NSError *error) {
         NSLog(@"Failed to %@ post at path %@: %@ %@", verb, path, error.localizedDescription, error.userInfo);
         return error;
