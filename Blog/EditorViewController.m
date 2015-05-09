@@ -322,6 +322,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 - (void)updatePostURL:(NSURL *)url {
     self.modifiedPost = [self.modifiedPost copyWithURL:url];
     [self configureLinkView];
+    [self configureTitleView];
 }
 
 - (IBAction)publishOrUnpublish:(id)sender {
