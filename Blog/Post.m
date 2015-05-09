@@ -16,12 +16,8 @@
 @synthesize objectID = _objectID;
 @synthesize slug = _slug;
 @synthesize author = _author;
-@synthesize title = _title;
-@synthesize date = _date;
 @synthesize time = _time;
-@synthesize body = _body;
 @synthesize path = _path;
-@synthesize url = _url;
 @synthesize formattedDate = _formattedDate;
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
