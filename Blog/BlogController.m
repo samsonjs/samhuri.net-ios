@@ -127,6 +127,10 @@
     });
 }
 
+- (PMKPromise *)requestSync {
+    return [_service requestSync];
+}
+
 - (PMKPromise *)requestPublishToStagingEnvironment {
     return [_service requestPublishEnvironment:@"staging"];
 }

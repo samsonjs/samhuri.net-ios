@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, BlogServiceErrorCode) {
 
 - (PMKPromise *)requestBlogStatus;
 - (PMKPromise *)requestPublishEnvironment:(NSString *)environment;
+- (PMKPromise *)requestSync;
 
 - (PMKPromise *)requestDrafts;
 - (PMKPromise *)requestPublishedPosts;

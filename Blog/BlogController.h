@@ -33,6 +33,7 @@
 - (PMKPromise *)requestUnpublishPost:(Post *)post;
 - (PMKPromise *)requestDeletePost:(Post *)post;
 
+- (PMKPromise *)requestSync;
 - (PMKPromise *)requestPublishToStagingEnvironment;
 - (PMKPromise *)requestPublishToProductionEnvironment;
 

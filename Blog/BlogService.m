@@ -77,6 +77,10 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return [self.client postJSON:[self urlFor:@"/publish"] headers:nil fields:fields];
 }
 
+- (PMKPromise *)requestSync {
+    return [self.client post:[self urlFor:@"/sync"] headers:nil];
+}
+
 - (PMKPromise *)requestDrafts {
     return [self.client get:[self urlFor:@"/posts/drafts"] headers:nil].then([self decodePostsBlock]);
 }

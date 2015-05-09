@@ -273,15 +273,20 @@ static const NSUInteger SectionPublished = 1;
         });
     };
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Publish" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Production" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"samhuri.net" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         __typeof__(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish([self.blogController requestPublishToProductionEnvironment]);
     }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Staging" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"beta.samhuri.net" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         __typeof__(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish([self.blogController requestPublishToStagingEnvironment]);
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Push to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        __typeof__(self) self = welf;
+        [self dismissViewControllerAnimated:YES completion:nil];
+        publish([self.blogController requestSync]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         __typeof__(self) self = welf;
