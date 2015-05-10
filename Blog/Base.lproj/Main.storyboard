@@ -24,6 +24,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.79534143518518507" green="0.0" blue="0.013255690586419705" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="barTintColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="7bK-jq-Zjz" kind="relationship" relationship="rootViewController" id="tsl-Nk-0bq"/>
@@ -458,6 +461,9 @@ wanted with as little input and thought as possible.</string>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.7953414352" green="0.0" blue="0.013255690590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="barTintColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="JEX-9P-axG" kind="relationship" relationship="rootViewController" id="GKi-kA-LjT"/>
