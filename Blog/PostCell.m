@@ -26,7 +26,7 @@
     UIColor *textColor = [UIColor whiteColor];
     if (selected) {
         backgroundColor = [UIColor mm_colorFromInteger:0x333333];
-        textColor = [UIColor mm_colorFromInteger:0xAA0000];
+        textColor = [UIColor mm_colorFromInteger:0xe0e0e0];
     }
 
     void (^setProperties)() = ^{
