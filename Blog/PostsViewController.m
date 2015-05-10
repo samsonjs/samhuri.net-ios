@@ -88,7 +88,7 @@ static const NSUInteger SectionPublished = 1;
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
     [titleView addSubview:titleLabel];
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:23];
+    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     [titleView addConstraint:topConstraint];
     self.titleLabelTopConstraint = topConstraint;
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
@@ -99,7 +99,7 @@ static const NSUInteger SectionPublished = 1;
     subtitleLabel.textColor = [UIColor whiteColor];
     [subtitleLabel sizeToFit];
     [titleView addSubview:subtitleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-6]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-9]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
@@ -114,10 +114,11 @@ static const NSUInteger SectionPublished = 1;
     {
         // status bar
         height += 20;
-        top += 20;
+        top += 15;
     }
     self.titleViewHeightConstraint.constant = height;
     self.titleLabelTopConstraint.constant = top;
+    [self.titleLabel.superview setNeedsUpdateConstraints];
 }
 
 - (void)updateOnClassInjection {
