@@ -321,18 +321,23 @@ wanted with as little input and thought as possible.</string>
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" restorationIdentifier="Web View" translatesAutoresizingMaskIntoConstraints="NO" id="0n2-Ma-NtP">
+                            <webView hidden="YES" contentMode="scaleToFill" restorationIdentifier="Web View" translatesAutoresizingMaskIntoConstraints="NO" id="0n2-Ma-NtP">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="delegate" destination="ixd-IL-hNy" id="Alk-Fw-YWo"/>
                                 </connections>
                             </webView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="zNM-N6-tdC">
+                                <rect key="frame" x="282" y="250" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="centerX" secondItem="zNM-N6-tdC" secondAttribute="centerX" id="AgQ-RY-Y6c"/>
                             <constraint firstAttribute="centerX" secondItem="0n2-Ma-NtP" secondAttribute="centerX" id="Iad-IJ-UKT"/>
                             <constraint firstAttribute="centerY" secondItem="0n2-Ma-NtP" secondAttribute="centerY" id="cwx-9Q-nmc"/>
+                            <constraint firstAttribute="centerY" secondItem="zNM-N6-tdC" secondAttribute="centerY" id="e25-K8-rET"/>
                             <constraint firstItem="0n2-Ma-NtP" firstAttribute="height" secondItem="d1U-C6-XQQ" secondAttribute="height" id="eZP-iJ-reC"/>
                             <constraint firstItem="0n2-Ma-NtP" firstAttribute="width" secondItem="d1U-C6-XQQ" secondAttribute="width" id="myh-gl-cb6"/>
                         </constraints>
@@ -342,6 +347,7 @@ wanted with as little input and thought as possible.</string>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
+                        <outlet property="indicatorView" destination="zNM-N6-tdC" id="aBl-qZ-1YS"/>
                         <outlet property="webView" destination="0n2-Ma-NtP" id="4yz-yf-YCI"/>
                     </connections>
                 </viewController>
@@ -480,6 +486,6 @@ wanted with as little input and thought as possible.</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="6S0-TO-JiA"/>
+        <segue reference="Tll-UG-LXB"/>
     </inferredMetricsTieBreakers>
 </document>

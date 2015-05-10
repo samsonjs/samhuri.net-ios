@@ -11,6 +11,7 @@
 @interface PreviewViewController () <UIWebViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIWebView *webView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -22,40 +23,42 @@
     // UIWebView restores its request so we just have to reload it
     if (!self.initialRequest && self.webView.request) {
         [self.webView reload];
+        [self.indicatorView startAnimating];
         return;
     }
 
     if (self.initialRequest) {
-        if (self.promise) {
-            __weak typeof(self) welf = self;
-            self.promise.then(^{
-                typeof(self) self = welf;
-                [self.webView loadRequest:self.initialRequest];
-            }).finally(^{
-                typeof(self) self = welf;
-                self.promise = nil;
-            });
-            return;
-        }
-        [self.webView loadRequest:self.initialRequest];
+        PMKPromise *p = self.promise ?: [PMKPromise promiseWithValue:nil];
+        __weak typeof(self) welf = self;
+        p.then(^{
+            typeof(self) self = welf;
+            [self.webView loadRequest:self.initialRequest];
+            [self.indicatorView startAnimating];
+        }).finally(^{
+            typeof(self) self = welf;
+            self.promise = nil;
+        });
         return;
     }
 }
 
 - (void)setInitialRequest:(NSURLRequest *)initialRequest {
     _initialRequest = initialRequest;
-    [self.webView loadHTMLString:@"<!doctype html><html><head><title></title></head><body></body></html>" baseURL:nil];
+    self.webView.hidden = YES;
 }
 
 #pragma mark - UIWebViewDelegate methods
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    self.webView.hidden = NO;
+    [self.indicatorView stopAnimating];
     if ([webView.request.URL isEqual:self.initialRequest.URL]) {
         self.initialRequest = nil;
     }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    [self.indicatorView stopAnimating];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) welf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
