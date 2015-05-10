@@ -276,11 +276,11 @@ wanted with as little input and thought as possible.</string>
                         <viewControllerLayoutGuide type="bottom" id="UG3-LY-P0T"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="B66-2b-lYL">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Text Field" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G2v-XU-V16">
-                                <rect key="frame" x="16" y="285" width="568" height="30"/>
+                                <rect key="frame" x="16" y="15" width="288" height="30"/>
                                 <color key="backgroundColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -296,6 +296,11 @@ wanted with as little input and thought as possible.</string>
                             <constraint firstAttribute="centerY" secondItem="G2v-XU-V16" secondAttribute="centerY" id="Jnq-JZ-918"/>
                         </constraints>
                     </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="60"/>
                     <connections>
                         <outlet property="titleField" destination="G2v-XU-V16" id="jgw-Ix-HzP"/>
                     </connections>
