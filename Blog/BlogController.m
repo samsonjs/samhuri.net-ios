@@ -87,16 +87,15 @@
     }
 }
 
-- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish {
-    return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body
-                                         link:draft.url.absoluteString publish:publish].then(^(Post *post) {
+- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation {
+    return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body link:draft.url.absoluteString publish:publish waitForCompilation:waitForCompilation].then(^(Post *post) {
         [_store addDraft:post];
         return post;
     });
 }
 
-- (PMKPromise *)requestUpdatePost:(Post *)post {
-    return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString]
+- (PMKPromise *)requestUpdatePost:(Post *)post waitForCompilation:(BOOL)waitForCompilation {
+    return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString waitForCompilation:NO]
             .then(^{
                 [_store savePost:post];
                 return post;

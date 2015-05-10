@@ -32,8 +32,8 @@ typedef NS_ENUM(NSUInteger, BlogServiceErrorCode) {
 - (PMKPromise *)requestPublishedPosts;
 - (PMKPromise *)requestPostWithPath:(NSString *)path;
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish;
-- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link;
+- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation;
+- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link waitForCompilation:(BOOL)waitForCompilation;
 - (PMKPromise *)requestPublishDraftWithPath:(NSString *)path;
 - (PMKPromise *)requestUnpublishPostWithPath:(NSString *)path;
 - (PMKPromise *)requestDeletePostWithPath:(NSString *)path;

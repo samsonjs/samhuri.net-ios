@@ -93,13 +93,14 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return [self.client get:[self urlFor:path] headers:nil].then([self decodePostBlock]);
 }
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish {
+- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation {
     NSDictionary *fields = @{
             @"id"      : draftID,
             @"title"   : title ?: [NSNull null],
             @"body"    : body,
             @"link"    : link ?: [NSNull null],
             @"publish" : publish ? @"true" : [NSNull null],
+            @"wait"    : waitForCompilation ? @"true" : [NSNull null],
     };
     return [self.client postJSON:[self urlFor:@"/posts/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
 }
@@ -112,11 +113,12 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return [self.client post:[self urlFor:@"%@/unpublish", path] headers:nil].then([self decodePostBlock]);
 }
 
-- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link {
+- (PMKPromise *)requestUpdatePostWithPath:(NSString *)path title:(NSString *)title body:(NSString *)body link:(NSString *)link waitForCompilation:(BOOL)waitForCompilation {
     NSDictionary *fields = @{
             @"title" : title ?: [NSNull null],
             @"body"  : body,
             @"link"  : link ?: [NSNull null],
+            @"wait"  : waitForCompilation ? @"true" : [NSNull null],
     };
     return [self.client putJSON:[self urlFor:path] headers:nil fields:fields];
 }

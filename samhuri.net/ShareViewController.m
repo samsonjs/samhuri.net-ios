@@ -39,7 +39,7 @@
     [provider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
         // TODO: image
         Post *post = [Post newDraftWithTitle:title body:body url:url];
-        [blogController requestCreateDraft:post publishImmediately:YES].then(^{
+        [blogController requestCreateDraft:post publishImmediately:YES waitForCompilation:NO].then(^{
             [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
         }).catch(^(NSError *error) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];

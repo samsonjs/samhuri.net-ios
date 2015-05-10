@@ -67,7 +67,7 @@
     [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
     [notificationCenter removeObserver:self name:PublishedPostRemovedNotification object:nil];
     if (self.post) {
-        [self savePost];
+        [self savePostAndWaitForCompilation:NO];
     }
 }
 
@@ -75,7 +75,7 @@
     [super prepareForSegue:segue sender:sender];
     if ([segue.identifier isEqualToString:@"showPreview"]) {
         PreviewViewController *previewViewController = segue.destinationViewController;
-        previewViewController.promise = [self savePost];
+        previewViewController.promise = [self savePostAndWaitForCompilation:YES];
         previewViewController.initialRequest = [self.blogController previewRequestWithPath:self.modifiedPost.path];
         return;
     }
@@ -180,7 +180,7 @@
 
 - (void)applicationWillResignActive:(NSNotification *)note {
     if (self.post) {
-        [self savePost];
+        [self savePostAndWaitForCompilation:NO];
     }
 }
 
@@ -258,7 +258,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     [self configureSaveButton];
 }
 
-- (PMKPromise *)savePost {
+- (PMKPromise *)savePostAndWaitForCompilation:(BOOL)waitForCompilation {
     if (self.savePromise) {
         return self.savePromise;
     }
@@ -278,11 +278,11 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     NSString *verb;
     if (modifiedPost.new) {
         verb = @"create";
-        savePromise = [self.blogController requestCreateDraft:modifiedPost publishImmediately:NO];
+        savePromise = [self.blogController requestCreateDraft:modifiedPost publishImmediately:NO waitForCompilation:waitForCompilation];
     }
     else {
         verb = @"update";
-        savePromise = [self.blogController requestUpdatePost:modifiedPost];
+        savePromise = [self.blogController requestUpdatePost:modifiedPost waitForCompilation:waitForCompilation];
     }
     self.savePromise = savePromise;
 
@@ -333,7 +333,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 - (IBAction)publishOrUnpublish:(id)sender {
     // TODO: prevent changes while publishing
     __weak typeof(self) welf = self;
-    [self savePost].then(^{
+    [self savePostAndWaitForCompilation:NO].then(^{
         typeof(self) self = welf;
         PMKPromise *promise = nil;
         Post *post = self.modifiedPost;
@@ -352,7 +352,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 }
 
 - (IBAction)save:(id)sender {
-    [self savePost];
+    [self savePostAndWaitForCompilation:NO];
 }
 
 - (IBAction)presentChangeTitle:(id)sender {

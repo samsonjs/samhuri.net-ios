@@ -27,8 +27,8 @@
 - (PMKPromise *)requestAllPostsWithCaching:(BOOL)useCache;
 - (PMKPromise *)requestPostWithPath:(NSString *)path;
 
-- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish;
-- (PMKPromise *)requestUpdatePost:(Post *)post;
+- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation;
+- (PMKPromise *)requestUpdatePost:(Post *)post waitForCompilation:(BOOL)waitForCompilation;
 - (PMKPromise *)requestPublishDraft:(Post *)post;
 - (PMKPromise *)requestUnpublishPost:(Post *)post;
 - (PMKPromise *)requestDeletePost:(Post *)post;
