@@ -41,13 +41,13 @@
     NSLog(@"title = %@", title);
     NSLog(@"body = %@", body);
     NSItemProvider *urlProvider = [self firstURLProvider];
-    BOOL reallyPost = NO;
+    BOOL reallyPost = YES;
     [urlProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
         // TODO: image
         NSLog(@"url = %@", url);
         if (reallyPost) {
             Post *post = [Post newDraftWithTitle:title body:body url:url];
-            [blogController requestCreateDraft:post publishImmediatelyToEnvironment:@"staging" waitForCompilation:NO].catch(^(NSError *error) {
+            [blogController requestCreateDraft:post publishImmediatelyToEnvironment:@"production" waitForCompilation:NO].catch(^(NSError *error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                     [self dismissViewControllerAnimated:YES completion:nil];
