@@ -13,13 +13,17 @@
 
 @interface ShareViewController ()
 
+@property (nonatomic, readonly, strong) NSItemProvider *URLProvider;
+@property (nonatomic, assign) BOOL checkedForURLProvider;
+
 @end
 
 @implementation ShareViewController
 
+@synthesize URLProvider = _URLProvider;
+
 - (BOOL)isContentValid {
-    // Do validation of contentText and/or NSExtensionContext attachments here
-    return YES;
+    return self.URLProvider != nil;
 }
 
 - (UIView *)loadPreviewView {
@@ -34,20 +38,48 @@
     NSRange titleEndRange = [self.contentText rangeOfString:@"\n\n"];
     NSString *title = titleEndRange.location == NSNotFound ? self.contentText : [self.contentText substringToIndex:titleEndRange.location];
     NSString *body = titleEndRange.location == NSNotFound ? @"" : [self.contentText substringFromIndex:titleEndRange.location + titleEndRange.length];
-    NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
-    NSItemProvider *provider = item.attachments.firstObject;
-    [provider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
+    NSLog(@"title = %@", title);
+    NSLog(@"body = %@", body);
+    NSItemProvider *urlProvider = [self firstURLProvider];
+    BOOL reallyPost = NO;
+    [urlProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
         // TODO: image
-        Post *post = [Post newDraftWithTitle:title body:body url:url];
-        [blogController requestCreateDraft:post publishImmediatelyToEnvironment:@"production" waitForCompilation:NO].catch(^(NSError *error) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }]];
-            [self presentViewController:alert animated:YES completion:nil];
-        });
+        NSLog(@"url = %@", url);
+        if (reallyPost) {
+            Post *post = [Post newDraftWithTitle:title body:body url:url];
+            [blogController requestCreateDraft:post publishImmediatelyToEnvironment:@"staging" waitForCompilation:NO].catch(^(NSError *error) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }]];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
         [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
     }];
+}
+
+- (NSItemProvider *)firstURLProvider {
+    NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
+    NSLog(@"item = %@", item);
+    for (NSItemProvider *provider in item.attachments) {
+        NSLog(@"provider = %@", provider);
+        if ([provider hasItemConformingToTypeIdentifier:@"public.url"]) {
+            return provider;
+        }
+    }
+    return nil;
+}
+
+- (NSItemProvider *)URLProvider {
+    if (!self.checkedForURLProvider) {
+        _URLProvider = [self firstURLProvider];
+        if (!_URLProvider) {
+            NSLog(@"ERROR: No URL provider found");
+        }
+        self.checkedForURLProvider = YES;
+    }
+    return _URLProvider;
 }
 
 - (NSArray *)configurationItems {
