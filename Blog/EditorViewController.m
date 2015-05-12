@@ -278,7 +278,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
     NSString *verb;
     if (modifiedPost.new) {
         verb = @"create";
-        savePromise = [self.blogController requestCreateDraft:modifiedPost publishImmediately:NO waitForCompilation:waitForCompilation];
+        savePromise = [self.blogController requestCreateDraft:modifiedPost publishImmediatelyToEnvironment:nil waitForCompilation:waitForCompilation];
     }
     else {
         verb = @"update";

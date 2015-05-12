@@ -93,14 +93,14 @@ NSString *const BlogServiceErrorDomain = @"BlogServiceErrorDomain";
     return [self.client get:[self urlFor:path] headers:nil].then([self decodePostBlock]);
 }
 
-- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link publish:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation {
+- (PMKPromise *)requestCreateDraftWithID:(NSString *)draftID title:(NSString *)title body:(NSString *)body link:(NSString *)link environment:(NSString *)env waitForCompilation:(BOOL)waitForCompilation {
     NSDictionary *fields = @{
             @"id"      : draftID,
             @"title"   : title ?: [NSNull null],
             @"body"    : body,
             @"link"    : link ?: [NSNull null],
-            @"publish" : publish ? @"true" : [NSNull null],
-            @"wait"    : waitForCompilation ? @"true" : [NSNull null],
+            @"env"     : env ?: [NSNull null],
+            @"wait"    : waitForCompilation ? @(YES) : [NSNull null],
     };
     return [self.client postJSON:[self urlFor:@"/posts/drafts"] headers:nil fields:fields].then([self decodePostBlock]);
 }

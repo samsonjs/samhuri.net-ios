@@ -87,8 +87,8 @@
     }
 }
 
-- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediately:(BOOL)publish waitForCompilation:(BOOL)waitForCompilation {
-    return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body link:draft.url.absoluteString publish:publish waitForCompilation:waitForCompilation].then(^(Post *post) {
+- (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediatelyToEnvironment:(NSString *)env waitForCompilation:(BOOL)waitForCompilation {
+    return [_service requestCreateDraftWithID:draft.objectID title:draft.title body:draft.body link:draft.url.absoluteString environment:env waitForCompilation:waitForCompilation].then(^(Post *post) {
         [_store addDraft:post];
         return post;
     });
