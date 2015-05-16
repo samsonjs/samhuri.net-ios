@@ -49,13 +49,14 @@
     [super viewWillAppear:animated];
 
     if (self.initialRequest) {
+        [self.centerIndicatorView startAnimating];
+        [self.cornerIndicatorView stopAnimating];
+        self.webView.hidden = YES;
+
         PMKPromise *p = self.promise ?: [PMKPromise promiseWithValue:nil];
         __weak typeof(self) welf = self;
         p.then(^{
             typeof(self) self = welf;
-            [self.centerIndicatorView startAnimating];
-            [self.cornerIndicatorView stopAnimating];
-            self.webView.hidden = YES;
             [self.webView loadRequest:self.initialRequest];
         }).finally(^{
             typeof(self) self = welf;
