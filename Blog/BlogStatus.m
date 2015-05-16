@@ -14,6 +14,7 @@
     return @{
             @"localVersion"  : @"local-version",
             @"remoteVersion" : @"remote-version",
+            @"dirty"         : @"dirty",
     };
 }
 
