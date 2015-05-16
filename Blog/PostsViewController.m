@@ -64,6 +64,11 @@ static const NSUInteger SectionPublished = 1;
     [self setupTitleView];
     [self setupFontAwesomeIcons];
     self.refreshControl.tintColor = [UIColor whiteColor];
+    [self setupNotifications];
+}
+
+- (void)dealloc {
+    [self teardownNotifications];
 }
 
 - (void)setupTitleView {
@@ -184,7 +189,6 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postUpdated:) name:PostUpdatedNotification object:nil];
     [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
     if (!self.postCollections) {
@@ -197,7 +201,6 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PostUpdatedNotification object:nil];
     [self teardownBlogStatusTimer];
 }
 
@@ -324,10 +327,50 @@ static const NSUInteger SectionPublished = 1;
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+- (void)setupNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postUpdated:) name:PostUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(draftAdded:) name:DraftAddedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(draftRemoved:) name:DraftRemovedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishedPostAdded:) name:PublishedPostAddedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishedPostRemoved:) name:PublishedPostRemovedNotification object:nil];
+}
+
+- (void)teardownNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PostUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DraftAddedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:DraftRemovedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PublishedPostAddedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PublishedPostRemovedNotification object:nil];
+}
+
+- (void)addPost:(Post *)post toSection:(NSUInteger)section {
+    PostCollection *collection = [self postCollectionForSection:section];
+    NSInteger row = 0;
+    [collection.posts insertObject:post atIndex:row];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)removePost:(Post *)post fromSection:(NSUInteger)section {
+    BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
+        return [p.path isEqualToString:post.path];
+    };
+    PostCollection *collection = [self postCollectionForSection:section];
+    NSUInteger row = [collection.posts indexOfObjectPassingTest:isThisPost];
+    if (row != NSNotFound) {
+        [collection.posts removeObjectAtIndex:row];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else {
+        NSLog(@"cannot find removed post %@", post);
+    }
+}
+
 - (void)postUpdated:(NSNotification *)note {
     Post *post = note.userInfo[PostUserInfoKey];
     BOOL (^isThisPost)(Post *, NSUInteger, BOOL *) = ^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
-        return [p.objectID isEqualToString:post.objectID];
+        return [p.path isEqualToString:post.path];
     };
     NSUInteger section = SectionDrafts;
     NSUInteger row = [self.drafts indexOfObjectPassingTest:isThisPost];
@@ -341,6 +384,43 @@ static const NSUInteger SectionPublished = 1;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
+    else {
+        NSLog(@"cannot find updated post %@", post);
+    }
+}
+
+- (void)draftAdded:(NSNotification *)note {
+    // New drafts may already be here, because we insert newly created drafts that are unsaved.
+    // Once saved this triggers, and we have to make sure we replace the existing one instead of
+    // adding a duplicate.
+    Post *post = note.userInfo[PostUserInfoKey];
+    NSInteger row = [self.drafts indexOfObjectPassingTest:^BOOL(Post *p, NSUInteger idx, BOOL *stop) {
+        return [post.path isEqualToString:p.path];
+    }];
+    if (row == NSNotFound)
+    {
+        [self addPost:post toSection:SectionDrafts];
+    }
+    else
+    {
+        self.drafts[row] = post;
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:SectionDrafts]] withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
+
+- (void)draftRemoved:(NSNotification *)note {
+    Post *post = note.userInfo[PostUserInfoKey];
+    [self removePost:post fromSection:SectionDrafts];
+}
+
+- (void)publishedPostAdded:(NSNotification *)note {
+    Post *post = note.userInfo[PostUserInfoKey];
+    [self addPost:post toSection:SectionPublished];
+}
+
+- (void)publishedPostRemoved:(NSNotification *)note {
+    Post *post = note.userInfo[PostUserInfoKey];
+    [self removePost:post fromSection:SectionPublished];
 }
 
 #pragma mark - Segues
@@ -364,14 +444,12 @@ static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
 static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
-    NSLog(@"%@ encode restorable state with coder %@", self, coder);
     [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
     [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSLog(@"%@ decode restorable state with coder %@", self, coder);
     self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
     self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
     [super decodeRestorableStateWithCoder:coder];

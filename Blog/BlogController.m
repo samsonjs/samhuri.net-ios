@@ -95,26 +95,26 @@
 }
 
 - (PMKPromise *)requestUpdatePost:(Post *)post waitForCompilation:(BOOL)waitForCompilation {
-    return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString waitForCompilation:NO]
+    return [_service requestUpdatePostWithPath:post.path title:post.title body:post.body link:post.url.absoluteString waitForCompilation:waitForCompilation]
             .then(^{
                 [_store savePost:post];
                 return post;
             });
 }
 
-- (PMKPromise *)requestPublishDraft:(Post *)post {
-    return [_service requestPublishDraftWithPath:post.path].then(^(Post *post) {
-        [_store removeDraft:post];
-        [_store addPublishedPost:post];
-        return post;
+- (PMKPromise *)requestPublishDraft:(Post *)draft {
+    return [_service requestPublishDraftWithPath:draft.path].then(^(Post *publishedPost) {
+        [_store removeDraft:draft];
+        [_store addPublishedPost:publishedPost];
+        return publishedPost;
     });
 }
 
-- (PMKPromise *)requestUnpublishPost:(Post *)post {
-    return [_service requestUnpublishPostWithPath:post.path].then(^(Post *post) {
-        [_store removePost:post];
-        [_store addDraft:post];
-        return post;
+- (PMKPromise *)requestUnpublishPost:(Post *)publishedPost {
+    return [_service requestUnpublishPostWithPath:publishedPost.path].then(^(Post *draft) {
+        [_store removePost:publishedPost];
+        [_store addDraft:draft];
+        return draft;
     });
 }
 

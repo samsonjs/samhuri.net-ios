@@ -217,14 +217,12 @@ static NSString *const StateRestorationPostKey = @"post";
 static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSLog(@"%@ encode restorable state with coder %@", self, coder);
     [coder encodeObject:self.post forKey:StateRestorationPostKey];
     [coder encodeObject:self.modifiedPost forKey:StateRestorationModifiedPostKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSLog(@"%@ decode restorable state with coder %@", self, coder);
     self.post = [coder decodeObjectForKey:StateRestorationPostKey];
     self.modifiedPost = [coder decodeObjectForKey:StateRestorationModifiedPostKey];
     [super decodeRestorableStateWithCoder:coder];

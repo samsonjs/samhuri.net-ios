@@ -29,8 +29,8 @@
 
 - (PMKPromise *)requestCreateDraft:(Post *)draft publishImmediatelyToEnvironment:(NSString *)env waitForCompilation:(BOOL)waitForCompilation;
 - (PMKPromise *)requestUpdatePost:(Post *)post waitForCompilation:(BOOL)waitForCompilation;
-- (PMKPromise *)requestPublishDraft:(Post *)post;
-- (PMKPromise *)requestUnpublishPost:(Post *)post;
+- (PMKPromise *)requestPublishDraft:(Post *)draft;
+- (PMKPromise *)requestUnpublishPost:(Post *)publishedPost;
 - (PMKPromise *)requestDeletePost:(Post *)post;
 
 - (PMKPromise *)requestSync;
