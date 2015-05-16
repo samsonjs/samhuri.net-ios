@@ -26,6 +26,7 @@
 
 @interface PostsViewController () <UISearchBarDelegate>
 
+@property (nonatomic, strong) NSArray *filteredPostCollections;
 @property (nonatomic, strong) NSArray *postCollections;
 @property (nonatomic, readonly, strong) NSMutableArray *drafts;
 @property (nonatomic, readonly, strong) NSMutableArray *publishedPosts;
@@ -40,6 +41,7 @@
 @property (nonatomic, weak) NSLayoutConstraint *titleViewWidthConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleViewHeightConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleLabelTopConstraint;
+@property(nonatomic, assign) BOOL hasAppeared;
 
 @end
 
@@ -202,11 +204,21 @@ static const NSUInteger SectionPublished = 1;
     if (self.tableView.indexPathForSelectedRow) {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
+    [self setupKeyboardNotifications];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!self.hasAppeared) {
+        self.hasAppeared = YES;
+        [self hideSearchBarAnimated:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self teardownBlogStatusTimer];
+    [self teardownKeyboardNotifications];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -257,7 +269,7 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (PostCollection *)postCollectionForSection:(NSInteger)section {
-    return self.postCollections[section];
+    return [self collectionsForTableView][section];
 }
 
 - (Post *)postForIndexPath:(NSIndexPath *)indexPath {
@@ -265,11 +277,13 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (NSMutableArray *)drafts {
-    return [self postCollectionForSection:SectionDrafts].posts;
+    PostCollection *collection = self.postCollections[SectionDrafts];
+    return collection.posts;
 }
 
 - (NSMutableArray *)publishedPosts {
-    return [self postCollectionForSection:SectionPublished].posts;
+    PostCollection *collection = self.postCollections[SectionPublished];
+    return collection.posts;
 }
 
 - (IBAction)insertNewObject:(id)sender {
@@ -334,6 +348,34 @@ static const NSUInteger SectionPublished = 1;
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+#pragma mark - Keyboard notifications
+
+- (void)setupKeyboardNotifications {
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)teardownKeyboardNotifications {
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)keyboardWillShow:(NSNotification *)note {
+    NSValue *keyboardFrame = note.userInfo[UIKeyboardFrameEndUserInfoKey];
+    CGFloat keyboardHeight = keyboardFrame.CGRectValue.size.height;
+    UIEdgeInsets inset = self.tableView.contentInset;
+    inset.bottom = keyboardHeight;
+    self.tableView.contentInset = inset;
+}
+
+- (void)keyboardWillHide:(NSNotification *)note {
+    UIEdgeInsets inset = self.tableView.contentInset;
+    inset.bottom = 0;
+    self.tableView.contentInset = inset;
+}
+
 #pragma mark - Blog notificitons
 
 - (void)setupBlogNotifications {
@@ -355,7 +397,7 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)addPost:(Post *)post toSection:(NSUInteger)section {
-    PostCollection *collection = [self postCollectionForSection:section];
+    PostCollection *collection = self.postCollections[section];
     NSInteger row = 0;
     [collection.posts insertObject:post atIndex:row];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
@@ -468,8 +510,12 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
 #pragma mark - Table View
 
+- (NSArray *)collectionsForTableView {
+    return self.filteredPostCollections ?: self.postCollections;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.postCollections.count;
+    return [self collectionsForTableView].count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -525,28 +571,45 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
 #pragma mark - UISearchBarDelegate methods
 
+- (void)hideSearchBarAnimated:(BOOL)animated {
+    [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchBar.bounds)) animated:animated];
+}
+
 - (void)filterPosts:(NSString *)text {
+    NSMutableArray *collections = nil;
     if (text.length) {
-
+        collections = [NSMutableArray new];
+        for (PostCollection *collection in self.postCollections) {
+            PostCollection *filteredCollection = [[PostCollection alloc] initWithTitle:collection.title posts:@[]];
+            for (Post *post in collection.posts) {
+                BOOL titleMatches = [post.title rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound;
+                BOOL bodyMatches = [post.body rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound;
+                if (titleMatches || bodyMatches) {
+                    [filteredCollection.posts addObject:post];
+                }
+            }
+            if (filteredCollection.posts.count) {
+                [collections addObject:filteredCollection];
+            }
+        }
     }
-    else {
-
-    }
+    self.filteredPostCollections = collections;
     [self.tableView reloadData];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-//    [self filterPosts:searchText];
+    [self filterPosts:searchText];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self filterPosts:self.searchBar.text];
+    [self.searchBar resignFirstResponder];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-//    [self filterPosts:nil];
+    [self filterPosts:nil];
+    [self hideSearchBarAnimated:YES];
+    [self.searchBar resignFirstResponder];
 }
-
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-//    [self filterPosts:self.searchBar.text];
-}
-
 
 @end

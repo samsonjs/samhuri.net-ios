@@ -371,14 +371,16 @@ wanted with as little input and thought as possible.</string>
         <scene sceneID="smW-Zh-WAh">
             <objects>
                 <tableViewController storyboardIdentifier="Posts View Controller" title="Posts" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7bK-jq-Zjz" customClass="PostsViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Posts Table View" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="r7i-6Z-zg0">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Posts Table View" alwaysBounceVertical="YES" indicatorStyle="white" keyboardDismissMode="interactive" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.66666666669999997" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.7953414352" green="0.0" blue="0.013255690590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Search" id="QTr-jX-TNh">
+                        <searchBar key="tableHeaderView" contentMode="redraw" barStyle="black" searchBarStyle="minimal" placeholder="Search" showsCancelButton="YES" id="QTr-jX-TNh">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <color key="tintColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="barTintColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <textInputTraits key="textInputTraits" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
                             <connections>
                                 <outlet property="delegate" destination="7bK-jq-Zjz" id="1Ht-4q-Rno"/>
