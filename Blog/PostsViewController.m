@@ -24,13 +24,14 @@
 #import "MBProgressHUD.h"
 #import "CommonUI.h"
 
-@interface PostsViewController ()
+@interface PostsViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) NSArray *postCollections;
 @property (nonatomic, readonly, strong) NSMutableArray *drafts;
 @property (nonatomic, readonly, strong) NSMutableArray *publishedPosts;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *publishButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *addButton;
+@property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, weak) UILabel *titleLabel;
 @property (nonatomic, weak) UILabel *statusLabel;
 @property (nonatomic, copy) NSString *blogStatusText;
@@ -517,5 +518,31 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
+
+#pragma mark - UISearchBarDelegate methods
+
+- (void)filterPosts:(NSString *)text {
+    if (text.length) {
+
+    }
+    else {
+
+    }
+    [self.tableView reloadData];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+//    [self filterPosts:searchText];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+//    [self filterPosts:nil];
+}
+
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+//    [self filterPosts:self.searchBar.text];
+}
+
 
 @end
