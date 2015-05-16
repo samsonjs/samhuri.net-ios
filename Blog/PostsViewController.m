@@ -110,7 +110,8 @@ static const NSUInteger SectionPublished = 1;
     self.titleViewWidthConstraint.constant = CGRectGetWidth(self.view.bounds);
     CGFloat height = CGRectGetHeight(self.navigationController.navigationBar.bounds);
     CGFloat top = 5;
-    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation))
+    // This is more reliable than checking if it's portrait.
+    if (!UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
     {
         // status bar
         height += 20;
