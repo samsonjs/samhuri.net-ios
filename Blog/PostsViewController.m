@@ -365,7 +365,6 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
     NSLog(@"%@ encode restorable state with coder %@", self, coder);
-    [coder encodeObject:self.postCollections forKey:StateRestorationPostCollectionsKey];
     [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
     [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
     [super encodeRestorableStateWithCoder:coder];
@@ -373,7 +372,6 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
     NSLog(@"%@ decode restorable state with coder %@", self, coder);
-    self.postCollections = [coder decodeObjectForKey:StateRestorationPostCollectionsKey];
     self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
     self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
     [super decodeRestorableStateWithCoder:coder];
