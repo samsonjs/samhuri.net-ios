@@ -16,6 +16,8 @@
 #import "UIImage+FontAwesome.h"
 #import "NSString+FontAwesome.h"
 #import "UIColor+Hex.h"
+#import "MBProgressHUD.h"
+#import "UIFont+FontAwesome.h"
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
@@ -329,24 +331,44 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 }
 
 - (IBAction)publishOrUnpublish:(id)sender {
-    // TODO: prevent changes while publishing
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    BOOL isPublish = self.modifiedPost.draft;
+    hud.labelText = isPublish ? @"Publishing" : @"Unpublishing";
     __weak typeof(self) welf = self;
     [self savePostAndWaitForCompilation:NO].then(^{
         typeof(self) self = welf;
         PMKPromise *promise = nil;
-        Post *post = self.modifiedPost;
-        if (post.draft) {
-            promise = [self.blogController requestPublishDraft:post];
+        if (isPublish) {
+            promise = [self.blogController requestPublishDraft:self.modifiedPost];
         }
         else {
-            promise = [self.blogController requestUnpublishPost:post];
+            promise = [self.blogController requestUnpublishPost:self.modifiedPost];
         }
         promise.then(^(Post *post) {
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.customView = [self HUDLabelWithText:[NSString fontAwesomeIconStringForEnum:FACheck]];
+            hud.labelText = isPublish ? @"Published" : @"Unpublished";
             self.post = post;
             self.modifiedPost = post;
             [self configureView];
+            [hud hide:YES afterDelay:1];
+        }).catch(^(NSError *error) {
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.customView = [self HUDLabelWithText:[NSString fontAwesomeIconStringForEnum:FATimes]];
+            hud.labelText = @"Fail";
+            hud.detailsLabelText = error.localizedDescription;
+            [hud hide:YES afterDelay:3];
         });
     });
+}
+
+- (UILabel *)HUDLabelWithText:(NSString *)text {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont fontAwesomeFontOfSize:36];
+    label.text = text;
+    [label sizeToFit];
+    return label;
 }
 
 - (IBAction)save:(id)sender {
