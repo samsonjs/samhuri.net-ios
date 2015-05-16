@@ -69,11 +69,11 @@ static const NSUInteger SectionPublished = 1;
     [self setupTitleView];
     [self setupFontAwesomeIcons];
     self.refreshControl.tintColor = [UIColor whiteColor];
-    [self setupNotifications];
+    [self setupBlogNotifications];
 }
 
 - (void)dealloc {
-    [self teardownNotifications];
+    [self teardownBlogNotifications];
 }
 
 - (void)setupTitleView {
@@ -334,20 +334,24 @@ static const NSUInteger SectionPublished = 1;
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)setupNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postUpdated:) name:PostUpdatedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(draftAdded:) name:DraftAddedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(draftRemoved:) name:DraftRemovedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishedPostAdded:) name:PublishedPostAddedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishedPostRemoved:) name:PublishedPostRemovedNotification object:nil];
+#pragma mark - Blog notificitons
+
+- (void)setupBlogNotifications {
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(postUpdated:) name:PostUpdatedNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(draftAdded:) name:DraftAddedNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(draftRemoved:) name:DraftRemovedNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(publishedPostAdded:) name:PublishedPostAddedNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(publishedPostRemoved:) name:PublishedPostRemovedNotification object:nil];
 }
 
-- (void)teardownNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PostUpdatedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:DraftAddedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:DraftRemovedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PublishedPostAddedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PublishedPostRemovedNotification object:nil];
+- (void)teardownBlogNotifications {
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:PostUpdatedNotification object:nil];
+    [notificationCenter removeObserver:self name:DraftAddedNotification object:nil];
+    [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
+    [notificationCenter removeObserver:self name:PublishedPostAddedNotification object:nil];
+    [notificationCenter removeObserver:self name:PublishedPostRemovedNotification object:nil];
 }
 
 - (void)addPost:(Post *)post toSection:(NSUInteger)section {
