@@ -190,7 +190,33 @@
     }
 }
 
+- (UIViewAnimationOptions)animationOptionsForCurve:(UIViewAnimationCurve)curve {
+    UIViewAnimationOptions options = 0;
+    if (curve == UIViewAnimationCurveEaseIn) {
+        options |= UIViewAnimationOptionCurveEaseIn;
+    }
+    if (curve == UIViewAnimationCurveEaseOut) {
+        options |= UIViewAnimationOptionCurveEaseOut;
+    }
+    if (curve == UIViewAnimationCurveEaseInOut) {
+        options |= UIViewAnimationOptionCurveEaseInOut;
+    }
+    if (curve == UIViewAnimationCurveLinear) {
+        options |= UIViewAnimationOptionCurveLinear;
+    }
+    return options;
+}
+
 - (void)keyboardWillShow:(NSNotification *)note {
+    NSValue *keyboardFrame = note.userInfo[UIKeyboardFrameEndUserInfoKey];
+    CGFloat keyboardHeight = keyboardFrame.CGRectValue.size.height;
+    NSNumber *durationNumber = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    NSNumber *curveNumber = note.userInfo[UIKeyboardAnimationCurveUserInfoKey];
+    [UIView animateWithDuration:durationNumber.doubleValue delay:0 options:[self animationOptionsForCurve:curveNumber.integerValue] animations:^{
+        self.toolbar.transform = CGAffineTransformMakeTranslation(0, -keyboardHeight);
+    } completion:nil];
+    [self adjustTextViewBottomInset:keyboardHeight];
+
     if (self.textView.isFirstResponder) {
         // This notification is called inside an animation block, but we don't want animation here.
         // Dispatch to break out of the animation.
@@ -201,7 +227,21 @@
 }
 
 - (void)keyboardWillHide:(NSNotification *)note {
+    NSNumber *durationNumber = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    NSNumber *curveNumber = note.userInfo[UIKeyboardAnimationCurveUserInfoKey];
+    [UIView animateWithDuration:durationNumber.doubleValue delay:0 options:[self animationOptionsForCurve:curveNumber.integerValue] animations:^{
+        self.toolbar.transform = CGAffineTransformIdentity;
+    } completion:nil];
+    [self adjustTextViewBottomInset:0];
     [self hideHideKeyboardButton];
+}
+
+- (void)adjustTextViewBottomInset:(CGFloat)bottomInset {
+    UIEdgeInsets inset = self.textView.contentInset;
+    inset.bottom = bottomInset;
+    self.textView.contentInset = inset;
+    // TODO: put the selection in the middle somehow ... can we get the point/rect for the selection?
+    [self.textView scrollRangeToVisible:self.textView.selectedRange];
 }
 
 - (void)postDeleted:(NSNotification *)note {

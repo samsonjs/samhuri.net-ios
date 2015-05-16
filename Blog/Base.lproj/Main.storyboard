@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="H1p-Uh-vWS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E17e" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="H1p-Uh-vWS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <mutableArray key="FontAwesome.ttf">
+        <mutableArray key="FontAwesome.otf">
             <string>FontAwesome</string>
             <string>FontAwesome</string>
         </mutableArray>
@@ -178,8 +178,9 @@ wanted with as little input and thought as possible.</string>
                                     <outlet property="delegate" destination="JEX-9P-axG" id="vKD-HY-lGQ"/>
                                 </connections>
                             </textView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YUD-Xe-6Cc">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YUD-Xe-6Cc">
                                 <rect key="frame" x="0.0" y="492" width="600" height="44"/>
+                                <color key="backgroundColor" red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <items>
                                     <barButtonItem title="Publish" id="qEb-VA-ueB">
                                         <connections>
@@ -206,6 +207,7 @@ wanted with as little input and thought as possible.</string>
                         <color key="tintColor" red="0.7953414352" green="0.0" blue="0.013255690590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="D5w-s5-7oj" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="0ff-4l-Opw"/>
+                            <constraint firstItem="GAO-Cl-Wes" firstAttribute="top" secondItem="wrG-1y-ZY3" secondAttribute="bottom" constant="44" id="2YF-66-wa8"/>
                             <constraint firstAttribute="centerX" secondItem="Cwh-4G-e0V" secondAttribute="centerX" id="3Hg-As-HnU"/>
                             <constraint firstItem="Cwh-4G-e0V" firstAttribute="width" secondItem="svH-Pt-448" secondAttribute="width" id="3dn-X1-5mN"/>
                             <constraint firstItem="HlE-1R-AqU" firstAttribute="width" relation="lessThanOrEqual" secondItem="svH-Pt-448" secondAttribute="width" constant="-16" id="4Oy-n1-WtG"/>
@@ -237,6 +239,7 @@ wanted with as little input and thought as possible.</string>
                                 <exclude reference="EKu-59-ks3"/>
                                 <exclude reference="dyd-fn-rUM"/>
                                 <exclude reference="tUU-ig-gJV"/>
+                                <exclude reference="iTL-zi-eKI"/>
                             </mask>
                         </variation>
                     </view>
