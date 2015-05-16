@@ -8,6 +8,7 @@ target :'samhuri.net' do
   pod 'PromiseKit'
   pod 'YapDatabase'
   pod 'ObjectiveSugar'
+  pod 'MBProgressHUD'
 end
 
 target :Blog do
@@ -18,6 +19,7 @@ target :Blog do
   pod 'ObjectiveSugar'
   pod 'dyci'
   pod 'FontAwesome+iOS', :git => 'https://github.com/alexdrone/ios-fontawesome.git'
+  pod 'MBProgressHUD'
 end
 
 target :BlogTests do

@@ -46,6 +46,7 @@ PODS:
   - Mantle (2.0):
     - Mantle/extobjc (= 2.0)
   - Mantle/extobjc (2.0)
+  - MBProgressHUD (0.9.1)
   - ObjectiveSugar (1.1.0)
   - OMGHTTPURLRQ (2.1):
     - OMGHTTPURLRQ/RQ (= 2.1)
@@ -100,6 +101,7 @@ DEPENDENCIES:
   - FontAwesome+iOS (from `https://github.com/alexdrone/ios-fontawesome.git`)
   - libextobjc
   - Mantle
+  - MBProgressHUD
   - ObjectiveSugar
   - PromiseKit
   - YapDatabase
@@ -118,10 +120,11 @@ SPEC CHECKSUMS:
   dyci: 099c2e6dc98abb8f21b370cabbf1443ff700608a
   FontAwesome+iOS: c6d3bbd2856b9633028d316d56133d45fb6a6cb0
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
-  Mantle: 17de73ef929db2234d76fde2aacfb89ab11c61e8
+  Mantle: d7c75b6fb789b20f7ae30cd0d09435fe545896ff
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
   OMGHTTPURLRQ: f8c515dfd2f57a5d74c710978f600231f52afec5
   PromiseKit: b333c1baae651ed1fdfb4f6f4ef18d7ca118931e
   YapDatabase: 13566c87dc9226a0f15d755edba08e8ad94cac9f
 
-COCOAPODS: 0.37.0
+COCOAPODS: 0.37.1
