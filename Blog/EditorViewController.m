@@ -56,6 +56,7 @@
     [notificationCenter addObserver:self selector:@selector(postDeleted:) name:DraftRemovedNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(postDeleted:) name:PublishedPostRemovedNotification object:nil];
     [self configureView];
+    [self restoreScrollOffset];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -148,14 +149,11 @@
 
 - (void)configureBodyView {
     NSString *body = nil;
-    CGPoint scrollOffset = CGPointZero;
     Post *post = self.modifiedPost;
     if (post) {
         body = post.body;
-        // TODO: restore scroll offset for this post ... user defaults?
     }
     self.textView.text = body;
-    self.textView.contentOffset = scrollOffset;
 }
 
 - (void)configureToolbar {
@@ -263,6 +261,8 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
         return self.savePromise;
     }
 
+    [self saveScrollOffset];
+
     // TODO: persist on disk before going to the network
     NSAssert(self.post, @"post is required");
     [self updatePostBody];
@@ -311,6 +311,25 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
         self.savePromise = nil;
         [items replaceObjectAtIndex:[items indexOfObject:indicatorItem] withObject:saveItem];
         [self.toolbar setItems:items animated:NO];
+    });
+}
+
+- (NSString *)scrollOffsetKey {
+    NSString *key = [NSString stringWithFormat:@"ScrollOffset-%@", self.modifiedPost.path];
+    return key;
+}
+
+- (void)saveScrollOffset {
+    CGPoint scrollOffset = self.textView.contentOffset;
+    NSString *serializedOffset = NSStringFromCGPoint(scrollOffset);
+    [[NSUserDefaults standardUserDefaults] setObject:serializedOffset forKey:[self scrollOffsetKey]];
+}
+
+- (void)restoreScrollOffset {
+    NSString *serializedOffset = [[NSUserDefaults standardUserDefaults] objectForKey:[self scrollOffsetKey]];
+    CGPoint scrollOffset = serializedOffset ? CGPointFromString(serializedOffset) : CGPointZero;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.textView setContentOffset:scrollOffset animated:YES];
     });
 }
 
