@@ -8,6 +8,7 @@
 
 #import <PromiseKit/Promise.h>
 #import <ObjectiveSugar/NSArray+ObjectiveSugar.h>
+#import <FontAwesome+iOS/NSString+FontAwesome.h>
 #import "PostsViewController.h"
 #import "EditorViewController.h"
 #import "Post.h"
@@ -20,6 +21,8 @@
 #import "ModelStore.h"
 #import "UIImage+FontAwesome.h"
 #import "NSString+marshmallows.h"
+#import "MBProgressHUD.h"
+#import "CommonUI.h"
 
 @interface PostsViewController ()
 
@@ -268,11 +271,6 @@ static const NSUInteger SectionPublished = 1;
     return [self postCollectionForSection:SectionPublished].posts;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (IBAction)insertNewObject:(id)sender {
     NSURL *url = [UIPasteboard generalPasteboard].URL;
     NSString *title = [[UIPasteboard generalPasteboard].string mm_stringByTrimmingWhitespace];
@@ -293,38 +291,40 @@ static const NSUInteger SectionPublished = 1;
 - (IBAction)publish:(id)sender {
     // TODO: activity indicator
     __weak typeof(self) welf = self;
-    void (^publish)(PMKPromise *) = ^(PMKPromise *promise) {
-        self.publishButton.enabled = NO;
+    void (^publish)(NSString *, PMKPromise *) = ^(NSString *message, PMKPromise *promise) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = message;
         typeof(self) self = welf;
         promise.then(^{
             [self requestStatusWithoutCaching];
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.customView = NewFontAwesomeHUDView([NSString fontAwesomeIconStringForEnum:FACheck]);
+            hud.labelText = @"All good";
+            [hud hide:YES afterDelay:1];
         }).catch(^(NSError *error) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-            __weak typeof(self) welf = self;
-            [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                typeof(self) self = welf;
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }]];
-            [self presentViewController:alertController animated:YES completion:nil];
-        }).finally(^{
-            self.publishButton.enabled = YES;
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.customView = NewFontAwesomeHUDView([NSString fontAwesomeIconStringForEnum:FATimes]);
+            hud.labelText = @"Fail";
+            hud.detailsLabelText = error.localizedDescription;
+            [hud hide:YES afterDelay:3];
+            NSLog(@"fail %@ %@", error, error.userInfo);
         });
     };
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Publish" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alertController addAction:[UIAlertAction actionWithTitle:@"samhuri.net" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
-        publish([self.blogController requestPublishToProductionEnvironment]);
+        publish(@"samhuri.net", [self.blogController requestPublishToProductionEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"beta.samhuri.net" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
-        publish([self.blogController requestPublishToStagingEnvironment]);
+        publish(@"beta.samhuri.net", [self.blogController requestPublishToStagingEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Push to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
-        publish([self.blogController requestSync]);
+        publish(@"Pushing", [self.blogController requestSync]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         typeof(self) self = welf;

@@ -17,7 +17,7 @@
 #import "NSString+FontAwesome.h"
 #import "UIColor+Hex.h"
 #import "MBProgressHUD.h"
-#import "UIFont+FontAwesome.h"
+#import "CommonUI.h"
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
@@ -346,7 +346,7 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
         }
         promise.then(^(Post *post) {
             hud.mode = MBProgressHUDModeCustomView;
-            hud.customView = [self HUDLabelWithText:[NSString fontAwesomeIconStringForEnum:FACheck]];
+            hud.customView = NewFontAwesomeHUDView([NSString fontAwesomeIconStringForEnum:FACheck]);
             hud.labelText = isPublish ? @"Published" : @"Unpublished";
             self.post = post;
             self.modifiedPost = post;
@@ -354,21 +354,13 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
             [hud hide:YES afterDelay:1];
         }).catch(^(NSError *error) {
             hud.mode = MBProgressHUDModeCustomView;
-            hud.customView = [self HUDLabelWithText:[NSString fontAwesomeIconStringForEnum:FATimes]];
+            hud.customView = NewFontAwesomeHUDView([NSString fontAwesomeIconStringForEnum:FATimes]);
             hud.labelText = @"Fail";
             hud.detailsLabelText = error.localizedDescription;
             [hud hide:YES afterDelay:3];
+            NSLog(@"fail %@ %@", error, error.userInfo);
         });
     });
-}
-
-- (UILabel *)HUDLabelWithText:(NSString *)text {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.textColor = [UIColor whiteColor];
-    label.font = [UIFont fontAwesomeFontOfSize:36];
-    label.text = text;
-    [label sizeToFit];
-    return label;
 }
 
 - (IBAction)save:(id)sender {
