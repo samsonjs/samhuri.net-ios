@@ -19,6 +19,7 @@
 #import "PostCollection.h"
 #import "ModelStore.h"
 #import "UIImage+FontAwesome.h"
+#import "NSString+marshmallows.h"
 
 @interface PostsViewController ()
 
@@ -273,9 +274,14 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (IBAction)insertNewObject:(id)sender {
-    NSString *title = [UIPasteboard generalPasteboard].string;
     NSURL *url = [UIPasteboard generalPasteboard].URL;
-    // TODO: image, anything else interesting
+    NSString *title = [[UIPasteboard generalPasteboard].string mm_stringByTrimmingWhitespace];
+    if ([title hasPrefix:@"http"]) {
+        if (!url) {
+            url = [NSURL URLWithString:title];
+        }
+        title = nil;
+    }
     Post *post = [Post newDraftWithTitle:title body:nil url:url];
     [self.drafts insertObject:post atIndex:0];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:SectionDrafts];
