@@ -57,6 +57,9 @@
 		7BE3A0351AE461E700E45CCB /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE3A0341AE461E700E45CCB /* PreviewViewController.m */; };
 		7BF029331A27117200E42EDE /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
 		7BF029381A280CB200E42EDE /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
+		7BF960261B0D802900A19A2B /* GrabSelectedText.js in Resources */ = {isa = PBXBuildFile; fileRef = 7BF960251B0D802900A19A2B /* GrabSelectedText.js */; };
+		7BF960271B0E1B1000A19A2B /* SharedContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCC904E1195A3DA84D276 /* SharedContent.m */; };
+		7BF960281B0E1B1500A19A2B /* ExtensionItemProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC0549FB7723D8893A91C /* ExtensionItemProcessor.m */; };
 		848D1BC47C9F03BB91A24EB4 /* libPods-samhuri.net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D351844AAA829A65456E283E /* libPods-samhuri.net.a */; };
 		B8B8958B2AA40812EFE04FEF /* libPods-BlogTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */; };
 /* End PBXBuildFile section */
@@ -94,8 +97,11 @@
 
 /* Begin PBXFileReference section */
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BCFC0549FB7723D8893A91C /* ExtensionItemProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionItemProcessor.m; sourceTree = "<group>"; };
 		1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		1BCFC27DA8A32D0484C273A0 /* ExtensionItemProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionItemProcessor.h; sourceTree = "<group>"; };
 		1BCFC32EC1E5AE196D194D21 /* CommonUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUI.m; sourceTree = "<group>"; };
+		1BCFC384864D31C679683404 /* SharedContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedContent.h; sourceTree = "<group>"; };
 		1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollection.m; sourceTree = "<group>"; };
 		1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900.otf"; sourceTree = "<group>"; };
 		1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-700.otf"; sourceTree = "<group>"; };
@@ -106,6 +112,7 @@
 		1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-100-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCB89F8C8583AE061757E /* MuseoSans-500.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-500.otf"; sourceTree = "<group>"; };
 		1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-100.otf"; sourceTree = "<group>"; };
+		1BCFCC904E1195A3DA84D276 /* SharedContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedContent.m; sourceTree = "<group>"; };
 		1BCFCCF30594E0E2DCC32116 /* PostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCell.h; sourceTree = "<group>"; };
 		1BCFCD0E9504E1E8AB8C0275 /* MuseoSans-300-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-300-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCDD73D4AE8F16A9C9E3D /* ChangeTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeTitleViewController.h; sourceTree = "<group>"; };
@@ -162,6 +169,7 @@
 		7BF029321A27117200E42EDE /* ModelStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelStore.m; sourceTree = "<group>"; };
 		7BF029361A280CB200E42EDE /* BlogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogController.h; sourceTree = "<group>"; };
 		7BF029371A280CB200E42EDE /* BlogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogController.m; sourceTree = "<group>"; };
+		7BF960251B0D802900A19A2B /* GrabSelectedText.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = GrabSelectedText.js; sourceTree = "<group>"; };
 		9C36BC848680D4F831E4DE23 /* libPods-BlogTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlogTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A12E4260DF3BBC175C358446 /* Pods-samhuri.net.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samhuri.net.debug.xcconfig"; path = "Pods/Target Support Files/Pods-samhuri.net/Pods-samhuri.net.debug.xcconfig"; sourceTree = "<group>"; };
 		A2EB178BEF4356711B2710AE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -236,10 +244,15 @@
 		7B08B3E81AF9CAD300435579 /* samhuri.net */ = {
 			isa = PBXGroup;
 			children = (
+				7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */,
 				7B08B3EB1AF9CAD300435579 /* ShareViewController.h */,
 				7B08B3EC1AF9CAD300435579 /* ShareViewController.m */,
-				7B08B3EE1AF9CAD300435579 /* MainInterface.storyboard */,
+				7BF960251B0D802900A19A2B /* GrabSelectedText.js */,
 				7B08B3E91AF9CAD300435579 /* Supporting Files */,
+				1BCFCC904E1195A3DA84D276 /* SharedContent.m */,
+				1BCFC384864D31C679683404 /* SharedContent.h */,
+				1BCFC0549FB7723D8893A91C /* ExtensionItemProcessor.m */,
+				1BCFC27DA8A32D0484C273A0 /* ExtensionItemProcessor.h */,
 			);
 			path = samhuri.net;
 			sourceTree = "<group>";
@@ -500,6 +513,7 @@
 			files = (
 				7B08B3EF1AF9CAD300435579 /* MainInterface.storyboard in Resources */,
 				7B010BAF1AFB3EA900351D18 /* auth.json in Resources */,
+				7BF960261B0D802900A19A2B /* GrabSelectedText.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,9 +653,11 @@
 				7B08B3F71AF9CBBD00435579 /* NSDate+marshmallows.m in Sources */,
 				7B08B3FB1AF9CBC500435579 /* BlogService.m in Sources */,
 				7B08B3FD1AF9CBC500435579 /* ModelStore.m in Sources */,
+				7BF960281B0E1B1500A19A2B /* ExtensionItemProcessor.m in Sources */,
 				7B08B4021AF9D3EA00435579 /* SamhuriNet.m in Sources */,
 				7B08B3ED1AF9CAD300435579 /* ShareViewController.m in Sources */,
 				7B08B3F91AF9CBC500435579 /* BlogStatus.m in Sources */,
+				7BF960271B0E1B1000A19A2B /* SharedContent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
