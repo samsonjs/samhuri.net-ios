@@ -365,15 +365,20 @@ static const NSUInteger SectionPublished = 1;
 - (void)keyboardWillShow:(NSNotification *)note {
     NSValue *keyboardFrame = note.userInfo[UIKeyboardFrameEndUserInfoKey];
     CGFloat keyboardHeight = keyboardFrame.CGRectValue.size.height;
-    UIEdgeInsets inset = self.tableView.contentInset;
-    inset.bottom = keyboardHeight;
-    self.tableView.contentInset = inset;
+    [self adjustTableViewBottomInsets:keyboardHeight];
 }
 
 - (void)keyboardWillHide:(NSNotification *)note {
+    [self adjustTableViewBottomInsets:0];
+}
+
+- (void)adjustTableViewBottomInsets:(CGFloat)bottom {
     UIEdgeInsets inset = self.tableView.contentInset;
-    inset.bottom = 0;
+    inset.bottom = bottom;
     self.tableView.contentInset = inset;
+    inset = self.tableView.scrollIndicatorInsets;
+    inset.bottom = bottom;
+    self.tableView.scrollIndicatorInsets = inset;
 }
 
 #pragma mark - Blog notificitons

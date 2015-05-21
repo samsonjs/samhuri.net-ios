@@ -240,6 +240,9 @@
     UIEdgeInsets inset = self.textView.contentInset;
     inset.bottom = bottomInset;
     self.textView.contentInset = inset;
+    inset = self.textView.scrollIndicatorInsets;
+    inset.bottom = bottomInset;
+    self.textView.scrollIndicatorInsets = inset;
     // TODO: put the selection in the middle somehow ... can we get the point/rect for the selection?
     [self.textView scrollRangeToVisible:self.textView.selectedRange];
 }
