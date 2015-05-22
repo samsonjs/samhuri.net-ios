@@ -198,11 +198,12 @@ static const NSUInteger SectionPublished = 1;
     [super viewWillAppear:animated];
     [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
+    BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
+    if (isPhone && self.tableView.indexPathForSelectedRow) {
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+    }
     if (!self.postCollections) {
         [self requestPostsWithCaching:YES];
-    }
-    if (self.tableView.indexPathForSelectedRow) {
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
     [self setupKeyboardNotifications];
 }
