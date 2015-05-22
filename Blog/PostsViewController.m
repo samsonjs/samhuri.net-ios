@@ -498,7 +498,6 @@ static const NSUInteger SectionPublished = 1;
 
 #pragma mark - State restoration
 
-static NSString *const StateRestorationPostCollectionsKey = @"postCollections";
 static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
 static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 
