@@ -23,7 +23,6 @@
 @property (nonatomic, readonly, getter=isDraft) BOOL draft;
 @property (nonatomic, readonly, getter=isLink) BOOL link;
 @property (nonatomic, readonly, getter=isNew) BOOL new;
-@property (nonatomic, readonly) NSString *formattedDate;
 
 + (instancetype)newDraftWithTitle:(NSString *)title body:(NSString *)body url:(NSURL *)url;
 - (instancetype)copyWithBody:(NSString *)body;

@@ -18,7 +18,6 @@
 @synthesize author = _author;
 @synthesize time = _time;
 @synthesize path = _path;
-@synthesize formattedDate = _formattedDate;
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
@@ -144,13 +143,6 @@
         _time = [NSDate dateWithTimeIntervalSince1970:self.timestamp];
     }
     return _time;
-}
-
-- (NSString *)formattedDate {
-    if (!_formattedDate && self.time) {
-        _formattedDate = [NSString stringWithFormat:@"%ld-%02ld-%02ld", (long)self.time.mm_year, (long)self.time.mm_month, (long)self.time.mm_day];
-    }
-    return _formattedDate;
 }
 
 - (NSString *)path {

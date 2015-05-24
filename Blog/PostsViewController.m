@@ -547,8 +547,9 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     Post *post = [self postForIndexPath:indexPath];
-    NSString *title = post.title.length ? post.title : @"Untitled";
-    NSString *date = post.draft ? @"" : post.formattedDate;
+    NSString *prefix = post.link ? @"→ " : @"";
+    NSString *title = [NSString stringWithFormat:@"%@%@", prefix, post.title.length ? post.title : @"Untitled"];
+    NSString *date = post.draft ? @"" : post.date;
     [cell configureWithTitle:title date:date];
     return cell;
 }
