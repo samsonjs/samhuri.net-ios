@@ -20,6 +20,7 @@ target :Blog do
   pod 'dyci'
   pod 'FontAwesome+iOS', :git => 'https://github.com/alexdrone/ios-fontawesome.git'
   pod 'MBProgressHUD'
+  pod 'HockeySDK'
 end
 
 target :BlogTests do
