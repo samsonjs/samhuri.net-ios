@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
+#import <HockeySDK/HockeySDK.h>
 #import <dyci/SFDynamicCodeInjection.h>
 #import "AppDelegate.h"
 #import "PostsViewController.h"
@@ -28,6 +29,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupCodeInjection];
+    [self setupHockeySDK];
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
     navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
@@ -48,6 +50,12 @@
     if (!codeInjectionEnabled) {
         [NSClassFromString(@"SFDynamicCodeInjection") performSelector:@selector(disable)];
     }
+}
+
+- (void)setupHockeySDK {
+    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"15435e2af912c96d7068c47c7bc6438f"];
+    [[BITHockeyManager sharedHockeyManager] startManager];
+    [[BITHockeyManager sharedHockeyManager].authenticator authenticateInstallation];
 }
 
 - (PostsViewController *)postsViewController {
