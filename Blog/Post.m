@@ -21,16 +21,17 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-            @"objectID" : @"id",
-            @"slug"     : @"slug",
-            @"author"   : @"author",
-            @"title"    : @"title",
-            @"date"     : @"date",
-            @"draft"    : @"draft",
-            @"body"     : @"body",
-            @"path"     : @"url",
-            @"url"      : @"link",
-            @"time"     : @"", // ignore
+            @"objectID"  : @"id",
+            @"slug"      : @"slug",
+            @"author"    : @"author",
+            @"title"     : @"title",
+            @"date"      : @"date",
+            @"draft"     : @"draft",
+            @"body"      : @"body",
+            @"path"      : @"url",
+            @"url"       : @"link",
+            @"time"      : @"", // ignore
+            @"timestamp" : @"timestamp",
     };
 }
 

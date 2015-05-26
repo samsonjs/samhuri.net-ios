@@ -387,7 +387,7 @@ wanted with as little input and thought as possible.</string>
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="WCw-Qf-5nD" customClass="PostCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="58" id="WCw-Qf-5nD" customClass="PostCell">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
@@ -395,31 +395,46 @@ wanted with as little input and thought as possible.</string>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="2015-04-19" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vd6-ZS-EnM">
-                                            <rect key="frame" x="527" y="15" width="65" height="15"/>
+                                            <rect key="frame" x="8" y="35" width="65" height="14.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I Can't Wait to See What Trey Parker &amp; Matt Stone Do With This" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTp-VX-x9k">
-                                            <rect key="frame" x="8" y="13" width="410" height="17"/>
+                                            <rect key="frame" x="8" y="11" width="584" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="vd6-ZS-EnM" firstAttribute="top" secondItem="sTp-VX-x9k" secondAttribute="bottom" constant="2" id="40P-IG-vhq"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="vd6-ZS-EnM" secondAttribute="bottom" id="5E9-cV-kNx"/>
                                         <constraint firstItem="vd6-ZS-EnM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sTp-VX-x9k" secondAttribute="trailing" constant="8" id="CVb-7u-yaW"/>
                                         <constraint firstItem="vd6-ZS-EnM" firstAttribute="trailing" secondItem="37f-cq-3Eg" secondAttribute="trailingMargin" id="ErG-lz-QR2"/>
                                         <constraint firstAttribute="centerY" secondItem="sTp-VX-x9k" secondAttribute="centerY" id="L2O-P8-B0I"/>
                                         <constraint firstAttribute="centerY" secondItem="sTp-VX-x9k" secondAttribute="centerY" id="NAj-hm-R7E"/>
                                         <constraint firstItem="sTp-VX-x9k" firstAttribute="bottom" secondItem="37f-cq-3Eg" secondAttribute="bottomMargin" constant="-5" id="O7g-0A-fpG"/>
+                                        <constraint firstItem="sTp-VX-x9k" firstAttribute="trailing" secondItem="37f-cq-3Eg" secondAttribute="trailingMargin" id="O9Z-5u-RgO"/>
+                                        <constraint firstItem="sTp-VX-x9k" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="topMargin" constant="3" id="Tut-zF-SRB"/>
                                         <constraint firstItem="vd6-ZS-EnM" firstAttribute="baseline" secondItem="sTp-VX-x9k" secondAttribute="baseline" id="WBb-wO-bu6"/>
+                                        <constraint firstItem="vd6-ZS-EnM" firstAttribute="top" secondItem="sTp-VX-x9k" secondAttribute="bottom" constant="6" id="coP-SN-Zjg"/>
+                                        <constraint firstItem="vd6-ZS-EnM" firstAttribute="top" secondItem="sTp-VX-x9k" secondAttribute="bottom" constant="7" id="fnc-UY-CBZ"/>
+                                        <constraint firstAttribute="centerX" secondItem="vd6-ZS-EnM" secondAttribute="centerX" constant="259.5" id="i0J-OR-V48"/>
                                         <constraint firstItem="sTp-VX-x9k" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leadingMargin" id="iU2-pk-NdH"/>
+                                        <constraint firstItem="vd6-ZS-EnM" firstAttribute="leading" secondItem="sTp-VX-x9k" secondAttribute="leading" id="oPA-mz-CAA"/>
                                     </constraints>
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="L2O-P8-B0I"/>
+                                            <exclude reference="NAj-hm-R7E"/>
                                             <exclude reference="O7g-0A-fpG"/>
+                                            <exclude reference="40P-IG-vhq"/>
+                                            <exclude reference="CVb-7u-yaW"/>
+                                            <exclude reference="ErG-lz-QR2"/>
+                                            <exclude reference="WBb-wO-bu6"/>
+                                            <exclude reference="coP-SN-Zjg"/>
+                                            <exclude reference="i0J-OR-V48"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>

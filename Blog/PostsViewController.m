@@ -531,6 +531,10 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
     return [self postCollectionForSection:section].title;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 58;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 40;
 }
@@ -549,8 +553,7 @@ static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
     Post *post = [self postForIndexPath:indexPath];
     NSString *prefix = post.link ? @"→ " : @"";
     NSString *title = [NSString stringWithFormat:@"%@%@", prefix, post.title.length ? post.title : @"Untitled"];
-    NSString *date = post.draft ? @"" : post.date;
-    [cell configureWithTitle:title date:date];
+    [cell configureWithTitle:title date:post.date];
     return cell;
 }
 
