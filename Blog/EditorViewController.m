@@ -393,7 +393,8 @@ static NSString *const StateRestorationModifiedPostKey = @"modifiedPost";
 }
 
 - (IBAction)publishOrUnpublish:(id)sender {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
+    hud.dimBackground = YES;
     BOOL isPublish = self.modifiedPost.draft;
     hud.labelText = isPublish ? @"Publishing" : @"Unpublishing";
     __weak typeof(self) welf = self;

@@ -305,10 +305,10 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (IBAction)publish:(id)sender {
-    // TODO: activity indicator
     __weak typeof(self) welf = self;
     void (^publish)(NSString *, PMKPromise *) = ^(NSString *message, PMKPromise *promise) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
+        hud.dimBackground = YES;
         hud.labelText = message;
         typeof(self) self = welf;
         promise.then(^{
