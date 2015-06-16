@@ -81,7 +81,7 @@
 }
 
 - (NSString *)rootURL {
-    return @"http://ocean.samhuri.net:6706/";
+    return @"https://ocean.samhuri.net/";
 }
 
 - (BlogController *)blogController {
