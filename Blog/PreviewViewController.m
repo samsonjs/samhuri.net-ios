@@ -92,9 +92,7 @@
     [self.centerIndicatorView stopAnimating];
     [self.cornerIndicatorView stopAnimating];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
-    __weak typeof(self) welf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];

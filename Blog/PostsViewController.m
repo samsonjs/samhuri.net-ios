@@ -328,22 +328,18 @@ static const NSUInteger SectionPublished = 1;
     };
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Publish" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alertController addAction:[UIAlertAction actionWithTitle:@"samhuri.net" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish(@"samhuri.net", [self.blogController requestPublishToProductionEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"beta.samhuri.net" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish(@"beta.samhuri.net", [self.blogController requestPublishToStagingEnvironment]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Push to GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
         publish(@"Pushing", [self.blogController requestSync]);
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        typeof(self) self = welf;
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
