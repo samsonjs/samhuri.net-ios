@@ -154,6 +154,8 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)setupBlogStatusTimer {
+    // Just make sure everything is cleaned up in case we get called twice.
+    [self teardownBlogStatusTimer];
     self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
 }
 
@@ -196,7 +198,6 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
     BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
     if (isPhone && self.tableView.indexPathForSelectedRow) {
@@ -205,21 +206,23 @@ static const NSUInteger SectionPublished = 1;
     if (!self.postCollections) {
         [self requestPostsWithCaching:YES];
     }
-    [self setupKeyboardNotifications];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self setupKeyboardNotifications];
+    [self setupBlogStatusTimer];
+
     if (!self.hasAppeared) {
         self.hasAppeared = YES;
         [self hideSearchBarAnimated:YES];
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self teardownBlogStatusTimer];
     [self teardownKeyboardNotifications];
+    [self teardownBlogStatusTimer];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -239,7 +242,6 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (PMKPromise *)requestStatusWithCaching:(BOOL)useCache {
-    [self teardownBlogStatusTimer];
     [self updateStatusLabel:@"Checking status" animated:YES];
     return [self.blogController requestBlogStatusWithCaching:useCache].then(^(BlogStatus *status) {
         self.blogStatusDate = status.date;
@@ -249,7 +251,6 @@ static const NSUInteger SectionPublished = 1;
         else {
             self.blogStatusText = @"Everything published";
         }
-        [self setupBlogStatusTimer];
         [self updateBlogStatusAnimated:YES];
         return status;
     }).catch(^(NSError *error) {
