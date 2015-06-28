@@ -17,6 +17,7 @@
 		1BCFCB7B50DAE4885AE55B80 /* MuseoSans-100.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */; };
 		1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */; };
 		1BCFCC637C63C780248D685E /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCB5C36F301B2B93F8069 /* PostCell.m */; };
+		1BCFCD56F7850C9BDF8261AC /* BlogSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */; };
 		1BCFCD747F327FC361469D49 /* MuseoSans-100-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */; };
 		1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */; };
 		1BCFCE976D6638781FBA9942 /* MuseoSans-700.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */; };
@@ -98,6 +99,7 @@
 /* Begin PBXFileReference section */
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BCFC0549FB7723D8893A91C /* ExtensionItemProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionItemProcessor.m; sourceTree = "<group>"; };
+		1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogSplitViewController.m; sourceTree = "<group>"; };
 		1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		1BCFC27DA8A32D0484C273A0 /* ExtensionItemProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionItemProcessor.h; sourceTree = "<group>"; };
 		1BCFC32EC1E5AE196D194D21 /* CommonUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUI.m; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 		1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollection.m; sourceTree = "<group>"; };
 		1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900.otf"; sourceTree = "<group>"; };
 		1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-700.otf"; sourceTree = "<group>"; };
+		1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogSplitViewController.h; sourceTree = "<group>"; };
 		1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCA73B716677EFBCEC417 /* CommonUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUI.h; sourceTree = "<group>"; };
 		1BCFCB18C8C8304D67E6462E /* PostCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollection.h; sourceTree = "<group>"; };
@@ -316,6 +319,8 @@
 				7B2B43501AED5BA500BAC4E2 /* Functions.m */,
 				1BCFC32EC1E5AE196D194D21 /* CommonUI.m */,
 				1BCFCA73B716677EFBCEC417 /* CommonUI.h */,
+				1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */,
+				1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -685,6 +690,7 @@
 				1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */,
 				1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */,
 				1BCFC7C3FCBF364F3239C3D4 /* CommonUI.m in Sources */,
+				1BCFCD56F7850C9BDF8261AC /* BlogSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

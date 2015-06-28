@@ -353,10 +353,10 @@ wanted with as little input and thought as possible.</string>
             </objects>
             <point key="canvasLocation" x="1478" y="129"/>
         </scene>
-        <!--Split View Controller-->
+        <!--Blog Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
             <objects>
-                <splitViewController storyboardIdentifier="Split View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H1p-Uh-vWS" sceneMemberID="viewController">
+                <splitViewController storyboardIdentifier="Split View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H1p-Uh-vWS" customClass="BlogSplitViewController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
@@ -510,6 +510,6 @@ wanted with as little input and thought as possible.</string>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="6S0-TO-JiA"/>
+        <segue reference="Tll-UG-LXB"/>
     </inferredMetricsTieBreakers>
 </document>

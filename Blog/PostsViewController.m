@@ -63,11 +63,6 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.preferredContentSize = CGSizeMake(320.0, 600.0);
-    }
-
     [self setupTitleView];
     [self setupFontAwesomeIcons];
     self.refreshControl.tintColor = [UIColor whiteColor];

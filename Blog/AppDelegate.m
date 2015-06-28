@@ -12,6 +12,7 @@
 #import "EditorViewController.h"
 #import "SamhuriNet.h"
 #import "Functions.h"
+#import "BlogSplitViewController.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
@@ -28,13 +29,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupCodeInjection];
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-    navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+    BlogSplitViewController *splitViewController = (BlogSplitViewController *)self.window.rootViewController;
     splitViewController.delegate = self;
-    self.postsViewController.blogController = self.site.blogController;
-    self.editorViewControllerForPhone.blogController = self.site.blogController;
-    self.editorViewControllerForPad.blogController = self.site.blogController;
+    splitViewController.site = [SamhuriNet new];
+    UINavigationController *navigationController = splitViewController.detailNavigationController;
+    navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
     return YES;
 }
 
@@ -48,37 +47,6 @@
     if (!codeInjectionEnabled) {
         [NSClassFromString(@"SFDynamicCodeInjection") performSelector:@selector(disable)];
     }
-}
-
-- (PostsViewController *)postsViewController {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    PostsViewController *postsViewController = (PostsViewController *)navigationController.viewControllers.firstObject;
-    return postsViewController;
-}
-
-- (EditorViewController *)editorViewControllerForPhone {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    if (navigationController.viewControllers.count > 1) {
-        navigationController = navigationController.viewControllers.lastObject;
-    }
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
-}
-
-- (EditorViewController *)editorViewControllerForPad {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
-}
-
-- (SamhuriNet *)site {
-    if (!_site) {
-        _site = [SamhuriNet new];
-    }
-    return _site;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -123,10 +91,9 @@
     NSLog(@"did decode restorable state with coder %@", coder);
 }
 
-
 #pragma mark - UISplitViewDelegate methods
 
-- (BOOL) splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
+- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]]
                                                    ? (UINavigationController *)secondaryViewController
                                                    : nil;
