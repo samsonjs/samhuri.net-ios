@@ -35,6 +35,8 @@
 - (void)updateForNewTraitCollection:(UITraitCollection *)newCollection {
     BOOL isCompact = newCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact;
     self.postsViewController.clearsSelectionOnViewWillAppear = isCompact;
+    self.editorViewControllerForPad.navigationItem.leftBarButtonItem = self.displayModeButtonItem;
+    self.editorViewControllerForPad.navigationItem.leftItemsSupplementBackButton = YES;
 }
 
 - (UINavigationController *)masterNavigationController {

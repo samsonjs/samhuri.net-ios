@@ -495,8 +495,6 @@ static const NSUInteger SectionPublished = 1;
         EditorViewController *controller = (EditorViewController *)[[segue destinationViewController] topViewController];
         controller.blogController = self.blogController;
         [controller configureWithPost:post];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
 }
 
