@@ -38,6 +38,7 @@
 @property (nonatomic, copy) NSString *blogStatusText;
 @property (nonatomic, strong) NSDate *blogStatusDate;
 @property (nonatomic, strong) NSTimer *blogStatusTimer;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, weak) NSLayoutConstraint *titleViewWidthConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleViewHeightConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleLabelTopConstraint;
@@ -197,9 +198,13 @@ static const NSUInteger SectionPublished = 1;
     if (self.clearsSelectionOnViewWillAppear && self.tableView.indexPathForSelectedRow) {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
-    if (!self.postCollections) {
-        [self requestPostsWithCaching:YES];
-    }
+    PMKPromise *postP = self.postCollections ? [PMKPromise promiseWithValue:self.postCollections] : [self requestPostsWithCaching:YES];
+    postP.then(^{
+        if (self.selectedIndexPath && [self postForIndexPath:self.selectedIndexPath]) {
+            [self.tableView selectRowAtIndexPath:self.selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+            self.selectedIndexPath = nil;
+        }
+    });
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -265,11 +270,19 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (PostCollection *)postCollectionForSection:(NSInteger)section {
-    return [self collectionsForTableView][section];
+    NSArray *collections = [self collectionsForTableView];
+    if (section < collections.count) {
+        return collections[section];
+    }
+    return nil;
 }
 
 - (Post *)postForIndexPath:(NSIndexPath *)indexPath {
-    return [self postCollectionForSection:indexPath.section].posts[indexPath.row];
+    PostCollection *collection = [self postCollectionForSection:indexPath.section];
+    if (indexPath.row < collection.posts.count) {
+        return collection.posts[indexPath.row];
+    }
+    return nil;
 }
 
 - (NSMutableArray *)drafts {
@@ -491,16 +504,19 @@ static const NSUInteger SectionPublished = 1;
 
 static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
 static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
+static NSString *const StateRestorationTableViewSelectedIndexPathKey = @"tableView.indexPathForSelectedRow";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
     [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
     [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
+    [coder encodeObject:self.tableView.indexPathForSelectedRow forKey:StateRestorationTableViewSelectedIndexPathKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
     self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
     self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
+    self.selectedIndexPath = [coder decodeObjectForKey:StateRestorationTableViewSelectedIndexPathKey];
     [super decodeRestorableStateWithCoder:coder];
 }
 
