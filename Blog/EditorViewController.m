@@ -42,6 +42,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupFontAwesomeIcons];
+    self.linkView.hidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -131,6 +132,7 @@
         self.removeLinkButton.hidden = !url;
         const CGFloat titleLabelTop = TitleLabelTopMargin + CGRectGetMaxY(self.linkView.frame);
         if (self.titleLabelTopConstraint.constant <= titleLabelTop) {
+            self.linkView.hidden = NO;
             self.linkView.alpha = 1;
             self.linkButton.alpha = 0;
             [UIView animateWithDuration:0.3 animations:^{
@@ -143,6 +145,8 @@
         [UIView animateWithDuration:0.3 animations:^{
             self.linkView.alpha = 0;
             self.titleLabelTopConstraint.constant = TitleLabelTopMargin;
+        } completion:^(BOOL finished) {
+            self.linkView.hidden = YES;
         }];
     }
 }
