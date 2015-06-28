@@ -194,8 +194,7 @@ static const NSUInteger SectionPublished = 1;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self requestStatusWithCaching:YES];
-    BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
-    if (isPhone && self.tableView.indexPathForSelectedRow) {
+    if (self.clearsSelectionOnViewWillAppear && self.tableView.indexPathForSelectedRow) {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
     if (!self.postCollections) {

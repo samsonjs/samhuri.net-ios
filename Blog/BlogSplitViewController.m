@@ -22,8 +22,17 @@
     self.postsViewController.preferredContentSize = CGSizeMake(320, 600);
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self updateForNewTraitCollection:self.traitCollection];
+}
+
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
+    [self updateForNewTraitCollection:newCollection];
+}
+
+- (void)updateForNewTraitCollection:(UITraitCollection *)newCollection {
     BOOL isCompact = newCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact;
     self.postsViewController.clearsSelectionOnViewWillAppear = isCompact;
 }
