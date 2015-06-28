@@ -195,14 +195,14 @@ static const NSUInteger SectionPublished = 1;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self requestStatusWithCaching:YES];
-    if (self.clearsSelectionOnViewWillAppear && self.tableView.indexPathForSelectedRow) {
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    }
     PMKPromise *postP = self.postCollections ? [PMKPromise promiseWithValue:self.postCollections] : [self requestPostsWithCaching:YES];
     postP.then(^{
         if (self.selectedIndexPath && [self postForIndexPath:self.selectedIndexPath]) {
             [self.tableView selectRowAtIndexPath:self.selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
             self.selectedIndexPath = nil;
+        }
+        if (self.clearsSelectionOnViewWillAppear && self.tableView.indexPathForSelectedRow) {
+            [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
         }
     });
 }
