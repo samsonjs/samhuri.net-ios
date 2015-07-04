@@ -80,7 +80,7 @@ static const NSUInteger SectionPublished = 1;
     NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
     [titleView addConstraint:widthConstraint];
     self.titleViewWidthConstraint = widthConstraint;
-    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:8 + CGRectGetMaxY(self.navigationController.navigationBar.frame)];
     [titleView addConstraint:heightConstraint];
     self.titleViewHeightConstraint = heightConstraint;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -96,9 +96,7 @@ static const NSUInteger SectionPublished = 1;
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
     [titleView addSubview:titleLabel];
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [titleView addConstraint:topConstraint];
-    self.titleLabelTopConstraint = topConstraint;
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:18]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -107,26 +105,15 @@ static const NSUInteger SectionPublished = 1;
     subtitleLabel.textColor = [UIColor whiteColor];
     [subtitleLabel sizeToFit];
     [titleView addSubview:subtitleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-9]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
 }
 
-- (void)updateTitleViewConstraints;
-{
+- (void)updateTitleViewConstraints {
     self.titleViewWidthConstraint.constant = CGRectGetWidth(self.view.bounds);
-    CGFloat height = CGRectGetHeight(self.navigationController.navigationBar.bounds);
-    CGFloat top = 5;
-    // This is more reliable than checking if it's portrait.
-    if (!UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
-    {
-        // status bar
-        height += 20;
-        top += 15;
-    }
-    self.titleViewHeightConstraint.constant = height;
-    self.titleLabelTopConstraint.constant = top;
+    self.titleViewHeightConstraint.constant = 8 + CGRectGetHeight(self.navigationController.navigationBar.bounds);
     [self.titleLabel.superview setNeedsUpdateConstraints];
 }
 
@@ -185,11 +172,15 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)updateBlogStatus {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:NO];
+    [self updateBlogStatusAnimated:NO];
 }
 
 - (void)updateBlogStatusAnimated:(BOOL)animated {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:animated];
+    if (!(self.blogStatusText && self.blogStatusDate)) {
+        return;
+    }
+    NSString *status = [NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]];
+    [self updateStatusLabel:status animated:animated];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
