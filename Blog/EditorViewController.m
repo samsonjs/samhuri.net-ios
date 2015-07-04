@@ -129,7 +129,10 @@
 }
 
 - (NSString *)statusText {
-    return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
+    if (self.post) {
+        return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
+    }
+    return @"";
 }
 
 - (void)configureLinkView {
