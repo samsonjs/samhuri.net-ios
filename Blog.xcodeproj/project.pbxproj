@@ -55,6 +55,7 @@
 		7B9E64421A22F3840072FF42 /* BlogService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64411A22F3840072FF42 /* BlogService.m */; };
 		7B9E644C1A230B940072FF42 /* JSONHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */; };
 		7B9E644F1A23129B0072FF42 /* BlogStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644E1A23129B0072FF42 /* BlogStatus.m */; };
+		7BBA86971B4264AB00FD2320 /* NotificationToSelectorMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */; };
 		7BE3A0351AE461E700E45CCB /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE3A0341AE461E700E45CCB /* PreviewViewController.m */; };
 		7BF029331A27117200E42EDE /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
 		7BF029381A280CB200E42EDE /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
@@ -166,6 +167,8 @@
 		7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONHTTPClient.m; sourceTree = "<group>"; };
 		7B9E644D1A23129B0072FF42 /* BlogStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogStatus.h; sourceTree = "<group>"; };
 		7B9E644E1A23129B0072FF42 /* BlogStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogStatus.m; sourceTree = "<group>"; };
+		7BBA86951B4264AB00FD2320 /* NotificationToSelectorMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationToSelectorMap.h; sourceTree = "<group>"; };
+		7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationToSelectorMap.m; sourceTree = "<group>"; };
 		7BE3A0331AE461E700E45CCB /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
 		7BE3A0341AE461E700E45CCB /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
 		7BF029311A27117200E42EDE /* ModelStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelStore.h; sourceTree = "<group>"; };
@@ -321,6 +324,8 @@
 				1BCFCA73B716677EFBCEC417 /* CommonUI.h */,
 				1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */,
 				1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */,
+				7BBA86951B4264AB00FD2320 /* NotificationToSelectorMap.h */,
+				7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -679,6 +684,7 @@
 				7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */,
 				7B9E64421A22F3840072FF42 /* BlogService.m in Sources */,
 				7B5C4BDF19F2606900667D48 /* main.m in Sources */,
+				7BBA86971B4264AB00FD2320 /* NotificationToSelectorMap.m in Sources */,
 				7BF029331A27117200E42EDE /* ModelStore.m in Sources */,
 				7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */,
 				7BF029381A280CB200E42EDE /* BlogController.m in Sources */,
