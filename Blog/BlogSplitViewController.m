@@ -47,7 +47,7 @@
 }
 
 - (UINavigationController *)detailNavigationController {
-    return self.viewControllers.lastObject;
+    return self.viewControllers.count == 2 ? self.viewControllers.lastObject : nil;
 }
 
 - (PostsViewController *)postsViewController {
