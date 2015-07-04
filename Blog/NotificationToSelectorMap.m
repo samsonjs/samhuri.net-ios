@@ -10,7 +10,7 @@
 
 @implementation NotificationToSelectorMap
 
-- (instancetype)initWithNotificationMap:(nonnull NSDictionary *)notificationMap {
+- (nonnull instancetype)initWithNotificationMap:(nonnull NSDictionary *)notificationMap {
     self = [super init];
     if (self) {
         _notificationNameToSelectorNameMap = notificationMap;
@@ -18,7 +18,7 @@
     return self;
 }
 
-- (void)addObserver:(NSObject *)observer {
+- (void)addObserver:(nonnull NSObject *)observer {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     for (NSString *notificationName in self.notificationNameToSelectorNameMap.allKeys) {
         NSString *selectorName = self.notificationNameToSelectorNameMap[notificationName];
@@ -26,7 +26,7 @@
     }
 }
 
-- (void)removeObserver:(NSObject *)observer {
+- (void)removeObserver:(nonnull NSObject *)observer {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     for (NSString *notificationName in self.notificationNameToSelectorNameMap.allKeys) {
         [notificationCenter removeObserver:observer name:notificationName object:nil];

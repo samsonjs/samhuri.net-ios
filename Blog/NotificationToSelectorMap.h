@@ -10,10 +10,10 @@
 
 @interface NotificationToSelectorMap : NSObject
 
-@property (nonatomic, copy) NSDictionary *notificationNameToSelectorNameMap;
+@property (nonatomic, copy, nonnull) NSDictionary *notificationNameToSelectorNameMap;
 
-- (instancetype)initWithNotificationMap:(nonnull NSDictionary *)notificationMap;
-- (void)addObserver:(NSObject *)observer;
-- (void)removeObserver:(NSObject *)observer;
+- (nonnull instancetype)initWithNotificationMap:(nonnull NSDictionary *)notificationMap;
+- (void)addObserver:(nonnull NSObject *)observer;
+- (void)removeObserver:(nonnull NSObject *)observer;
 
 @end
