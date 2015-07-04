@@ -4,18 +4,14 @@
 //
 @import UIKit;
 
-@class PostsViewController;
-@class EditorViewController;
 @class SamhuriNet;
+@class EditorViewController;
 
 @interface BlogSplitViewController : UISplitViewController
 
 @property (nonatomic, strong) SamhuriNet *site;
-
-- (UINavigationController *)masterNavigationController;
-- (UINavigationController *)detailNavigationController;
-- (PostsViewController *)postsViewController;
-- (EditorViewController *)editorViewControllerForPhone;
-- (EditorViewController *)editorViewControllerForPad;
+@property (nonatomic, readonly, strong) UINavigationController *masterNavigationController;
+@property (nonatomic, readonly, strong) UINavigationController *detailNavigationController;
+@property (nonatomic, readonly, strong) EditorViewController *editorViewController;
 
 @end

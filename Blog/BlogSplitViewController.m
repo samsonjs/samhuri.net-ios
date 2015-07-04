@@ -8,13 +8,18 @@
 #import "EditorViewController.h"
 #import "SamhuriNet.h"
 
+@interface BlogSplitViewController ()
+
+@property (nonatomic, readonly, strong) PostsViewController *postsViewController;
+
+@end
+
 @implementation BlogSplitViewController
 
 - (void)setSite:(SamhuriNet *)site {
     _site = site;
     self.postsViewController.blogController = self.site.blogController;
-    self.editorViewControllerForPhone.blogController = self.site.blogController;
-    self.editorViewControllerForPad.blogController = self.site.blogController;
+    self.editorViewController.blogController = self.site.blogController;
 }
 
 - (void)awakeFromNib {
@@ -35,8 +40,6 @@
 - (void)updateForNewTraitCollection:(UITraitCollection *)newCollection {
     BOOL isCompact = newCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact;
     self.postsViewController.clearsSelectionOnViewWillAppear = isCompact;
-    self.editorViewControllerForPad.navigationItem.leftBarButtonItem = self.displayModeButtonItem;
-    self.editorViewControllerForPad.navigationItem.leftItemsSupplementBackButton = YES;
 }
 
 - (UINavigationController *)masterNavigationController {
@@ -51,16 +54,7 @@
     return (PostsViewController *)self.masterNavigationController.viewControllers.firstObject;
 }
 
-- (EditorViewController *)editorViewControllerForPhone {
-    UINavigationController *navigationController = self.masterNavigationController;
-    if (navigationController.viewControllers.count > 1) {
-        navigationController = navigationController.viewControllers.lastObject;
-    }
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
-}
-
-- (EditorViewController *)editorViewControllerForPad {
+- (EditorViewController *)editorViewController {
     return (EditorViewController *)self.detailNavigationController.viewControllers.firstObject;
 }
 

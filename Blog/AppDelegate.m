@@ -16,24 +16,17 @@
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
-@property (nonatomic, readonly, strong) SamhuriNet *site;
-@property (nonatomic, readonly, strong) PostsViewController *postsViewController;
-@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPhone;
-@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPad;
-
 @end
 
 @implementation AppDelegate
-
-@synthesize site = _site;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupCodeInjection];
     BlogSplitViewController *splitViewController = (BlogSplitViewController *)self.window.rootViewController;
     splitViewController.delegate = self;
     splitViewController.site = [SamhuriNet new];
-    UINavigationController *navigationController = splitViewController.detailNavigationController;
-    navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+    splitViewController.editorViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+    splitViewController.editorViewController.navigationItem.leftItemsSupplementBackButton = YES;
     return YES;
 }
 
@@ -93,11 +86,8 @@
 
 #pragma mark - UISplitViewDelegate methods
 
-- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
-    UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]]
-                                                   ? (UINavigationController *)secondaryViewController
-                                                   : nil;
-    EditorViewController *editorViewController = navigationController.topViewController ? safeCast(navigationController.topViewController, [EditorViewController class]) : nil;
+- (BOOL)splitViewController:(BlogSplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
+    EditorViewController *editorViewController = splitViewController.editorViewController;
     if (!editorViewController.post) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
         return YES;
