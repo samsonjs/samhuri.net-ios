@@ -301,6 +301,8 @@
 				7BF029351A27119B00E42EDE /* Service */,
 				7B5C4BE019F2606900667D48 /* AppDelegate.h */,
 				7B5C4BE119F2606900667D48 /* AppDelegate.m */,
+				1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */,
+				1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */,
 				7B5C4BE319F2606900667D48 /* PostsViewController.h */,
 				7B5C4BE419F2606900667D48 /* PostsViewController.m */,
 				7B5C4BE619F2606900667D48 /* EditorViewController.h */,
@@ -322,8 +324,6 @@
 				7B2B43501AED5BA500BAC4E2 /* Functions.m */,
 				1BCFC32EC1E5AE196D194D21 /* CommonUI.m */,
 				1BCFCA73B716677EFBCEC417 /* CommonUI.h */,
-				1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */,
-				1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */,
 				7BBA86951B4264AB00FD2320 /* NotificationToSelectorMap.h */,
 				7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */,
 			);
