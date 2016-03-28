@@ -17,6 +17,7 @@
 		1BCFCB7B50DAE4885AE55B80 /* MuseoSans-100.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCC3154DB1D3B3C025211 /* MuseoSans-100.otf */; };
 		1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCE26B630D546311BB715 /* ChangeTitleViewController.m */; };
 		1BCFCC637C63C780248D685E /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFCB5C36F301B2B93F8069 /* PostCell.m */; };
+		1BCFCD56F7850C9BDF8261AC /* BlogSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */; };
 		1BCFCD747F327FC361469D49 /* MuseoSans-100-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFCB67571197A762B88624 /* MuseoSans-100-Italic.otf */; };
 		1BCFCD7E8EEBFAA97226B0BF /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */; };
 		1BCFCE976D6638781FBA9942 /* MuseoSans-700.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */; };
@@ -54,6 +55,7 @@
 		7B9E64421A22F3840072FF42 /* BlogService.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E64411A22F3840072FF42 /* BlogService.m */; };
 		7B9E644C1A230B940072FF42 /* JSONHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */; };
 		7B9E644F1A23129B0072FF42 /* BlogStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B9E644E1A23129B0072FF42 /* BlogStatus.m */; };
+		7BBA86971B4264AB00FD2320 /* NotificationToSelectorMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */; };
 		7BE3A0351AE461E700E45CCB /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE3A0341AE461E700E45CCB /* PreviewViewController.m */; };
 		7BF029331A27117200E42EDE /* ModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029321A27117200E42EDE /* ModelStore.m */; };
 		7BF029381A280CB200E42EDE /* BlogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF029371A280CB200E42EDE /* BlogController.m */; };
@@ -98,6 +100,7 @@
 /* Begin PBXFileReference section */
 		1613DC56A86AFA7E50460A37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BCFC0549FB7723D8893A91C /* ExtensionItemProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionItemProcessor.m; sourceTree = "<group>"; };
+		1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogSplitViewController.m; sourceTree = "<group>"; };
 		1BCFC23988387A5CAE551C90 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		1BCFC27DA8A32D0484C273A0 /* ExtensionItemProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionItemProcessor.h; sourceTree = "<group>"; };
 		1BCFC32EC1E5AE196D194D21 /* CommonUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUI.m; sourceTree = "<group>"; };
@@ -105,6 +108,7 @@
 		1BCFC3B62AA92DB07923F7C1 /* PostCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollection.m; sourceTree = "<group>"; };
 		1BCFC40D1BFCFBF04BC79A35 /* MuseoSans-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900.otf"; sourceTree = "<group>"; };
 		1BCFC462F5540C67B9D97299 /* MuseoSans-700.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-700.otf"; sourceTree = "<group>"; };
+		1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogSplitViewController.h; sourceTree = "<group>"; };
 		1BCFC7FD826AC4789F946BC9 /* MuseoSans-900-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file.otf; path = "MuseoSans-900-Italic.otf"; sourceTree = "<group>"; };
 		1BCFCA73B716677EFBCEC417 /* CommonUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUI.h; sourceTree = "<group>"; };
 		1BCFCB18C8C8304D67E6462E /* PostCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollection.h; sourceTree = "<group>"; };
@@ -163,6 +167,8 @@
 		7B9E644B1A230B940072FF42 /* JSONHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONHTTPClient.m; sourceTree = "<group>"; };
 		7B9E644D1A23129B0072FF42 /* BlogStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogStatus.h; sourceTree = "<group>"; };
 		7B9E644E1A23129B0072FF42 /* BlogStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogStatus.m; sourceTree = "<group>"; };
+		7BBA86951B4264AB00FD2320 /* NotificationToSelectorMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationToSelectorMap.h; sourceTree = "<group>"; };
+		7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationToSelectorMap.m; sourceTree = "<group>"; };
 		7BE3A0331AE461E700E45CCB /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
 		7BE3A0341AE461E700E45CCB /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
 		7BF029311A27117200E42EDE /* ModelStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelStore.h; sourceTree = "<group>"; };
@@ -295,6 +301,8 @@
 				7BF029351A27119B00E42EDE /* Service */,
 				7B5C4BE019F2606900667D48 /* AppDelegate.h */,
 				7B5C4BE119F2606900667D48 /* AppDelegate.m */,
+				1BCFC1C7E02F4D1867A5D711 /* BlogSplitViewController.m */,
+				1BCFC63F2FE2EFBC1C513859 /* BlogSplitViewController.h */,
 				7B5C4BE319F2606900667D48 /* PostsViewController.h */,
 				7B5C4BE419F2606900667D48 /* PostsViewController.m */,
 				7B5C4BE619F2606900667D48 /* EditorViewController.h */,
@@ -316,6 +324,8 @@
 				7B2B43501AED5BA500BAC4E2 /* Functions.m */,
 				1BCFC32EC1E5AE196D194D21 /* CommonUI.m */,
 				1BCFCA73B716677EFBCEC417 /* CommonUI.h */,
+				7BBA86951B4264AB00FD2320 /* NotificationToSelectorMap.h */,
+				7BBA86961B4264AB00FD2320 /* NotificationToSelectorMap.m */,
 			);
 			path = Blog;
 			sourceTree = "<group>";
@@ -469,7 +479,7 @@
 		7B5C4BD119F2606900667D48 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Guru Logic Inc.";
 				TargetAttributes = {
 					7B08B3E61AF9CAD300435579 = {
@@ -674,6 +684,7 @@
 				7B9E642E1A227FA20072FF42 /* NSString+marshmallows.m in Sources */,
 				7B9E64421A22F3840072FF42 /* BlogService.m in Sources */,
 				7B5C4BDF19F2606900667D48 /* main.m in Sources */,
+				7BBA86971B4264AB00FD2320 /* NotificationToSelectorMap.m in Sources */,
 				7BF029331A27117200E42EDE /* ModelStore.m in Sources */,
 				7B2B43511AED5BA500BAC4E2 /* Functions.m in Sources */,
 				7BF029381A280CB200E42EDE /* BlogController.m in Sources */,
@@ -685,6 +696,7 @@
 				1BCFCF6DB93786CC2EDB8F69 /* PostCollection.m in Sources */,
 				1BCFCC3709A3C3783E180815 /* ChangeTitleViewController.m in Sources */,
 				1BCFC7C3FCBF364F3239C3D4 /* CommonUI.m in Sources */,
+				1BCFCD56F7850C9BDF8261AC /* BlogSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,6 +757,7 @@
 				INFOPLIST_FILE = samhuri.net/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.Blog.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -761,6 +774,7 @@
 				INFOPLIST_FILE = samhuri.net/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.Blog.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -785,7 +799,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -828,6 +844,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -856,6 +873,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = Blog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -870,6 +888,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = Blog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -889,6 +908,7 @@
 				);
 				INFOPLIST_FILE = BlogTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blog.app/Blog";
 			};
@@ -904,6 +924,7 @@
 				);
 				INFOPLIST_FILE = BlogTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.gurulogic.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blog.app/Blog";
 			};

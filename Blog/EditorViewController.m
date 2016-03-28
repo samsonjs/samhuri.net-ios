@@ -18,6 +18,7 @@
 #import "UIColor+Hex.h"
 #import "MBProgressHUD.h"
 #import "CommonUI.h"
+#import "NotificationToSelectorMap.h"
 
 @interface EditorViewController () <UITextViewDelegate, UIPopoverPresentationControllerDelegate>
 
@@ -34,6 +35,7 @@
 @property (nonatomic, strong) Post *modifiedPost;
 @property (nonatomic, readonly, assign, getter=isDirty) BOOL dirty;
 @property (nonatomic, strong) PMKPromise *savePromise;
+@property (nonatomic, strong) NotificationToSelectorMap *notificationMap;
 
 @end
 
@@ -42,36 +44,44 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupFontAwesomeIcons];
+    [self setupNotifications];
+    self.linkView.hidden = YES;
+}
+
+- (void)setupNotifications {
+    NSDictionary *map = @{UIApplicationWillResignActiveNotification: NSStringFromSelector(@selector(applicationWillResignActive:)),
+                          UIApplicationDidBecomeActiveNotification: NSStringFromSelector(@selector(applicationDidBecomeActive:)),
+                          UIPasteboardChangedNotification: NSStringFromSelector(@selector(configureLinkView)),
+                          UIKeyboardWillShowNotification: NSStringFromSelector(@selector(keyboardWillShow:)),
+                          UIKeyboardWillHideNotification: NSStringFromSelector(@selector(keyboardWillHide:)),
+                          DraftRemovedNotification: NSStringFromSelector(@selector(postDeleted:)),
+                          PublishedPostRemovedNotification: NSStringFromSelector(@selector(postDeleted:)),
+                          };
+    self.notificationMap = [[NotificationToSelectorMap alloc] initWithNotificationMap:map];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSAssert(self.blogController, @"blogController is required");
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(configureLinkView) name:UIPasteboardChangedNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(postDeleted:) name:DraftRemovedNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(postDeleted:) name:PublishedPostRemovedNotification object:nil];
     [self configureView];
     [self restoreScrollOffset];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.notificationMap addObserver:self];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:UIPasteboardChangedNotification object:nil];
-    [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    [notificationCenter removeObserver:self name:DraftRemovedNotification object:nil];
-    [notificationCenter removeObserver:self name:PublishedPostRemovedNotification object:nil];
     if (self.post) {
         [self savePostAndWaitForCompilation:NO];
     }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.notificationMap removeObserver:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -119,7 +129,10 @@
 }
 
 - (NSString *)statusText {
-    return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
+    if (self.post) {
+        return self.modifiedPost.draft ? @"Draft" : self.modifiedPost.date;
+    }
+    return @"";
 }
 
 - (void)configureLinkView {
@@ -131,6 +144,7 @@
         self.removeLinkButton.hidden = !url;
         const CGFloat titleLabelTop = TitleLabelTopMargin + CGRectGetMaxY(self.linkView.frame);
         if (self.titleLabelTopConstraint.constant <= titleLabelTop) {
+            self.linkView.hidden = NO;
             self.linkView.alpha = 1;
             self.linkButton.alpha = 0;
             [UIView animateWithDuration:0.3 animations:^{
@@ -143,6 +157,8 @@
         [UIView animateWithDuration:0.3 animations:^{
             self.linkView.alpha = 0;
             self.titleLabelTopConstraint.constant = TitleLabelTopMargin;
+        } completion:^(BOOL finished) {
+            self.linkView.hidden = YES;
         }];
     }
 }

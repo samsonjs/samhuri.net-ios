@@ -38,6 +38,7 @@
 @property (nonatomic, copy) NSString *blogStatusText;
 @property (nonatomic, strong) NSDate *blogStatusDate;
 @property (nonatomic, strong) NSTimer *blogStatusTimer;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, weak) NSLayoutConstraint *titleViewWidthConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleViewHeightConstraint;
 @property (nonatomic, weak) NSLayoutConstraint *titleLabelTopConstraint;
@@ -63,11 +64,6 @@ static const NSUInteger SectionPublished = 1;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.preferredContentSize = CGSizeMake(320.0, 600.0);
-    }
-
     [self setupTitleView];
     [self setupFontAwesomeIcons];
     self.refreshControl.tintColor = [UIColor whiteColor];
@@ -84,7 +80,7 @@ static const NSUInteger SectionPublished = 1;
     NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
     [titleView addConstraint:widthConstraint];
     self.titleViewWidthConstraint = widthConstraint;
-    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:8 + CGRectGetMaxY(self.navigationController.navigationBar.frame)];
     [titleView addConstraint:heightConstraint];
     self.titleViewHeightConstraint = heightConstraint;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -100,9 +96,7 @@ static const NSUInteger SectionPublished = 1;
     titleLabel.text = self.navigationItem.title;
     [titleLabel sizeToFit];
     [titleView addSubview:titleLabel];
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [titleView addConstraint:topConstraint];
-    self.titleLabelTopConstraint = topConstraint;
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeTop multiplier:1 constant:18]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.titleLabel = titleLabel;
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -111,26 +105,15 @@ static const NSUInteger SectionPublished = 1;
     subtitleLabel.textColor = [UIColor whiteColor];
     [subtitleLabel sizeToFit];
     [titleView addSubview:subtitleLabel];
-    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:-9]];
+    [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [titleView addConstraint:[NSLayoutConstraint constraintWithItem:subtitleLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:titleView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     self.statusLabel = subtitleLabel;
     self.navigationItem.titleView = titleView;
 }
 
-- (void)updateTitleViewConstraints;
-{
+- (void)updateTitleViewConstraints {
     self.titleViewWidthConstraint.constant = CGRectGetWidth(self.view.bounds);
-    CGFloat height = CGRectGetHeight(self.navigationController.navigationBar.bounds);
-    CGFloat top = 5;
-    // This is more reliable than checking if it's portrait.
-    if (!UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
-    {
-        // status bar
-        height += 20;
-        top += 15;
-    }
-    self.titleViewHeightConstraint.constant = height;
-    self.titleLabelTopConstraint.constant = top;
+    self.titleViewHeightConstraint.constant = 8 + CGRectGetHeight(self.navigationController.navigationBar.bounds);
     [self.titleLabel.superview setNeedsUpdateConstraints];
 }
 
@@ -154,6 +137,8 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)setupBlogStatusTimer {
+    // Just make sure everything is cleaned up in case we get called twice.
+    [self teardownBlogStatusTimer];
     self.blogStatusTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateBlogStatus) userInfo:nil repeats:YES];
 }
 
@@ -187,39 +172,47 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (void)updateBlogStatus {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:NO];
+    [self updateBlogStatusAnimated:NO];
 }
 
 - (void)updateBlogStatusAnimated:(BOOL)animated {
-    [self updateStatusLabel:[NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]] animated:animated];
+    if (!(self.blogStatusText && self.blogStatusDate)) {
+        return;
+    }
+    NSString *status = [NSString stringWithFormat:@"%@ as of %@", self.blogStatusText, [self.blogStatusDate mm_relativeToNow]];
+    [self updateStatusLabel:status animated:animated];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setupBlogStatusTimer];
     [self requestStatusWithCaching:YES];
-    BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
-    if (isPhone && self.tableView.indexPathForSelectedRow) {
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    }
-    if (!self.postCollections) {
-        [self requestPostsWithCaching:YES];
-    }
-    [self setupKeyboardNotifications];
+    PMKPromise *postP = self.postCollections ? [PMKPromise promiseWithValue:self.postCollections] : [self requestPostsWithCaching:YES];
+    postP.then(^{
+        if (self.selectedIndexPath && [self postForIndexPath:self.selectedIndexPath]) {
+            [self.tableView selectRowAtIndexPath:self.selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+            self.selectedIndexPath = nil;
+        }
+        if (self.clearsSelectionOnViewWillAppear && self.tableView.indexPathForSelectedRow) {
+            [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+        }
+    });
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self setupKeyboardNotifications];
+    [self setupBlogStatusTimer];
+
     if (!self.hasAppeared) {
         self.hasAppeared = YES;
         [self hideSearchBarAnimated:YES];
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self teardownBlogStatusTimer];
     [self teardownKeyboardNotifications];
+    [self teardownBlogStatusTimer];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -239,7 +232,6 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (PMKPromise *)requestStatusWithCaching:(BOOL)useCache {
-    [self teardownBlogStatusTimer];
     [self updateStatusLabel:@"Checking status" animated:YES];
     return [self.blogController requestBlogStatusWithCaching:useCache].then(^(BlogStatus *status) {
         self.blogStatusDate = status.date;
@@ -249,7 +241,6 @@ static const NSUInteger SectionPublished = 1;
         else {
             self.blogStatusText = @"Everything published";
         }
-        [self setupBlogStatusTimer];
         [self updateBlogStatusAnimated:YES];
         return status;
     }).catch(^(NSError *error) {
@@ -270,11 +261,19 @@ static const NSUInteger SectionPublished = 1;
 }
 
 - (PostCollection *)postCollectionForSection:(NSInteger)section {
-    return [self collectionsForTableView][section];
+    NSArray *collections = [self collectionsForTableView];
+    if (section < collections.count) {
+        return collections[section];
+    }
+    return nil;
 }
 
 - (Post *)postForIndexPath:(NSIndexPath *)indexPath {
-    return [self postCollectionForSection:indexPath.section].posts[indexPath.row];
+    PostCollection *collection = [self postCollectionForSection:indexPath.section];
+    if (indexPath.row < collection.posts.count) {
+        return collection.posts[indexPath.row];
+    }
+    return nil;
 }
 
 - (NSMutableArray *)drafts {
@@ -487,8 +486,6 @@ static const NSUInteger SectionPublished = 1;
         EditorViewController *controller = (EditorViewController *)[[segue destinationViewController] topViewController];
         controller.blogController = self.blogController;
         [controller configureWithPost:post];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
 }
 
@@ -496,16 +493,19 @@ static const NSUInteger SectionPublished = 1;
 
 static NSString *const StateRestorationBlogStatusDateKey = @"blogStatusDate";
 static NSString *const StateRestorationBlogStatusTextKey = @"blogStatusText";
+static NSString *const StateRestorationTableViewSelectedIndexPathKey = @"tableView.indexPathForSelectedRow";
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder  {
     [coder encodeObject:self.blogStatusDate forKey:StateRestorationBlogStatusDateKey];
     [coder encodeObject:self.blogStatusText forKey:StateRestorationBlogStatusTextKey];
+    [coder encodeObject:self.tableView.indexPathForSelectedRow forKey:StateRestorationTableViewSelectedIndexPathKey];
     [super encodeRestorableStateWithCoder:coder];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
     self.blogStatusDate = [coder decodeObjectForKey:StateRestorationBlogStatusDateKey];
     self.blogStatusText = [coder decodeObjectForKey:StateRestorationBlogStatusTextKey];
+    self.selectedIndexPath = [coder decodeObjectForKey:StateRestorationTableViewSelectedIndexPathKey];
     [super decodeRestorableStateWithCoder:coder];
 }
 

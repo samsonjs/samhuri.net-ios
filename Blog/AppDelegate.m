@@ -6,37 +6,27 @@
 //  Copyright (c) 2014 Guru Logic Inc. All rights reserved.
 //
 
-#import <HockeySDK/HockeySDK.h>
 #import <dyci/SFDynamicCodeInjection.h>
 #import "AppDelegate.h"
 #import "PostsViewController.h"
 #import "EditorViewController.h"
 #import "SamhuriNet.h"
 #import "Functions.h"
+#import "BlogSplitViewController.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
-
-@property (nonatomic, readonly, strong) SamhuriNet *site;
-@property (nonatomic, readonly, strong) PostsViewController *postsViewController;
-@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPhone;
-@property (nonatomic, readonly, strong) EditorViewController *editorViewControllerForPad;
 
 @end
 
 @implementation AppDelegate
 
-@synthesize site = _site;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupCodeInjection];
-    [self setupHockeySDK];
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-    navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+    BlogSplitViewController *splitViewController = (BlogSplitViewController *)self.window.rootViewController;
     splitViewController.delegate = self;
-    self.postsViewController.blogController = self.site.blogController;
-    self.editorViewControllerForPhone.blogController = self.site.blogController;
-    self.editorViewControllerForPad.blogController = self.site.blogController;
+    splitViewController.site = [SamhuriNet new];
+    splitViewController.editorViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+    splitViewController.editorViewController.navigationItem.leftItemsSupplementBackButton = YES;
     return YES;
 }
 
@@ -50,43 +40,6 @@
     if (!codeInjectionEnabled) {
         [NSClassFromString(@"SFDynamicCodeInjection") performSelector:@selector(disable)];
     }
-}
-
-- (void)setupHockeySDK {
-    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"15435e2af912c96d7068c47c7bc6438f"];
-    [[BITHockeyManager sharedHockeyManager] startManager];
-    [[BITHockeyManager sharedHockeyManager].authenticator authenticateInstallation];
-}
-
-- (PostsViewController *)postsViewController {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    PostsViewController *postsViewController = (PostsViewController *)navigationController.viewControllers.firstObject;
-    return postsViewController;
-}
-
-- (EditorViewController *)editorViewControllerForPhone {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.firstObject;
-    if (navigationController.viewControllers.count > 1) {
-        navigationController = navigationController.viewControllers.lastObject;
-    }
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
-}
-
-- (EditorViewController *)editorViewControllerForPad {
-    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-    EditorViewController *editorViewController = (EditorViewController *)navigationController.viewControllers.firstObject;
-    return editorViewController;
-}
-
-- (SamhuriNet *)site {
-    if (!_site) {
-        _site = [SamhuriNet new];
-    }
-    return _site;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -131,14 +84,10 @@
     NSLog(@"did decode restorable state with coder %@", coder);
 }
 
-
 #pragma mark - UISplitViewDelegate methods
 
-- (BOOL) splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
-    UINavigationController *navigationController = [secondaryViewController isKindOfClass:[UINavigationController class]]
-                                                   ? (UINavigationController *)secondaryViewController
-                                                   : nil;
-    EditorViewController *editorViewController = navigationController.topViewController ? safeCast(navigationController.topViewController, [EditorViewController class]) : nil;
+- (BOOL)splitViewController:(BlogSplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
+    EditorViewController *editorViewController = splitViewController.editorViewController;
     if (!editorViewController.post) {
         // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
         return YES;
